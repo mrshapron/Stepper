@@ -18,6 +18,7 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
         Scanner scanner = new Scanner(System.in);
         String filePathXML;
         List<FlowDefinition> flowDefinitions = null;
+        //CHECK GIT
         while (flowDefinitions == null){
             System.out.println("Please Enter XML File Path :");
             filePathXML = scanner.nextLine();
