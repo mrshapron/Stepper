@@ -1,0 +1,11 @@
+package Stepper.Step.Declaration;
+
+import Stepper.DataDefinition.DataDefinition;
+import Stepper.Step.DataNecessity;
+
+public interface DataDefinitionDeclaration {
+    String getName();
+    DataNecessity necessity();
+    String userString();
+    DataDefinition dataDefinition();
+}
