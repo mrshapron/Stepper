@@ -7,7 +7,7 @@ import Stepper.Log.Logger;
 import Stepper.Log.LoggerImpl;
 import Stepper.Step.StepResult;
 public class FLowExecutor {
-    private Logger logger;
+    private final Logger logger;
     public FLowExecutor(){
         logger = LoggerImpl.getInstance();
     }
