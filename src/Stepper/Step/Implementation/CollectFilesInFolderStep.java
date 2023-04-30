@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CollectFilesInFolderStep extends AbstractStepDefinition {
+
     public CollectFilesInFolderStep(){
         super("Collect Files In Folder", true);
 
@@ -24,15 +25,13 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
-
         String folderName = context.getDataValue("FOLDER_NAME", String.class);
         String suffixFilter =  context.getDataValue("FILTER", String.class);
-
-        System.out.format("Reading folder %s content with filter %s\n", folderName, suffixFilter);
+        logger.addLog(String.format("Reading folder %s content with filter %s\n", folderName, suffixFilter));
 
         File folder = new File(folderName);
         if(!folder.exists() || !folder.isDirectory()){
-            System.out.println("The Path of " + folderName + "isn't exist or isn't a directory");
+            logger.addLog("The Path of " + folderName + "isn't exist or isn't a directory");
             return StepResult.FAILURE;
         }
         List<File> filteredFiles = Arrays.asList(folder.listFiles()).stream()
@@ -45,10 +44,10 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         context.storeDataValue("TOTAL_FOUND", countFiles);
 
         if(countFiles == 0){
-            System.out.println("The folder exists but there are no files in it");
+            logger.addLog("The folder exists but there are no files in it");
             return StepResult.WARNING;
         }else{
-            System.out.format("Found %d files in folder matching the filter\n", countFiles);
+            logger.addLog(String.format("Found %d files in folder matching the filter", countFiles));
             return StepResult.SUCCESS;
         }
 

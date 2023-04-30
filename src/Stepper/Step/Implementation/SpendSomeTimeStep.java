@@ -20,14 +20,15 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
 
         int timeToSleep = context.getDataValue("TIME_TO_SPEND", int.class);
         NumberDataDefinition timeTo = context.getDataValue("TIME_TO_SPEND", NumberDataDefinition.class);
-        System.out.format("About to sleep for %d seconds…\n", timeToSleep);
+        logger.addLog(String.format("About to sleep for %d seconds…\n", timeToSleep));
 
         try {
             Thread.sleep(timeToSleep * 1000);
         } catch (InterruptedException e) {
-            System.out.println("An Error Occurred trying Thread.Sleep : " + e.getMessage());
+            logger.addLog("An Error Occurred trying Thread.Sleep : " + e.getMessage());
             return StepResult.FAILURE;
         }
+
 
         System.out.println("Done sleeping…");
         return StepResult.SUCCESS;

@@ -32,12 +32,11 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
 
         if(rowsNum == 0)
         {
-            System.out.println("No content in table..");
+            logger.addLog("No content in table..");
             context.storeDataValue("RESULT", propertiesBuilder.toString());
             return StepResult.WARNING;
         }
-
-        System.out.format("About to process %d lines of data", rowsNum);
+        logger.addLog(String.format("About to process %d lines of data", rowsNum));
 
         for(int i = 0; i < rowsNum; i++)
         {
@@ -56,7 +55,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
 
         }
         context.storeDataValue("RESULT", propertiesBuilder.toString());
-        System.out.format("Extracted total of %d" , colsNum*rowsNum);
+        logger.addLog(String.format("Extracted total of %d" , colsNum*rowsNum));
         return StepResult.SUCCESS;
     }
 }

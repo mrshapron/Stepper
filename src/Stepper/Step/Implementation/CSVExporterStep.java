@@ -28,7 +28,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
         int rowNum = data.getNumOfLines();
         int colNum = data.getNumOfColumns();
 
-        System.out.format("About to process %d lines of data", rowNum);
+        logger.addLog(String.format("About to process %d lines of data", rowNum));
 
         for (int i=0; i<rowNum; i++)
         {
@@ -45,7 +45,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
         context.storeDataValue("RESULT",CSVFile);
         if(rowNum == 1)
         {
-            System.out.println("No content in table..");
+            logger.addLog("No content in table..");
             return StepResult.WARNING;
         }
 

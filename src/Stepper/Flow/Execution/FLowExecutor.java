@@ -3,11 +3,16 @@ package Stepper.Flow.Execution;
 import Stepper.Flow.Defenition.StepUsageDeclaration;
 import Stepper.Flow.Execution.Context.StepExecutionContext;
 import Stepper.Flow.Execution.Context.StepExecutionContextImpl;
+import Stepper.Log.Logger;
+import Stepper.Log.LoggerImpl;
 import Stepper.Step.StepResult;
 public class FLowExecutor {
+    private Logger logger;
+    public FLowExecutor(){
+        logger = LoggerImpl.getInstance();
+    }
     public void executeFlow(FlowExecution flowExecution) {
-
-        System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
+        logger.addLog("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
 
         StepExecutionContext context = new StepExecutionContextImpl(flowExecution.getFlowDefinition()); // actual object goes here...
 
@@ -15,15 +20,19 @@ public class FLowExecutor {
         // (typically stored on top of the flow execution object)
 
         // start actual execution
-        for (int i = 0; i < flowExecution.getFlowDefinition().getFlowSteps().size(); i++) {
+        boolean continueFlow = true;
+        for (int i = 0; i < flowExecution.getFlowDefinition().getFlowSteps().size() && continueFlow; i++) {
             StepUsageDeclaration stepUsageDeclaration = flowExecution.getFlowDefinition().getFlowSteps().get(i);
-            System.out.println("Starting to execute step: " + stepUsageDeclaration.getFinalStepName());
+            logger.addLog("Starting to execute step: " + stepUsageDeclaration.getFinalStepName());
             StepResult stepResult = stepUsageDeclaration.getStepDefinition().invoke(context);
-            System.out.println("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
+            logger.addLog("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
             // check if should continue etc..
+            if(stepUsageDeclaration.skipIfFail() && stepResult == StepResult.FAILURE){
+                continueFlow = false;
+                logger.addLog("Stopping flow after failing the last step..");
+            }
         }
 
-
-        System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+        logger.addSummaryLine("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
     }
 }

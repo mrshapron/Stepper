@@ -15,14 +15,14 @@ public class LoggerImpl implements Logger{
         summaries = new ArrayList<>();
     }
 
-    public void addNewLog(String log) {
+    public void addLog(String log) {
         // implementation for adding new log message to list with timestamp
         LocalDateTime now = LocalDateTime.now();
         Log newLog = new Log(now, log);
         logs.add(newLog);
     }
 
-    public void addNewSummaryLine(String summary) {
+    public void addSummaryLine(String summary) {
         // implementation for adding new summary line to list with timestamp
         LocalDateTime now = LocalDateTime.now();
         Log newSummary = new Log(now, summary);

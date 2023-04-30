@@ -32,14 +32,12 @@ public class FileDumperStep extends AbstractStepDefinition {
 
         File newFile = new File(fileName);
         String res = "WARNING";
-
-        System.out.println("About to create file named " + fileName);
+        logger.addLog("About to create file named " + fileName);
 
         try {
             if(newFile.createNewFile()) {
-
                 if(content.isEmpty()) {
-                    System.out.println("No content found , empty file will be created!");
+                    logger.addLog("No content found , empty file will be created!");
                     context.storeDataValue("RESULT",res);
                     return StepResult.WARNING;
                 }
@@ -58,7 +56,7 @@ public class FileDumperStep extends AbstractStepDefinition {
             }
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            logger.addLog(e.getMessage());
             throw new RuntimeException(e);
         }
 
