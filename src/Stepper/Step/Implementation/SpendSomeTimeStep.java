@@ -19,7 +19,6 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context) {
 
         int timeToSleep = context.getDataValue("TIME_TO_SPEND", int.class);
-        NumberDataDefinition timeTo = context.getDataValue("TIME_TO_SPEND", NumberDataDefinition.class);
         logger.addLog(String.format("About to sleep for %d seconds…\n", timeToSleep));
 
         try {
