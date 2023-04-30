@@ -1,11 +1,9 @@
 package Stepper.Flow.Execution.Context;
 
 import Stepper.DataDefinition.DataDefinition;
-import Stepper.DataDefinition.DataDefinitionRegistry;
 import Stepper.Flow.Defenition.FlowDefinition;
-import Stepper.Flow.Defenition.StepUsageDeclaration;
-import Stepper.Mapping.MappingDataDefinition;
-import Stepper.Mapping.MappingDataDefinitionImpl;
+import Stepper.Mapping.CustomMappingDefinition;
+import Stepper.Mapping.CustomMappingDefinitionImpl;
 import Stepper.Step.Declaration.DataDefinitionDeclaration;
 import Stepper.Step.StepDefinition;
 
@@ -45,8 +43,8 @@ public class StepExecutionContextImpl implements StepExecutionContext {
                                         && inputData.getName() == outDataDefDec.getName()).
                                 collect(Collectors.toList()).size() > 0).
                                 collect(Collectors.toList());
-                List<MappingDataDefinition> mappingThatInput = stepWhoUsingThatInput.stream().map(stepUsingInput -> {
-                    MappingDataDefinition mapping = new MappingDataDefinitionImpl(
+                List<CustomMappingDefinition> mappingThatInput = stepWhoUsingThatInput.stream().map(stepUsingInput -> {
+                    CustomMappingDefinition mapping = new CustomMappingDefinitionImpl(
                             currentStepDef, stepUsingInput, output.getName(), output.getName()
                     );
                     return mapping;

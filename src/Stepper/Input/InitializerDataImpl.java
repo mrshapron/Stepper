@@ -1,9 +1,8 @@
 package Stepper.Input;
 
 import Stepper.Flow.Defenition.FlowDefinition;
-import Stepper.Input.Convert.FlowConverter;
-import Stepper.Input.Convert.FlowConverterImpl;
-import Stepper.Input.InitializerData;
+import Stepper.Convert.FlowConverter;
+import Stepper.Convert.FlowConverterImpl;
 import Stepper.Input.Read.FlowReaderXML;
 import Stepper.JAXB.Generated.STFlow;
 
@@ -14,6 +13,7 @@ public class InitializerDataImpl implements InitializerData {
     private FlowReaderXML _flowReaderXML;
     private FlowConverter _flowConverter;
     public InitializerDataImpl(){
+        // can be changed easily to dependency injection design pattern for easier testing structure
         _flowReaderXML = new FlowReaderXML();
         _flowConverter = new FlowConverterImpl();
     }
@@ -28,6 +28,12 @@ public class InitializerDataImpl implements InitializerData {
         List<FlowDefinition> flowDefinitions = stFlows.stream()
                 .map(stFlow ->  _flowConverter.Convert(stFlow))
                 .collect(Collectors.toList());
+        if(flowDefinitions == null)
+            return null;
+        flowDefinitions.forEach(flowDefinition -> {
+            flowDefinition.automaticMapping();
+            flowDefinition.customMapping();
+        });
         return flowDefinitions;
     }
 }

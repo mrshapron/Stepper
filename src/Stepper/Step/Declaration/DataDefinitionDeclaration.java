@@ -8,4 +8,6 @@ public interface DataDefinitionDeclaration {
     DataNecessity necessity();
     String userString();
     DataDefinition dataDefinition();
+
+    void setAliasName(String name);
 }
