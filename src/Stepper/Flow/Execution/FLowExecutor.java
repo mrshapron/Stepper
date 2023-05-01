@@ -13,7 +13,6 @@ public class FLowExecutor {
     }
     public void executeFlow(FlowExecution flowExecution) {
         logger.addLog("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
-
         StepExecutionContext context = new StepExecutionContextImpl(flowExecution.getFlowDefinition()); // actual object goes here...
 
         // populate context with all free inputs (mandatory & optional) that were given from the user

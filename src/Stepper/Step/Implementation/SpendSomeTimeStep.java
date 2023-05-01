@@ -8,6 +8,8 @@ import Stepper.Step.Declaration.DataDefinitionDeclarationImpl;
 import Stepper.Step.DataNecessity;
 import Stepper.Step.StepResult;
 
+import java.util.concurrent.TimeUnit;
+
 public class SpendSomeTimeStep extends AbstractStepDefinition {
     public SpendSomeTimeStep() {
         super("Spend Some Time", true);
@@ -22,7 +24,7 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         logger.addLog(String.format("About to sleep for %d seconds…\n", timeToSleep));
 
         try {
-            Thread.sleep(timeToSleep * 1000);
+            Thread.sleep(TimeUnit.SECONDS.toMillis(timeToSleep));
         } catch (InterruptedException e) {
             logger.addLog("An Error Occurred trying Thread.Sleep : " + e.getMessage());
             return StepResult.FAILURE;

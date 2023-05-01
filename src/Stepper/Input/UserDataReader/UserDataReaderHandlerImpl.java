@@ -27,6 +27,7 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
                 flowDefinitions = initializerData.InitializeFlows(filePathXML);
             }
         }
+        System.out.println("The file had been loaded properly.");
         return flowDefinitions;
     }
 

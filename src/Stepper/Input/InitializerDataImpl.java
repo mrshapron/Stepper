@@ -28,12 +28,14 @@ public class InitializerDataImpl implements InitializerData {
         List<FlowDefinition> flowDefinitions = stFlows.stream()
                 .map(stFlow ->  _flowConverter.Convert(stFlow))
                 .collect(Collectors.toList());
-        if(flowDefinitions == null)
+        if(flowDefinitions.isEmpty())
             return null;
-        flowDefinitions.forEach(flowDefinition -> {
+        for (FlowDefinition flowDefinition : flowDefinitions) {
             flowDefinition.automaticMapping();
             flowDefinition.customMapping();
-        });
+            if (!flowDefinition.validateFlowStructure())
+                return null;
+        }
         return flowDefinitions;
     }
 }

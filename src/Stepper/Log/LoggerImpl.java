@@ -19,6 +19,7 @@ public class LoggerImpl implements Logger{
         // implementation for adding new log message to list with timestamp
         LocalDateTime now = LocalDateTime.now();
         Log newLog = new Log(now, log);
+        System.out.println(newLog); // For Debugging
         logs.add(newLog);
     }
 
@@ -26,6 +27,8 @@ public class LoggerImpl implements Logger{
         // implementation for adding new summary line to list with timestamp
         LocalDateTime now = LocalDateTime.now();
         Log newSummary = new Log(now, summary);
+
+        System.out.println(newSummary); // For Debugging
         summaries.add(newSummary);
     }
 

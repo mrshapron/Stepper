@@ -7,7 +7,7 @@ import Stepper.JAXB.Generated.*;
 import Stepper.Flow.Defenition.FlowDefinition;
 import Stepper.Log.Logger;
 import Stepper.Log.LoggerImpl;
-import Stepper.Mapping.MappingDataDefinition2Impl;
+import Stepper.Mapping.MappingDataDefinitionImpl;
 import Stepper.Step.Declaration.DataDefinitionDeclaration;
 import Stepper.Step.StepDefinition;
 import Stepper.Step.StepFactory;
@@ -45,8 +45,9 @@ public class FlowConverterImpl implements FlowConverter{
             for (STFlowLevelAlias stFlowLevelAliasing :
                     stFlow.getSTFlowLevelAliasing().getSTFlowLevelAlias()) {
                 boolean isSucceeded = InitializeFlowLevelAlias(stFlowLevelAliasing, flow);
-                if(!isSucceeded)
+                if(!isSucceeded) {
                     return null;
+                }
             }
         }
         if (stFlow.getSTCustomMappings() != null) {
@@ -113,10 +114,10 @@ public class FlowConverterImpl implements FlowConverter{
         }
         StepUsageDeclaration stepSource = stepUsageDecSource.get(0);
         StepUsageDeclaration stepTarget = stepUsageDecTarget.get(0);
-        List<DataDefinitionDeclaration> sourceDataList = stepSource.getStepDefinition().inputs().stream().filter(inputDataDefDec -> inputDataDefDec.getName().equals(
+        List<DataDefinitionDeclaration> sourceDataList = stepSource.getStepDefinition().outputs().stream().filter(inputDataDefDec -> inputDataDefDec.getName().equals(
                 stCustomMapping.getSourceData()
         )).collect(Collectors.toList());
-        List<DataDefinitionDeclaration> targetDataList = stepSource.getStepDefinition().inputs().stream().filter(inputDataDefDec -> inputDataDefDec.getName().equals(
+        List<DataDefinitionDeclaration> targetDataList = stepTarget.getStepDefinition().inputs().stream().filter(inputDataDefDec -> inputDataDefDec.getName().equals(
                 stCustomMapping.getTargetData()
         )).collect(Collectors.toList());
         if (sourceDataList.size() != 1 || targetDataList.size() != 1) {
@@ -125,8 +126,12 @@ public class FlowConverterImpl implements FlowConverter{
         }
         DataDefinitionDeclaration sourceData = sourceDataList.get(0);
         DataDefinitionDeclaration targetData = targetDataList.get(0);
-
-        flow.addCustomMapping(new MappingDataDefinition2Impl(
+        if(!sourceData.dataDefinition().getType().equals(targetData.dataDefinition().getType())){
+            logger.addLog("There is problem in Custom Mapping at Data called " + stCustomMapping.getSourceData()
+                    + "or " + stCustomMapping.getTargetData() + " They are defined as different types");
+            return false;
+        }
+        flow.addCustomMapping(new MappingDataDefinitionImpl(
                 stepSource.getStepDefinition(), stepTarget.getStepDefinition(), sourceData, targetData));
         return true;
     }
