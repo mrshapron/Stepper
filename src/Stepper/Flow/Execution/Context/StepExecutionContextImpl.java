@@ -36,14 +36,12 @@ public class StepExecutionContextImpl implements StepExecutionContext {
 
         if (expectedDataType.isAssignableFrom(theExpectedDataDefinition.getType())) {
             Object aValue = dataValues.get(dataName);
-            // what happens if it does not exist ?
-
+            if (aValue == null)
+                return null;
             return expectedDataType.cast(aValue);
         } else {
-            // error handling of some sort...
+            return null;
         }
-
-        return null;
     }
 
     @Override
