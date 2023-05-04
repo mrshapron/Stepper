@@ -27,12 +27,12 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     @Override
     public StepResult invoke(StepExecutionContext context) {
         List<File> filesToDelete = context.getDataValue("FILES_LIST", List.class);
-        logger.addLog(String.format("About to start delete %d files\n", filesToDelete.size()));
+        context.addLog(String.format("About to start delete %d files\n", filesToDelete.size()));
 
         List<String> namesFilesFailedToDelete = new ArrayList<>();
         for (File file : filesToDelete) {
             if(!file.delete()){
-                logger.addLog(String.format("Failed to delete file %s", file.getName()));
+                context.addLog(String.format("Failed to delete file %s", file.getName()));
                 namesFilesFailedToDelete.add(file.getAbsolutePath());
             }
         }
@@ -45,13 +45,13 @@ public class FilesDeleterStep extends AbstractStepDefinition {
 
         if(namesFilesFailedToDelete.size() == 0){
             if(filesToDelete.size() == 0)
-                logger.addLog("The list of files to delete is empty");
+                context.addLog("The list of files to delete is empty");
             return StepResult.SUCCESS;
         } else if (namesFilesFailedToDelete.size() < filesToDelete.size()) {
-            logger.addLog(String.format("%d/%d of the files failed to be deleted\n", namesFilesFailedToDelete.size(), namesFilesFailedToDelete.size()));
+            context.addLog(String.format("%d/%d of the files failed to be deleted\n", namesFilesFailedToDelete.size(), namesFilesFailedToDelete.size()));
             return StepResult.WARNING;
         }else{
-            logger.addLog("All the files failed to be deleted");
+            context.addLog("All the files failed to be deleted");
             return StepResult.FAILURE;
         }
     }

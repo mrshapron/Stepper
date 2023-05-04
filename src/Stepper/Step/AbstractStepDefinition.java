@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractStepDefinition implements StepDefinition{
-    protected final Logger logger;
     private final String stepName;
     private final boolean readonly;
     private final List<DataDefinitionDeclaration> inputs;
@@ -19,7 +18,6 @@ public abstract class AbstractStepDefinition implements StepDefinition{
         this.readonly = readonly;
         inputs = new ArrayList<>();
         outputs = new ArrayList<>();
-        logger = LoggerImpl.getInstance();
     }
 
     protected void addInput(DataDefinitionDeclaration dataDefinitionDeclaration) {

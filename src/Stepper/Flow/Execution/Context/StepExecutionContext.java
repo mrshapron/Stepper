@@ -4,7 +4,7 @@ public interface StepExecutionContext {
     <T> T getDataValue(String dataName, Class<T> expectedDataType);
     boolean storeDataValue(String dataName, Object value);
 
-    void addLogLine(String log);
+    void addLog(String log);
     void addSummaryLine(String summary);
 
     // some more utility methods:

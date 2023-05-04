@@ -4,33 +4,29 @@ import Stepper.Convert.DataConverter;
 import Stepper.Convert.DataConverterImpl;
 import Stepper.DataDefinition.DataDefinition;
 import Stepper.Flow.Defenition.FlowDefinition;
+import Stepper.Flow.Logger.FlowLog;
 import Stepper.Mapping.CustomMappingDefinition;
 import Stepper.Mapping.CustomMappingDefinitionImpl;
 import Stepper.Step.Declaration.DataDefinitionDeclaration;
 import Stepper.Step.StepDefinition;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class StepExecutionContextImpl implements StepExecutionContext {
-    private final Map<String, Object> dataValues;
-    private final List<String> logs;
-    private final List<String> summaries;
+    private Map<String, Object> dataValues;
+    private final List<FlowLog> logs;
+    private final List<FlowLog> summaries;
+    private final FlowDefinition flowDefinitionRunning;
     private final DataConverter converter;
-    public StepExecutionContextImpl(FlowDefinition flowDefinition) {
+    public StepExecutionContextImpl(FlowDefinition flowDefinition, Map<String,Object> values) {
         dataValues = new HashMap<>();
         logs = new ArrayList<>();
-        summaries =new ArrayList<>();
+        summaries = new ArrayList<>();
         converter = new DataConverterImpl();
-        initializeDataValues(flowDefinition);
-    }
-
-    private void initializeDataValues(FlowDefinition flowDefinition){
-        flowDefinition.getFlowFreeInputs().
-                forEach(outputDataDecDef -> dataValues
-                        .put(outputDataDecDef.dataDefinition().getName(),
-                                outputDataDecDef.dataDefinition()));
-
+        dataValues = values;
+        flowDefinitionRunning = flowDefinition;
     }
 
     @Override
@@ -53,11 +49,11 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public boolean storeDataValue(String dataName, Object value) {
         // assuming that from the data name we can get to its data definition
-        DataDefinition theData = converter.dataTypeToDefinition(dataValues.get(dataName).getClass());
-
+        DataDefinition theData = flowDefinitionRunning.getDataDefinitionByName(dataName);
         // we have the DD type so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
             dataValues.put(dataName, value);
+            return true;
         } else {
             // error handling of some sort...
         }
@@ -66,14 +62,12 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
     @Override
-    public void addLogLine(String log) {
-        logs.add(log);
-        System.out.println(log);
+    public void addLog(String log) {
+        logs.add(new FlowLog(LocalDateTime.now(), log));
     }
 
     @Override
     public void addSummaryLine(String summary) {
-        summaries.add(summary);
-        System.out.println(summary);
+        summaries.add(new FlowLog(LocalDateTime.now(), summary));
     }
 }

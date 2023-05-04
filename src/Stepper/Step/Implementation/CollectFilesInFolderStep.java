@@ -27,27 +27,31 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context) {
         String folderName = context.getDataValue("FOLDER_NAME", String.class);
         String suffixFilter =  context.getDataValue("FILTER", String.class);
-        logger.addLog(String.format("Reading folder %s content with filter %s\n", folderName, suffixFilter));
+        context.addLog(String.format("Reading folder %s content with filter %s\n", folderName, suffixFilter));
 
         File folder = new File(folderName);
         if(!folder.exists() || !folder.isDirectory()){
-            logger.addLog("The Path of " + folderName + "isn't exist or isn't a directory");
+            context.addLog("The Path of " + folderName + "isn't exist or isn't a directory");
             return StepResult.FAILURE;
         }
-        List<File> filteredFiles = Arrays.asList(folder.listFiles()).stream()
-                .filter(file -> file.getName().substring(file.getName().lastIndexOf('.') + 1).equals(suffixFilter))
-                .collect(Collectors.toList());
+        List<File> listFiles = Arrays.asList(folder.listFiles());
+        if (suffixFilter != null) {
+            List<File> filteredFiles = Arrays.asList(folder.listFiles()).stream()
+                    .filter(file -> file.getName().substring(file.getName().lastIndexOf('.') + 1).equals(suffixFilter))
+                    .collect(Collectors.toList());
+            listFiles = filteredFiles;
+        }
 
-        int countFiles = filteredFiles.size();
+        int countFiles = listFiles.size();
 
-        context.storeDataValue("FILES_LIST", filteredFiles);
+        context.storeDataValue("FILES_LIST", listFiles);
         context.storeDataValue("TOTAL_FOUND", countFiles);
 
         if(countFiles == 0){
-            logger.addLog("The folder exists but there are no files in it");
+            context.addLog("The folder exists but there are no files in it");
             return StepResult.WARNING;
         }else{
-            logger.addLog(String.format("Found %d files in folder matching the filter", countFiles));
+            context.addLog(String.format("Found %d files in folder matching the filter", countFiles));
             return StepResult.SUCCESS;
         }
 

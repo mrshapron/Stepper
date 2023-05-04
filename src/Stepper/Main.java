@@ -1,15 +1,13 @@
 package Stepper;
 
 import Stepper.Flow.Defenition.FlowDefinition;
-import Stepper.Flow.Defenition.FlowDefinitionImpl;
-import Stepper.Flow.Defenition.StepUsageDeclarationImpl;
 import Stepper.Flow.Execution.FLowExecutor;
 import Stepper.Flow.Execution.FlowExecution;
 import Stepper.Input.UserDataReader.UserDataReaderHandler;
 import Stepper.Input.UserDataReader.UserDataReaderHandlerImpl;
-import Stepper.Step.StepDefinitionRegistry;
 
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -41,14 +39,11 @@ public class Main {
         UserDataReaderHandler userDataReaderHandler = new UserDataReaderHandlerImpl();
         List<FlowDefinition> flowDefinitions = userDataReaderHandler.ReadUserFlowInput();
         Integer idFlow = 0;
-        if (flowDefinitions == null){
-            System.out.println("There is a problem initializing data from file");
-            return;
-        }
         for (FlowDefinition flowDefinition: flowDefinitions) {
             idFlow++;
             FLowExecutor flow = new FLowExecutor();
-            FlowExecution execution = new FlowExecution(idFlow.toString(), flowDefinition);
+            Map<String,Object> values =  userDataReaderHandler.ReadDataInput(flowDefinition.getFlowFreeInputs());
+            FlowExecution execution = new FlowExecution(idFlow.toString(), flowDefinition, values);
             flow.executeFlow(execution);
         }
         List<FlowDefinition> flows;

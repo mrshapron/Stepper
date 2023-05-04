@@ -5,6 +5,7 @@ import Stepper.Convert.FlowConverter;
 import Stepper.Convert.FlowConverterImpl;
 import Stepper.Input.Read.FlowReaderXML;
 import Stepper.JAXB.Generated.STFlow;
+import Stepper.Step.Declaration.DataDefinitionDeclaration;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class InitializerDataImpl implements InitializerData {
     }
     @Override
     public List<FlowDefinition> InitializeFlows(String filePath) {
-        List<STFlow> stFlows = _flowReaderXML.read(filePath);
+        List<STFlow> stFlows = _flowReaderXML.readXMLFile(filePath);
         if (stFlows == null){
             System.out.println("There was a problem in XML File..");
             return null;
@@ -37,5 +38,11 @@ public class InitializerDataImpl implements InitializerData {
                 return null;
         }
         return flowDefinitions;
+    }
+
+    @Override
+    public Object InitializeData(DataDefinitionDeclaration dataDefinitionDeclaration) {
+        System.out.println(dataDefinitionDeclaration.userString());
+        return null;
     }
 }

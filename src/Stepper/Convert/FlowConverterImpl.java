@@ -114,10 +114,10 @@ public class FlowConverterImpl implements FlowConverter{
         }
         StepUsageDeclaration stepSource = stepUsageDecSource.get(0);
         StepUsageDeclaration stepTarget = stepUsageDecTarget.get(0);
-        List<DataDefinitionDeclaration> sourceDataList = stepSource.getStepDefinition().outputs().stream().filter(inputDataDefDec -> inputDataDefDec.getName().equals(
+        List<DataDefinitionDeclaration> sourceDataList = stepSource.getStepDefinition().outputs().stream().filter(inputDataDefDec -> inputDataDefDec.getAliasName().equals(
                 stCustomMapping.getSourceData()
         )).collect(Collectors.toList());
-        List<DataDefinitionDeclaration> targetDataList = stepTarget.getStepDefinition().inputs().stream().filter(inputDataDefDec -> inputDataDefDec.getName().equals(
+        List<DataDefinitionDeclaration> targetDataList = stepTarget.getStepDefinition().inputs().stream().filter(inputDataDefDec -> inputDataDefDec.getAliasName().equals(
                 stCustomMapping.getTargetData()
         )).collect(Collectors.toList());
         if (sourceDataList.size() != 1 || targetDataList.size() != 1) {

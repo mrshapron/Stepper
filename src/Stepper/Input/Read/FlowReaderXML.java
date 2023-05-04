@@ -2,6 +2,7 @@ package Stepper.Input.Read;
 
 import Stepper.JAXB.Generated.STFlow;
 import Stepper.JAXB.Generated.STStepper;
+import Stepper.Step.Declaration.DataDefinitionDeclaration;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -11,10 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-public class FlowReaderXML implements ReaderXMLFile{
+public class FlowReaderXML implements ReaderUser {
     private final String JAXB_PACKAGE_NAME = "Stepper.JAXB.Generated";
     @Override
-    public List<STFlow> read(String xmlFilePath) {
+    public List<STFlow> readXMLFile(String xmlFilePath) {
         try {
             InputStream inputStream = new FileInputStream(xmlFilePath);
             STStepper stepper = deserializeFrom(inputStream, xmlFilePath, JAXB_PACKAGE_NAME);

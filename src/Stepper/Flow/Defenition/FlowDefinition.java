@@ -1,5 +1,6 @@
 package Stepper.Flow.Defenition;
 
+import Stepper.DataDefinition.DataDefinition;
 import Stepper.Mapping.MappingDataDefinition;
 import Stepper.Step.Declaration.DataDefinitionDeclaration;
 
@@ -18,7 +19,8 @@ public interface FlowDefinition {
     void automaticMapping();
     void customMapping();
     boolean validateFlowStructure();
-    List<DataDefinitionDeclaration> getFlowFreeInputs();
-    List<DataDefinitionDeclaration> getMandatoryInputs();
-    List<DataDefinitionDeclaration> getOptionalInputs();
+    List<FreeInputsDefinition> getFlowFreeInputs();
+    List<FreeInputsDefinition> getMandatoryInputs();
+    List<FreeInputsDefinition> getOptionalInputs();
+    DataDefinition getDataDefinitionByName(String name);
 }

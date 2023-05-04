@@ -21,12 +21,12 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context) {
 
         int timeToSleep = context.getDataValue("TIME_TO_SPEND", int.class);
-        logger.addLog(String.format("About to sleep for %d seconds…\n", timeToSleep));
+        context.addLog(String.format("About to sleep for %d seconds…\n", timeToSleep));
 
         try {
             Thread.sleep(TimeUnit.SECONDS.toMillis(timeToSleep));
         } catch (InterruptedException e) {
-            logger.addLog("An Error Occurred trying Thread.Sleep : " + e.getMessage());
+            context.addLog("An Error Occurred trying Thread.Sleep : " + e.getMessage());
             return StepResult.FAILURE;
         }
 

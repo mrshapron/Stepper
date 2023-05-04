@@ -7,6 +7,7 @@ import Stepper.Step.Declaration.DataDefinitionDeclaration;
 public class DataDefinitionDeclarationImpl implements DataDefinitionDeclaration {
 
     private String name;
+    private String aliasName;
     private final DataNecessity necessity;
     private final String userString;
     private final DataDefinition dataDefinition;
@@ -16,10 +17,16 @@ public class DataDefinitionDeclarationImpl implements DataDefinitionDeclaration 
         this.necessity = necessity;
         this.userString = userString;
         this.dataDefinition = dataDefinition;
+        this.aliasName = "";
     }
     @Override
     public String getName() {
         return name;
+    }
+    public String getAliasName(){
+        if(aliasName.isEmpty())
+            return name;
+        return aliasName;
     }
 
     @Override
@@ -39,6 +46,6 @@ public class DataDefinitionDeclarationImpl implements DataDefinitionDeclaration 
 
     @Override
     public void setAliasName(String name) {
-        this.name = name;
+        this.aliasName = name;
     }
 }

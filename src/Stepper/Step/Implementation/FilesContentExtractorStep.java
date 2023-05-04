@@ -33,7 +33,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         RelationData dt = new RelationData(col);
 
         for (File file : fileList) {
-            logger.addLog(String.format("About to start work on file %s", file.getName()));
+            context.addLog(String.format("About to start work on file %s", file.getName()));
             indexFile++;
             String currentLine = tryGetLineFromFile(file,numLineGetString);
             Map<String, String> relationValuesRow = new HashMap<>();
