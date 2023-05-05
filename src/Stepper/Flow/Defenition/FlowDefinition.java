@@ -2,7 +2,7 @@ package Stepper.Flow.Defenition;
 
 import Stepper.DataDefinition.DataDefinition;
 import Stepper.Mapping.MappingDataDefinition;
-import Stepper.Step.Declaration.DataDefinitionDeclaration;
+
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ public interface FlowDefinition {
     List<StepUsageDeclaration> getFlowSteps();
     List<String> getFlowFormalOutputs();
     List<MappingDataDefinition> getMappedDataDefinitions();
+    List<MappingDataDefinition> getCustomMappingData();
     void addCustomMapping(MappingDataDefinition customMappingDef);
     void addStepUsageDec(StepUsageDeclaration stepUsageDec);
     void addFlowOutput(String outputName);

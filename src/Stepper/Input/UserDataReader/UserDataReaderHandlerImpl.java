@@ -95,7 +95,7 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
                         addValue = valueNumDouble;
                     }
                     FreeInputsDefinition chosenInput = freeInputsDefDec.remove(choice - 1);
-                    values.put(chosenInput.getDataDefinitionDeclaration().getName(), addValue);
+                    values.put(chosenInput.getDataDefinitionDeclaration().getAliasName(), addValue);
                 }
             }
         }

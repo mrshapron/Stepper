@@ -1,6 +1,5 @@
 package Stepper.Flow.Defenition;
 import Stepper.DataDefinition.DataDefinition;
-import Stepper.DataDefinition.Implemantion.DoubleDataDefinition;
 import Stepper.Log.Logger;
 import Stepper.Log.LoggerImpl;
 import Stepper.Mapping.MappingDataDefinition;
@@ -99,8 +98,6 @@ public class FlowDefinitionImpl implements FlowDefinition{
             }
         }
     }
-
-
     @Override
     public void customMapping() {
         if(steps == null)
@@ -108,7 +105,6 @@ public class FlowDefinitionImpl implements FlowDefinition{
         mappedDataDefinitions.addAll(customMappingDefs);
         customMappingDefs.forEach(mappingDataDefinition -> usedInput.put(mappingDataDefinition.getTargetData(), true));
     }
-
     @Override
     public boolean validateFlowStructure() {
         for(int indexStep = 0; indexStep < steps.size() ; indexStep++){
@@ -178,8 +174,8 @@ public class FlowDefinitionImpl implements FlowDefinition{
         List<StepUsageDeclaration> stepsWithData = steps.stream().filter(stepUsageDeclaration ->
                 stepUsageDeclaration.getStepDefinition().inputs().stream().filter(inputData ->
                 inputData.getName().equals(name)
-                ).count() > 0 || stepUsageDeclaration.getStepDefinition().outputs().stream().filter(outputData ->
-                        outputData.getName().equals(name)).count() > 0).collect(Collectors.toList());
+                ).count() > 0 || stepUsageDeclaration.getStepDefinition().outputs().stream().anyMatch(outputData ->
+                        outputData.getName().equals(name))).collect(Collectors.toList());
         if(stepsWithData.size() == 0)
             return null;
         StepUsageDeclaration stepWithData = stepsWithData.get(0);
@@ -218,6 +214,7 @@ public class FlowDefinitionImpl implements FlowDefinition{
         return steps;
     }
 
+
     @Override
     public List<String> getFlowFormalOutputs() {
         return flowOutputs;
@@ -225,6 +222,11 @@ public class FlowDefinitionImpl implements FlowDefinition{
 
     @Override
     public List<MappingDataDefinition> getMappedDataDefinitions() {
+        return mappedDataDefinitions;
+    }
+
+    @Override
+    public List<MappingDataDefinition> getCustomMappingData() {
         return mappedDataDefinitions;
     }
 }
