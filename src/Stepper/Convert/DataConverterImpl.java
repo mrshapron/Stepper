@@ -17,7 +17,7 @@ public class DataConverterImpl implements DataConverter{
                 return DataDefinitionRegistry.STRING;
             case "Double":
                 return DataDefinitionRegistry.DOUBLE;
-            case "Relation":
+            case "RelationData":
                 return DataDefinitionRegistry.RELATION;
             default:
                 return null;
