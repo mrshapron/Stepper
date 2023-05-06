@@ -9,9 +9,7 @@ import Stepper.Step.DataNecessity;
 import Stepper.Step.StepResult;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class FilesRenamerStep extends AbstractStepDefinition {
     public FilesRenamerStep(){
@@ -28,27 +26,47 @@ public class FilesRenamerStep extends AbstractStepDefinition {
         List<File> filesToRename = context.getDataValue("FILES_TO_RENAME", List.class);
         String prefix = context.getDataValue("PREFIX", String.class);
         String suffix = context.getDataValue("SUFFIX", String.class);
-        boolean prefixNullOrEmpty = true, suffixNullOrEmpty = true;
-        if(prefix != null && !prefix.isEmpty()){
-            prefixNullOrEmpty = true;
-            filesToRename.stream().forEach(file -> {
-                File fileRename = new File(prefix + file.getName());
-                file.renameTo(fileRename);
-            });
+        if(filesToRename.isEmpty()){
+            context.addSummaryLine("The list of files to rename was empty.");
+            return StepResult.WARNING;
         }
+        context.addLog(String.format("About to start rename %d files. Adding prefix: %s; adding suffix: %s\n", filesToRename.size(), prefix,suffix));
+
         List<String> mr =  Arrays.asList("ID", "FileNameSource", "FileNameTarget");
         RelationData rl = new RelationData(mr);
-        rl.addRow(new HashMap<>());
 
-        if(suffix != null && !suffix.isEmpty()){
-            suffixNullOrEmpty = true;
-            filesToRename.stream().forEach(file -> {
-                int lastIndexOfDot = file.getName().lastIndexOf('.');
-                File fileRename = new File(file.getName().substring
-                        (0,lastIndexOfDot) + suffix + file.getName().substring(lastIndexOfDot + 1));
-                file.renameTo(fileRename);
-            });
+        if(prefix == null || prefix.isEmpty()){
+            prefix = "";
         }
-        return null;
+        if(suffix == null || suffix.isEmpty()){
+            suffix = "";
+        }
+        Integer indexFile = 1;
+        List<String> failedToRename = new ArrayList<>();
+        for (File fileToRename: filesToRename) {
+            Map<String,String> row = new HashMap<>();
+            row.put("ID", (indexFile++).toString());
+            row.put("FileNameSource", fileToRename.getName());
+            String extension = fileToRename.getName().substring(fileToRename.getName().lastIndexOf('.') + 1);
+            String nameWithOutExtension = fileToRename.getName().substring(0,fileToRename.getName().lastIndexOf('.'));
+            String fullRename = prefix + nameWithOutExtension + suffix + '.' + extension;
+            File fileRenamer = new File(fullRename);
+            boolean success = fileToRename.renameTo(fileRenamer);
+            if (!success){
+                context.addLog(String.format("Problem renaming file %s", fileToRename.getName()));
+                failedToRename.add(fileToRename.getName());
+            }
+            row.put("FileNameTarget", fileToRename.getName());
+            rl.addRow(row);
+        }
+        if (!failedToRename.isEmpty()){
+            StringBuilder stringBuilder = new StringBuilder("There was a problem renaming those files : ");
+            failedToRename.forEach(failedFileRename -> stringBuilder.append(failedFileRename + " "));
+            context.addSummaryLine(stringBuilder.toString());
+            return StepResult.WARNING;
+        }
+
+        context.storeDataValue("RENAME_RESULT", rl);
+        return StepResult.SUCCESS;
     }
 }
