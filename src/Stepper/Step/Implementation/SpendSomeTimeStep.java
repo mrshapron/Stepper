@@ -20,18 +20,25 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
     @Override
     public StepResult invoke(StepExecutionContext context) {
 
-        int timeToSleep = context.getDataValue("TIME_TO_SPEND", int.class);
+        int timeToSleep = context.getDataValue("TIME_TO_SPEND", Integer.class);
+        if(timeToSleep <= 0){
+            context.addLog("Step had failed because of invalid Time to spend number");
+            context.addSummaryLine("step had failed because of invalid Time to spend number");
+            return StepResult.FAILURE;
+        }
         context.addLog(String.format("About to sleep for %d seconds…\n", timeToSleep));
 
         try {
             Thread.sleep(TimeUnit.SECONDS.toMillis(timeToSleep));
         } catch (InterruptedException e) {
             context.addLog("An Error Occurred trying Thread.Sleep : " + e.getMessage());
+            context.addSummaryLine("Step failed because of an error of thread sleep function");
             return StepResult.FAILURE;
         }
 
 
-        System.out.println("Done sleeping…");
+        context.addLog("Done sleeping…");
+        context.addSummaryLine(String.format("step successfully slept for %d seconds", timeToSleep));
         return StepResult.SUCCESS;
     }
 }

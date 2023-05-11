@@ -5,6 +5,9 @@ import Stepper.Convert.DataConverterImpl;
 import Stepper.DataDefinition.DataDefinition;
 import Stepper.Flow.Defenition.FlowDefinition;
 import Stepper.Flow.Defenition.StepUsageDeclaration;
+import Stepper.Flow.Execution.History.FlowHistoryData;
+import Stepper.Flow.Execution.History.OutputHistoryDataImpl;
+import Stepper.Flow.Execution.History.StepHistoryData;
 import Stepper.Flow.Logger.FlowLog;
 import Stepper.Mapping.MappingDataDefinition;
 import Stepper.Step.Declaration.DataDefinitionDeclaration;
@@ -15,16 +18,21 @@ import java.util.stream.Collectors;
 
 public class StepExecutionContextImpl implements StepExecutionContext {
     private StepUsageDeclaration currentStep;
+    private StepHistoryData currentHistoryStep;
     private Map<String, Object> dataValues;
     private final List<FlowLog> logs;
     private final List<FlowLog> summaries;
     private final FlowDefinition flowDefinitionRunning;
     private final DataConverter converter;
+    private FlowHistoryData flowHistoryData;
     public StepExecutionContextImpl(FlowDefinition flowDefinition, Map<String,Object> values) {
         logs = new ArrayList<>();
         summaries = new ArrayList<>();
         converter = new DataConverterImpl();
-        dataValues = values;
+        if (values != null && !values.isEmpty())
+            dataValues = new HashMap<>(values);
+        else
+            dataValues = new HashMap<>();
         flowDefinitionRunning = flowDefinition;
     }
 
@@ -78,33 +86,56 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     public boolean storeDataValue(String dataName, Object value) {
         // assuming that from the data name we can get to its data definition
 
-        DataDefinition theData = flowDefinitionRunning.getDataDefinitionByName(dataName);
+        DataDefinitionDeclaration theData = flowDefinitionRunning.getDataDefinitionByName(dataName);
         String aliasName = getAliasNameByDataName(dataName);
         if (aliasName == null)
             return false;
         // we have the DD type so we can make sure that its from the same type
-        if (theData.getType().isAssignableFrom(value.getClass())) {
+        if (theData.dataDefinition().getType().isAssignableFrom(value.getClass())) {
             dataValues.put(aliasName, value);
+            flowHistoryData.addOutputHistory(new OutputHistoryDataImpl(aliasName, value.getClass(), value));
             return true;
         } else {
-            // error handling of some sort...
+            return false;
         }
-
-        return false;
     }
 
-    public void setCurrentStep(StepUsageDeclaration stepUsageDeclaration)
+    @Override
+    public void setHistoryData(FlowHistoryData historyData) {
+        flowHistoryData = historyData;
+    }
+
+    @Override
+    public FlowHistoryData getHistoryData() {
+        return flowHistoryData;
+    }
+
+    public void setCurrentStep(StepUsageDeclaration stepUsageDeclaration, StepHistoryData historyDataStep)
     {
-        currentStep=stepUsageDeclaration;
+        currentStep = stepUsageDeclaration;
+        currentHistoryStep = historyDataStep;
+    }
+
+    @Override
+    public StepUsageDeclaration getCurrentStep() {
+        return currentStep;
     }
 
     @Override
     public void addLog(String log) {
-        logs.add(new FlowLog(LocalDateTime.now(), log));
+        FlowLog flowLog = new FlowLog(LocalDateTime.now(), log);
+        logs.add(flowLog);
+        currentHistoryStep.addLog(flowLog);
     }
 
     @Override
     public void addSummaryLine(String summary) {
+        FlowLog summaryLog = new FlowLog(LocalDateTime.now(), summary);
         summaries.add(new FlowLog(LocalDateTime.now(), summary));
+        currentHistoryStep.addSummary(summaryLog);
+    }
+
+    public FlowHistoryData getFlowHistoryData() {
+        return flowHistoryData;
     }
 }

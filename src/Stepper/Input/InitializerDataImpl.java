@@ -31,6 +31,11 @@ public class InitializerDataImpl implements InitializerData {
                 .collect(Collectors.toList());
         if(flowDefinitions.isEmpty())
             return null;
+        for(int i = 0; i < flowDefinitions.size(); i++)
+        {
+            if (flowDefinitions.get(i) == null)
+                return null;
+        }
         for (FlowDefinition flowDefinition : flowDefinitions) {
             flowDefinition.automaticMapping();
             flowDefinition.customMapping();

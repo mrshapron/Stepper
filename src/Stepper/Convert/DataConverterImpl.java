@@ -7,6 +7,7 @@ public class DataConverterImpl implements DataConverter{
     @Override
     public <T> DataDefinition dataTypeToDefinition(Class<T> dataType) {
         switch (dataType.getSimpleName()){
+            case "int":
             case "Integer":
                 return DataDefinitionRegistry.NUMBER;
             case "Map":
@@ -15,6 +16,7 @@ public class DataConverterImpl implements DataConverter{
                 return DataDefinitionRegistry.LIST;
             case "String":
                 return DataDefinitionRegistry.STRING;
+            case "double":
             case "Double":
                 return DataDefinitionRegistry.DOUBLE;
             case "RelationData":

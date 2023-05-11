@@ -31,7 +31,6 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         int indexFile = 0;
         List<String> col = Arrays.asList("ID", "fileName", "text");
         RelationData dt = new RelationData(col);
-
         for (File file : fileList) {
             context.addLog(String.format("About to start work on file %s", file.getName()));
             indexFile++;
@@ -42,6 +41,10 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
             relationValuesRow.put("text", currentLine);
             dt.addRow(relationValuesRow);
         }
+        if (fileList.isEmpty())
+            context.addSummaryLine("the step finished but got empty files list");
+        else
+            context.addSummaryLine(String.format("Step had successfully extracted the files"));
         context.storeDataValue("DATA", dt);
         return StepResult.SUCCESS;
     }

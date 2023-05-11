@@ -46,12 +46,15 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         if(namesFilesFailedToDelete.size() == 0){
             if(filesToDelete.size() == 0)
                 context.addLog("The list of files to delete is empty");
+            context.addSummaryLine("the step successfully deleted the files from the folder");
             return StepResult.SUCCESS;
         } else if (namesFilesFailedToDelete.size() < filesToDelete.size()) {
             context.addLog(String.format("%d/%d of the files failed to be deleted\n", namesFilesFailedToDelete.size(), namesFilesFailedToDelete.size()));
+            context.addSummaryLine(String.format("the step couldn't delete %d/%d of the files\n", namesFilesFailedToDelete.size(), namesFilesFailedToDelete.size()));
             return StepResult.WARNING;
         }else{
             context.addLog("All the files failed to be deleted");
+            context.addSummaryLine(String.format("The Step Failed to delete any files in the folder"));
             return StepResult.FAILURE;
         }
     }

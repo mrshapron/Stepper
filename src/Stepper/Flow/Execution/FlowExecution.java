@@ -2,13 +2,8 @@ package Stepper.Flow.Execution;
 
 import Stepper.Flow.Defenition.FlowDefinition;
 import Stepper.Flow.Execution.Context.FlowExecutionResult;
-import Stepper.Step.Declaration.DataDefinitionDeclaration;
 
-import javax.jws.Oneway;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -17,19 +12,18 @@ public class FlowExecution {
     private final FlowDefinition flowDefinition;
     private Duration totalTime;
     private FlowExecutionResult flowExecutionResult;
-    private Map<String, Object> userInputs;
+    private Map<String, Object> userFreeInputs;
 
     // lots more data that needed to be stored while flow is being executed...
 
     public FlowExecution(String uniqueId, FlowDefinition flowDefinition, Map<String, Object> values) {
         this.uniqueId = uniqueId;
         this.flowDefinition = flowDefinition;
-        userInputs = values;
+        userFreeInputs = values;
     }
 
-
-    public Map<String, Object> getUserInputs(){
-        return userInputs;
+    public Map<String, Object> getUserFreeInputs(){
+        return userFreeInputs;
     }
     public String getUniqueId() {
         return uniqueId;
@@ -41,5 +35,13 @@ public class FlowExecution {
 
     public FlowExecutionResult getFlowExecutionResult() {
         return flowExecutionResult;
+    }
+
+    public void setTotalTime(Duration totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public void setFlowResult(FlowExecutionResult result) {
+        this.flowExecutionResult = result;
     }
 }

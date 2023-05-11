@@ -34,6 +34,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         {
             context.addLog("No content in table..");
             context.storeDataValue("RESULT", propertiesBuilder.toString());
+            context.addSummaryLine("The step got empty list of files to extract");
             return StepResult.WARNING;
         }
         context.addLog(String.format("About to process %d lines of data", rowsNum));
@@ -56,6 +57,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         }
         context.storeDataValue("RESULT", propertiesBuilder.toString());
         context.addLog(String.format("Extracted total of %d" , colsNum*rowsNum));
+        context.addSummaryLine(String.format("Extracted total of %d" , colsNum*rowsNum));
         return StepResult.SUCCESS;
     }
 }

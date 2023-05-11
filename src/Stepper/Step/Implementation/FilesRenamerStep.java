@@ -65,8 +65,13 @@ public class FilesRenamerStep extends AbstractStepDefinition {
             context.addSummaryLine(stringBuilder.toString());
             return StepResult.WARNING;
         }
-
+        if(rl.getNumOfLines() == 0)
+            context.addSummaryLine(String.format("The Step haven't changed name to any file"));
+        else{
+            context.addSummaryLine(String.format("The Step changed name for %d files in the folder", rl.getNumOfLines()));
+        }
         context.storeDataValue("RENAME_RESULT", rl);
+
         return StepResult.SUCCESS;
     }
 }

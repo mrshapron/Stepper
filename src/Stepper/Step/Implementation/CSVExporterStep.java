@@ -22,9 +22,8 @@ public class CSVExporterStep extends AbstractStepDefinition {
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
-
         RelationData data = context.getDataValue("SOURCE", RelationData.class);
-        String CSVFile = null;
+        String CSVFile = "";
         int rowNum = data.getNumOfLines();
         int colNum = data.getNumOfColumns();
 
@@ -43,12 +42,13 @@ public class CSVExporterStep extends AbstractStepDefinition {
             CSVFile+="\n";
         }
         context.storeDataValue("RESULT",CSVFile);
-        if(rowNum == 1)
+        if(rowNum == 0)
         {
             context.addLog("No content in table..");
+            context.addSummaryLine("There was no content in the table");
             return StepResult.WARNING;
         }
-
+        context.addSummaryLine(String.format("Step Succeeded "));
         return StepResult.SUCCESS;
 
     }

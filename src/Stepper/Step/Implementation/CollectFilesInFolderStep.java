@@ -2,6 +2,8 @@ package Stepper.Step.Implementation;
 
 import Stepper.DataDefinition.DataDefinitionRegistry;
 import Stepper.Flow.Execution.Context.StepExecutionContext;
+import Stepper.Flow.Execution.History.StepHistoryData;
+import Stepper.Flow.Execution.History.StepHistoryDataImpl;
 import Stepper.Step.*;
 import Stepper.Step.Declaration.DataDefinitionDeclarationImpl;
 
@@ -22,7 +24,6 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         addOutput(new DataDefinitionDeclarationImpl("TOTAL_FOUND", DataNecessity.NA, "Total files found", DataDefinitionRegistry.NUMBER));
     }
 
-
     @Override
     public StepResult invoke(StepExecutionContext context) {
         String folderName = context.getDataValue("FOLDER_NAME", String.class);
@@ -32,6 +33,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         File folder = new File(folderName);
         if(!folder.exists() || !folder.isDirectory()){
             context.addLog("The Path of " + folderName + "isn't exist or isn't a directory");
+            context.addSummaryLine(String.format("The Path %s isn't exist or isn't a directory", folderName));
             return StepResult.FAILURE;
         }
         List<File> listFiles = Arrays.asList(folder.listFiles());
@@ -48,10 +50,12 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         context.storeDataValue("TOTAL_FOUND", countFiles);
 
         if(countFiles == 0){
-            context.addLog("The folder exists but there are no files in it");
+            context.addLog("The folder exists but there are no files/no files with the filter");
+            context.addSummaryLine("The step couldn't find files in the folder");
             return StepResult.WARNING;
         }else{
             context.addLog(String.format("Found %d files in folder matching the filter", countFiles));
+            context.addSummaryLine(String.format("The step collected %d files from the folder", countFiles));
             return StepResult.SUCCESS;
         }
 

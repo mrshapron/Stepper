@@ -135,42 +135,40 @@ public class FlowDefinitionImpl implements FlowDefinition{
         }
         for (FreeInputsDefinition mandatoryInput: getMandatoryInputs()) {
             List<FreeInputsDefinition> otherMandatoryInputsSameNameDifTypes = getMandatoryInputs().stream().filter(dataDefDec -> dataDefDec != mandatoryInput)
-                    .filter(dataDefDec-> mandatoryInput.getDataDefinitionDeclaration().getAliasName().equals(dataDefDec.getDataDefinitionDeclaration().getAliasName()) &&
+                    .filter(dataDefDec -> mandatoryInput.getDataDefinitionDeclaration().getAliasName().equals(dataDefDec.getDataDefinitionDeclaration().getAliasName()) &&
                             !dataDefDec.getDataDefinitionDeclaration().dataDefinition().getType().equals(mandatoryInput.getDataDefinitionDeclaration().dataDefinition().getType()))
                     .collect(Collectors.toList());
-            if(otherMandatoryInputsSameNameDifTypes.size() > 0){
+            if (otherMandatoryInputsSameNameDifTypes.size() > 0) {
                 logger.addLog("There are two mandatory inputs with the same name but different types called " + mandatoryInput.getDataDefinitionDeclaration().getAliasName());
                 return false;
             }
         }
-        //TODO:: CHECK CUSTOM MAPPING 1) 4.3
-
         return true;
     }
 
     @Override
     public List<FreeInputsDefinition> getFlowFreeInputs() {
-        return freeInputs;
+        return new ArrayList<>(freeInputs);
     }
 
     @Override
     public List<FreeInputsDefinition> getMandatoryInputs() {
-        return freeInputs.stream()
+        return new ArrayList<>(freeInputs.stream()
                 .filter(freeInputsDefinition-> freeInputsDefinition.getDataDefinitionDeclaration().necessity()
                         == DataNecessity.MANDATORY)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
     public List<FreeInputsDefinition> getOptionalInputs() {
-        return freeInputs.stream()
+        return new ArrayList<>(freeInputs.stream()
                 .filter(freeInputsDefinition-> freeInputsDefinition.getDataDefinitionDeclaration().necessity()
                         == DataNecessity.OPTIONAL)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public DataDefinition getDataDefinitionByName(String name) {
+    public DataDefinitionDeclaration getDataDefinitionByName(String name) {
         List<StepUsageDeclaration> stepsWithData = steps.stream().filter(stepUsageDeclaration ->
                 stepUsageDeclaration.getStepDefinition().inputs().stream().filter(inputData ->
                 inputData.getName().equals(name)
@@ -187,9 +185,9 @@ public class FlowDefinitionImpl implements FlowDefinition{
                 .filter(dataDefinitionDeclaration -> dataDefinitionDeclaration.getName().equals(name)).
                 collect(Collectors.toList());
         if(dataDefinitionsInput.size() > 0)
-            return dataDefinitionsInput.get(0).dataDefinition();
+            return dataDefinitionsInput.get(0);
         else if(dataDefinitionOutput.size() > 0)
-            return dataDefinitionOutput.get(0).dataDefinition();
+            return dataDefinitionOutput.get(0);
         return null;
     }
 
@@ -205,7 +203,7 @@ public class FlowDefinitionImpl implements FlowDefinition{
 
     @Override
     public boolean getIsReadOnly() {
-        return steps.stream().anyMatch(stepUsageDec ->
+        return !steps.stream().anyMatch(stepUsageDec ->
                 stepUsageDec.getStepDefinition().isReadonly());
     }
 

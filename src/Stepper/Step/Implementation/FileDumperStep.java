@@ -38,6 +38,7 @@ public class FileDumperStep extends AbstractStepDefinition {
             if(newFile.createNewFile()) {
                 if(content.isEmpty()) {
                     context.addLog("No content found , empty file will be created!");
+                    context.addSummaryLine("The step created a file with empty content");
                     context.storeDataValue("RESULT",res);
                     return StepResult.WARNING;
                 }
@@ -47,6 +48,7 @@ public class FileDumperStep extends AbstractStepDefinition {
                 writer.write(content);
                 writer.close();
                 context.storeDataValue("RESULT",res);
+                context.addSummaryLine("");
                 return StepResult.SUCCESS;
             }
             else {
@@ -57,7 +59,8 @@ public class FileDumperStep extends AbstractStepDefinition {
 
         } catch (IOException e) {
             context.addLog(e.getMessage());
-            throw new RuntimeException(e);
+            context.addSummaryLine("There step tried to create a new file but got an error during creation");
+            return StepResult.FAILURE;
         }
 
     }
