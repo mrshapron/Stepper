@@ -1,7 +1,8 @@
-package Stepper.Input;
+package Input;
 
-import Stepper.Flow.Defenition.FlowDefinition;
-import Stepper.Step.Declaration.DataDefinitionDeclaration;
+
+import Flow.Defenition.FlowDefinition;
+import Step.Declaration.DataDefinitionDeclaration;
 
 import java.util.List;
 

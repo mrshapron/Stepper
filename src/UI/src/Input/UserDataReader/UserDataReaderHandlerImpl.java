@@ -1,14 +1,11 @@
-package Stepper.Input.UserDataReader;
+package Input.UserDataReader;
 
-import Stepper.DataDefinition.DataDefinition;
-import Stepper.Flow.Defenition.FlowDefinition;
-import Stepper.Flow.Defenition.FreeInputsDefinition;
-import Stepper.Flow.Defenition.FreeInputsDefinitionImpl;
-import Stepper.Flow.Defenition.StepUsageDeclaration;
-import Stepper.Input.InitializerData;
-import Stepper.Input.InitializerDataImpl;
-import Stepper.Step.DataNecessity;
-import Stepper.Step.Declaration.DataDefinitionDeclaration;
+
+import Flow.Defenition.FlowDefinition;
+import Flow.Defenition.FreeInputsDefinition;
+import Input.InitializerData;
+import Input.InitializerDataImpl;
+import Step.DataNecessity;
 
 import java.io.File;
 import java.util.HashMap;

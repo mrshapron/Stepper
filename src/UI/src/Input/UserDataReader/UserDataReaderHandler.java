@@ -1,8 +1,8 @@
-package Stepper.Input.UserDataReader;
+package Input.UserDataReader;
 
-import Stepper.Flow.Defenition.FlowDefinition;
-import Stepper.Flow.Defenition.FreeInputsDefinition;
-import Stepper.Step.Declaration.DataDefinitionDeclaration;
+
+import Flow.Defenition.FlowDefinition;
+import Flow.Defenition.FreeInputsDefinition;
 
 import java.util.List;
 import java.util.Map;
