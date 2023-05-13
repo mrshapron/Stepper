@@ -106,20 +106,12 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         flowHistoryData = historyData;
     }
 
-    @Override
-    public FlowHistoryData getHistoryData() {
-        return flowHistoryData;
-    }
+
 
     public void setCurrentStep(StepUsageDeclaration stepUsageDeclaration, StepHistoryData historyDataStep)
     {
         currentStep = stepUsageDeclaration;
         currentHistoryStep = historyDataStep;
-    }
-
-    @Override
-    public StepUsageDeclaration getCurrentStep() {
-        return currentStep;
     }
 
     @Override
@@ -134,9 +126,5 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         FlowLog summaryLog = new FlowLog(LocalDateTime.now(), summary);
         summaries.add(new FlowLog(LocalDateTime.now(), summary));
         currentHistoryStep.addSummary(summaryLog);
-    }
-
-    public FlowHistoryData getFlowHistoryData() {
-        return flowHistoryData;
     }
 }

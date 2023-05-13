@@ -63,8 +63,4 @@ public class StepHistoryDataImpl implements StepHistoryData {
     public FlowLog getSummary() {
         return summary;
     }
-
-    public void setSummary(FlowLog summary) {
-        this.summary = summary;
-    }
 }

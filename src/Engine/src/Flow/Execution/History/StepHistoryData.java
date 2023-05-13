@@ -16,5 +16,4 @@ public interface StepHistoryData {
     void addLog(FlowLog flowLog);
     void addSummary(FlowLog summary);
     FlowLog getSummary();
-    void setSummary(FlowLog summary);
 }

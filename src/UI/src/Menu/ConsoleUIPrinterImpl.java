@@ -8,11 +8,22 @@ import Flow.Execution.History.FreeInputHistoryData;
 import Flow.Execution.History.OutputHistoryData;
 import Flow.Execution.History.StepHistoryData;
 import Flow.Logger.FlowLog;
+import Statistics.FlowStats;
 import Step.Declaration.DataDefinitionDeclaration;
-
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class ConsoleUIPrinterImpl implements ConsoleUIPrinter {
+    @Override
+    public void printChooseFlow(List<FlowDefinition> currentLoadedFlows) {
+        System.out.println("All Flows in the System");
+        int indexFlow = 1;
+        for (FlowDefinition flowDef:  currentLoadedFlows) {
+            System.out.format("%d. Flow, Flow Name : %s\n",indexFlow++, flowDef.getName());
+        }
+        System.out.println("0. return to main menu");
+    }
+
     @Override
     public void printMenu() {
         System.out.println("****************MENU*****************");
@@ -107,4 +118,35 @@ public class ConsoleUIPrinterImpl implements ConsoleUIPrinter {
             System.out.println("@@@@@@@@@@@@@");
         }
     }
+
+    @Override
+    public void printStats(FlowStats flowStats, List<FlowDefinition> currentLoadedFlows) {
+        System.out.println("Flows Statistics:");
+        for (FlowDefinition flowDefinition: currentLoadedFlows) {
+            if(!flowStats.isFlowRun(flowDefinition)){
+                System.out.printf("Flow Name: %s | Times Run: Never\n", flowDefinition.getName());
+                continue;
+            }
+            System.out.format("Flow Name: %s | Times Run: %d | Average Runtime: %.2f ms\n", flowDefinition.getName(),
+                    flowStats.getTimesRunFlow(flowDefinition), flowStats.getAverageRuntimeFlow(flowDefinition));
+            System.out.println("Steps in Flow Stats:");
+            for (StepUsageDeclaration step: flowDefinition.getFlowSteps()) {
+                System.out.format("Step Name: %s | Times Run: %d | Average runtime: %.2f ms\n", step.getFinalStepName(),
+                        flowStats.getTimesRunStep(flowDefinition,step), flowStats.getAverageRuntimeStep(flowDefinition,step));
+            }
+            System.out.println("^^^^^^^^^^^^^");
+        }
+    }
+
+    @Override
+    public void printChoosePastFlow(List<FlowHistoryData> flowsHistory) {
+        System.out.println("Choose Past Flow:");
+        int indexFlow = 1;
+        for (FlowHistoryData flowHistoryData : flowsHistory) {
+            System.out.format("%d. Flow Name: %s, Flow ID: %s, Time Started: %s\n",
+                    indexFlow++, flowHistoryData.getFlowName(),flowHistoryData.getFlowID(), flowHistoryData.timeStarted());
+        }
+        System.out.println("0. return to main menu");
+    }
+
 }

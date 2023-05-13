@@ -6,6 +6,7 @@ import Flow.Execution.FlowExecution;
 import Flow.Execution.History.FlowHistoryData;
 import Input.UserDataReader.UserDataReaderHandler;
 import Input.UserDataReader.UserDataReaderHandlerImpl;
+import Statistics.FlowStats;
 
 import java.util.List;
 import java.util.Map;
@@ -59,10 +60,10 @@ public class UserMenuImpl implements UserMenu {
                 case PAST_DETAILS:
                     FlowHistoryData flowHistoryChoice = showAndChooseAllHistoryFlows();
                     if (flowHistoryChoice == null) continue;
-                    printHistoryFlow(flowHistoryChoice);
+                    showHistoryFlow(flowHistoryChoice);
                     break;
                 case STATISTICS:
-                    //TODO
+                    showStats(fLowExecutor.getFlowStats());
                     break;
                 case EXIT_SYSTEM:
                     exitProgram=true;
@@ -71,7 +72,11 @@ public class UserMenuImpl implements UserMenu {
         }
     }
 
-    private void printHistoryFlow(FlowHistoryData flowHistoryData) {
+    private void showStats(FlowStats flowStats) {
+        consoleUIPrinter.printStats(flowStats, currentLoadedFlows);
+    }
+
+    private void showHistoryFlow(FlowHistoryData flowHistoryData) {
         consoleUIPrinter.printHistoryFlow(flowHistoryData);
     }
 
@@ -80,14 +85,7 @@ public class UserMenuImpl implements UserMenu {
             System.out.println("There are no past flows details");
             return null;
         }
-
-        System.out.println("Choose Past Flow:");
-        int indexFlow = 1;
-        for (FlowHistoryData flowHistoryData : fLowExecutor.getFlowsHistory()) {
-            System.out.format("%d. Flow Name: %s, Flow ID: %s, Time Started: %s\n",
-                    indexFlow++, flowHistoryData.getFlowName(),flowHistoryData.getFlowID(), flowHistoryData.timeStarted());
-        }
-        System.out.println("0. return to main menu");
+        consoleUIPrinter.printChoosePastFlow(fLowExecutor.getFlowsHistory());
         int choice = chooseNumber(0, fLowExecutor.getFlowsHistory().size());
         if (choice == 0)
             return null;
@@ -130,12 +128,8 @@ public class UserMenuImpl implements UserMenu {
     }
 
     private FlowDefinition chooseFlow(){
-        System.out.println("All Flows in the System");
-        int indexFlow = 1;
-        for (FlowDefinition flowDef:  currentLoadedFlows) {
-            System.out.format("%d. Flow, Flow Name : %s\n",indexFlow++, flowDef.getName());
-        }
-        System.out.println("0. return to main menu");
+
+        consoleUIPrinter.printChooseFlow(currentLoadedFlows);
 
         Integer choice = chooseNumber(0,currentLoadedFlows.size());
         if (choice == 0)

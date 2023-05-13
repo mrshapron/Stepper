@@ -46,9 +46,4 @@ public class InitializerDataImpl implements InitializerData {
         return flowDefinitions;
     }
 
-    @Override
-    public Object InitializeData(DataDefinitionDeclaration dataDefinitionDeclaration) {
-        System.out.println(dataDefinitionDeclaration.userString());
-        return null;
-    }
 }

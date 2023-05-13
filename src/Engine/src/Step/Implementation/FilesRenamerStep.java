@@ -47,9 +47,11 @@ public class FilesRenamerStep extends AbstractStepDefinition {
             Map<String,String> row = new HashMap<>();
             row.put("ID", (indexFile++).toString());
             row.put("FileNameSource", fileToRename.getName());
+
             String extension = fileToRename.getName().substring(fileToRename.getName().lastIndexOf('.') + 1);
             String nameWithOutExtension = fileToRename.getName().substring(0,fileToRename.getName().lastIndexOf('.'));
             String fullRename = prefix + nameWithOutExtension + suffix + '.' + extension;
+
             File fileRenamer = new File(fullRename);
             boolean success = fileToRename.renameTo(fileRenamer);
             if (!success){

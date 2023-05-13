@@ -10,7 +10,6 @@ public class OutputHistoryDataImpl implements OutputHistoryData {
         this.data= data;
     }
 
-
     @Override
     public String getFinalName() {
         return finalName;
