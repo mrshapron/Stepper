@@ -63,7 +63,7 @@ public class FlowDefinitionImpl implements FlowDefinition{
                             if (!usedInput.containsKey(inputCheck)) {
                                 usedInput.put(inputCheck, true);
                                 MappingDataDefinition mapDataDef = new MappingDataDefinitionImpl(
-                                        currStepOutputer.getStepDefinition(), currStepInputer.getStepDefinition(), currOutput, inputCheck);
+                                        currStepOutputer, currStepInputer, currOutput, inputCheck);
                                 mappedDataDefinitions.add(mapDataDef);
                                 isOutputFree = false;
                             } else {
@@ -145,6 +145,22 @@ public class FlowDefinitionImpl implements FlowDefinition{
             }
         }
         return true;
+    }
+
+    @Override
+    public Map<StepUsageDeclaration, List<DataDefinitionDeclaration>> getAllOutputs() {
+        Map<StepUsageDeclaration, List<DataDefinitionDeclaration>> map = new HashMap<>();
+        for (StepUsageDeclaration step : steps) {
+            for(DataDefinitionDeclaration output : step.getStepDefinition().outputs()){
+                if(map.containsKey(step)){
+                    map.get(step).add(output);
+                }else{
+                    map.put(step, new ArrayList<>());
+                    map.get(step).add(output);
+                }
+            }
+        }
+        return map;
     }
 
     @Override
