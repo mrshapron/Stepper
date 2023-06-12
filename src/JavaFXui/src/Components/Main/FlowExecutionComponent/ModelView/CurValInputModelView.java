@@ -9,11 +9,21 @@ public class CurValInputModelView {
         this.valueEntered = valueEntered;
     }
 
+
+
     public String getInputName() {
         return inputName;
     }
 
     public String getValueEntered() {
         return valueEntered;
+    }
+
+    public void setInputName(String inputName) {
+        this.inputName = inputName;
+    }
+
+    public void setValueEntered(String valueEntered) {
+        this.valueEntered = valueEntered;
     }
 }

@@ -17,8 +17,10 @@ public class FreeInputsViewModel {
     public FreeInputsViewModel(FreeInputsDefinition freeInputsDefinition){
         name = freeInputsDefinition.getDataDefinitionDeclaration().getAliasName();
         type = freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType().getSimpleName();
-        necessity = freeInputsDefinition.getDataDefinitionDeclaration().necessity().toString();
+        nameProperty = new ReadOnlyStringWrapper(name);
         stepsName = "";
+        stepsNameProperty = new ReadOnlyStringWrapper(stepsName);
+        necessity = freeInputsDefinition.getDataDefinitionDeclaration().necessity().toString();
         freeInputsDefinition.getStepUsageDeclarations().forEach(stepUsageDeclaration -> stepsName = stepsName + ", " + stepUsageDeclaration.getFinalStepName());
         stepsName =  stepsName.substring(2);
         if (stepsName.length() > 2) stepsName.substring(0, stepsName.length() - 2);
