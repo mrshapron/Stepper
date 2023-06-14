@@ -17,6 +17,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -26,9 +27,11 @@ import java.util.List;
 public class MainController {
 
 
+
     private StepperBusinessLogic businessLogic;
     private Stage primaryStage;
 
+    @FXML private HBox hBoxMain;
     @FXML private TabPane tabPane;
     @FXML private Button btnLoadFile;
     @FXML private TextField txtFiledFileChosen;
@@ -46,7 +49,6 @@ public class MainController {
     public MainController() {
         selectedFileProperty = new SimpleStringProperty();
         opacityProperty = new SimpleIntegerProperty(100);
-        businessLogic = new StepperBusinessLogicImpl();
     }
 
     public void initialize() {
@@ -55,6 +57,7 @@ public class MainController {
         tableViewFlowModels = FXCollections.observableArrayList();
         flowDefinitionsViewChildController.bindFlowList(tableViewFlowModels);
         flowDefinitionsViewChildController.setMainController(this);
+        hBoxMain.disableProperty().bind(txtFiledFileChosen.textProperty().isEmpty());
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -85,5 +88,10 @@ public class MainController {
     public void switchToFlowExecutionTab(TableViewFlowModel tableViewFlowModel) {
         tabPane.getSelectionModel().select(1); // Switch to the "Flow Executions" tab
         flowExecutionViewChildController.setFlowDefinition(tableViewFlowModel);
+        flowExecutionViewChildController.setBusinessLogic(this.businessLogic);
+    }
+
+    public void setBusinessLogic(StepperBusinessLogic businessLogic) {
+        this.businessLogic = businessLogic;
     }
 }

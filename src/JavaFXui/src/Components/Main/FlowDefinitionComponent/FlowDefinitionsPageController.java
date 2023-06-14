@@ -164,7 +164,6 @@ public class FlowDefinitionsPageController {
         lblFlowName.textProperty().bind(flowNameProperty);
         lblDescription.textProperty().bind(descriptionProperty);
         lblIsReadOnly.textProperty().bind(Bindings.format(isReadOnlyProperty.get() + ""));
-
     }
 
     @FXML

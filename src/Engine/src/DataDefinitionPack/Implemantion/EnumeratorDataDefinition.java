@@ -1,4 +1,4 @@
-package src.DataDefinitionPack.Implemantion;
+package DataDefinitionPack.Implemantion;
 
 import DataDefinitionPack.AbstractDataDefinition;
 

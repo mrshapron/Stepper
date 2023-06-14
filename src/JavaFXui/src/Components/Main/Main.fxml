@@ -18,7 +18,7 @@
             <Font name="Arial Bold" size="25.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER" prefWidth="200.0">
+      <HBox  alignment="CENTER" prefWidth="200.0">
          <children>
             <Button fx:id="btnLoadFile" mnemonicParsing="false" onAction="#onClickLoadFile" text="Load FIle">
                <HBox.margin>
@@ -28,7 +28,7 @@
             <TextField fx:id="txtFiledFileChosen" editable="false" opacity="0.5" prefHeight="27.0" prefWidth="454.0" />
          </children>
       </HBox>
-      <HBox alignment="CENTER">
+      <HBox fx:id="hBoxMain" alignment="CENTER">
          <children>
             <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
               <tabs>
@@ -42,7 +42,7 @@
                 <Tab text="Flow Executions">
                   <content>
                       <AnchorPane fx:id="flowExecutionContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                          <fx:include source="FlowExecutionComponent/FlowExecution.fxml" fx:id="flowExecutionViewChild" />
+                          <fx:include fx:id="flowExecutionViewChild" source="FlowExecutionComponent/FlowExecution.fxml" />
                       </AnchorPane>
                   </content>
                 </Tab>

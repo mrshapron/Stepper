@@ -1,13 +1,22 @@
 package Flow.Execution.History;
 
+import Flow.Defenition.StepUsageDeclaration;
+
 public class OutputHistoryDataImpl implements OutputHistoryData {
     private String finalName;
     private Class<?> type;
     private Object data;
-    public OutputHistoryDataImpl(String finalName, Class<?> type, Object data) {
+    private StepUsageDeclaration stepUsageDeclaration;
+    public OutputHistoryDataImpl(String finalName, Class<?> type, Object data, StepUsageDeclaration step) {
         this.finalName = finalName;
         this.type = type;
         this.data= data;
+        this.stepUsageDeclaration = step;
+    }
+
+    @Override
+    public StepUsageDeclaration fromStep() {
+        return stepUsageDeclaration;
     }
 
     @Override

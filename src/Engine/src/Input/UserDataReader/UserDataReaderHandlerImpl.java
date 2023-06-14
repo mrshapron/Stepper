@@ -1,4 +1,4 @@
-package src.Input.UserDataReader;
+package Input.UserDataReader;
 
 
 import Flow.Defenition.FlowDefinition;
@@ -38,6 +38,8 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
         System.out.println("The file had been loaded properly.");
         return flowDefinitions;
     }
+
+
 
     @Override
     public Map<String, Object> ReadDataInput(List<FreeInputsDefinition> freeInputsDefDec) {
@@ -97,6 +99,28 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
             }
         }
         return values;
+    }
+
+    @Override
+    public Map<String, Object> ConvertDataInput(List<FreeInputsDefinition> freeInputsDefinitions, Map<String, String> inputsValues) {
+        Map<String,Object> values = new HashMap<>();
+        for (FreeInputsDefinition freeInputsDefinition : freeInputsDefinitions) {
+            String value = inputsValues.getOrDefault(freeInputsDefinition.getDataDefinitionDeclaration().getAliasName(), null);
+            if(value != null){
+                Object valueConverted = convertToType(value, freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType());
+                values.put(freeInputsDefinition.getDataDefinitionDeclaration().getAliasName(), valueConverted);
+            }
+        }
+        return values;
+    }
+
+    private Object convertToType(String value, Class<?> type) {
+        if(type.equals(String.class))
+            return value;
+        if(type.equals(Integer.class))
+            return Integer.parseInt(value);
+        else
+            return Double.parseDouble(value);
     }
 
     private static boolean checkFilePathXML(String filePath){

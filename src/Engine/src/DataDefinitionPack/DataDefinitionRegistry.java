@@ -2,7 +2,7 @@ package DataDefinitionPack;
 
 
 import DataDefinitionPack.Implemantion.*;
-import src.DataDefinitionPack.Implemantion.EnumeratorDataDefinition;
+import DataDefinitionPack.Implemantion.EnumeratorDataDefinition;
 
 public enum DataDefinitionRegistry implements DataDefinition {
     NUMBER(new NumberDataDefinition()),

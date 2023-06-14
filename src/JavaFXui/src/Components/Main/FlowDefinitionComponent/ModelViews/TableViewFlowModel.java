@@ -85,6 +85,10 @@ public class TableViewFlowModel {
         return freeInputsViewModels;
     }
 
+    public FlowDefinition getFlowDefinition(){
+        return this.flowDefinition;
+    }
+
     public int getSteps() {
         return steps;
     }

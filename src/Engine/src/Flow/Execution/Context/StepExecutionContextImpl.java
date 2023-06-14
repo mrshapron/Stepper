@@ -73,7 +73,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
 
     private String getNameToGetTheValue(String dataName){
         List<MappingDataDefinition> customMappingDefinition = flowDefinitionRunning.getCustomMappingData().stream().filter(mappingDataDefinition ->
-                mappingDataDefinition.getTargetStep() == currentStep.getStepDefinition() && mappingDataDefinition.getTargetData().getName().equals(dataName)).collect(Collectors.toList());
+                mappingDataDefinition.getTargetStep() == currentStep && mappingDataDefinition.getTargetData().getName().equals(dataName)).collect(Collectors.toList());
         if (customMappingDefinition.isEmpty())
             return getAliasNameByDataName(dataName);
         else
@@ -94,7 +94,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         // we have the DD type so we can make sure that its from the same type
         if (theData.dataDefinition().getType().isAssignableFrom(value.getClass())) {
             dataValues.put(aliasName, value);
-            flowHistoryData.addOutputHistory(new OutputHistoryDataImpl(aliasName, value.getClass(), value));
+            flowHistoryData.addOutputHistory(new OutputHistoryDataImpl(aliasName, value.getClass(), value, currentStep));
             return true;
         } else {
             return false;
