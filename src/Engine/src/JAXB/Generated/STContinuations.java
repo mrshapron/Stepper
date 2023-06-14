@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{}ST-FlowLevelAlias" maxOccurs="unbounded"/>
+ *       &lt;sequence maxOccurs="unbounded">
+ *         &lt;element ref="{}ST-Continuation"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stFlowLevelAlias"
+    "stContinuation"
 })
-@XmlRootElement(name = "ST-FlowLevelAliasing")
-public class STFlowLevelAliasing {
+@XmlRootElement(name = "ST-Continuations")
+public class STContinuations {
 
-    @XmlElement(name = "ST-FlowLevelAlias", required = true)
-    protected List<STFlowLevelAlias> stFlowLevelAlias;
+    @XmlElement(name = "ST-Continuation", required = true)
+    protected List<STContinuation> stContinuation;
 
     /**
-     * Gets the value of the stFlowLevelAlias property.
+     * Gets the value of the stContinuation property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stFlowLevelAlias property.
+     * This is why there is not a <CODE>set</CODE> method for the stContinuation property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSTFlowLevelAlias().add(newItem);
+     *    getSTContinuation().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link STFlowLevelAlias }
+     * {@link STContinuation }
      * 
      * 
      */
-    public List<STFlowLevelAlias> getSTFlowLevelAlias() {
-        if (stFlowLevelAlias == null) {
-            stFlowLevelAlias = new ArrayList<STFlowLevelAlias>();
+    public List<STContinuation> getSTContinuation() {
+        if (stContinuation == null) {
+            stContinuation = new ArrayList<STContinuation>();
         }
-        return this.stFlowLevelAlias;
+        return this.stContinuation;
     }
 
 }

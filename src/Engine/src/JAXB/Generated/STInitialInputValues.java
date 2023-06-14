@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{}ST-FlowLevelAlias" maxOccurs="unbounded"/>
+ *       &lt;sequence maxOccurs="unbounded">
+ *         &lt;element ref="{}ST-InitialInputValue"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stFlowLevelAlias"
+    "stInitialInputValue"
 })
-@XmlRootElement(name = "ST-FlowLevelAliasing")
-public class STFlowLevelAliasing {
+@XmlRootElement(name = "ST-InitialInputValues")
+public class STInitialInputValues {
 
-    @XmlElement(name = "ST-FlowLevelAlias", required = true)
-    protected List<STFlowLevelAlias> stFlowLevelAlias;
+    @XmlElement(name = "ST-InitialInputValue", required = true)
+    protected List<STInitialInputValue> stInitialInputValue;
 
     /**
-     * Gets the value of the stFlowLevelAlias property.
+     * Gets the value of the stInitialInputValue property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stFlowLevelAlias property.
+     * This is why there is not a <CODE>set</CODE> method for the stInitialInputValue property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSTFlowLevelAlias().add(newItem);
+     *    getSTInitialInputValue().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link STFlowLevelAlias }
+     * {@link STInitialInputValue }
      * 
      * 
      */
-    public List<STFlowLevelAlias> getSTFlowLevelAlias() {
-        if (stFlowLevelAlias == null) {
-            stFlowLevelAlias = new ArrayList<STFlowLevelAlias>();
+    public List<STInitialInputValue> getSTInitialInputValue() {
+        if (stInitialInputValue == null) {
+            stInitialInputValue = new ArrayList<STInitialInputValue>();
         }
-        return this.stFlowLevelAlias;
+        return this.stInitialInputValue;
     }
 
 }
