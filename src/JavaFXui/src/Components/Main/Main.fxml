@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Components.Main.MainController">
+   <children>
+      <Label alignment="CENTER" text="Stepper App" textFill="#9a3584">
+         <font>
+            <Font name="Arial Bold" size="25.0" />
+         </font>
+      </Label>
+      <HBox  alignment="CENTER" prefWidth="200.0">
+         <children>
+            <Button fx:id="btnLoadFile" mnemonicParsing="false" onAction="#onClickLoadFile" text="Load FIle">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Button>
+            <TextField fx:id="txtFiledFileChosen" editable="false" opacity="0.5" prefHeight="27.0" prefWidth="454.0" />
+         </children>
+      </HBox>
+      <HBox fx:id="hBoxMain" alignment="CENTER">
+         <children>
+            <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Flow Definitions">
+                  <content>
+                    <AnchorPane fx:id="flowDefinitionContainer" minHeight="0.0" minWidth="0.0">
+                        <fx:include fx:id="flowDefinitionsViewChild" source="FlowDefinitionComponent/FlowDefinitionsTab.fxml" />
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="Flow Executions">
+                  <content>
+                      <AnchorPane fx:id="flowExecutionContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <fx:include fx:id="flowExecutionViewChild" source="FlowExecutionComponent/FlowExecution.fxml" />
+                      </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

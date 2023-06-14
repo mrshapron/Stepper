@@ -6,6 +6,7 @@ import Mapping.MappingDataDefinition;
 import Step.Declaration.DataDefinitionDeclaration;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FlowDefinition {
     String getName();
@@ -25,4 +26,5 @@ public interface FlowDefinition {
     List<FreeInputsDefinition> getMandatoryInputs();
     List<FreeInputsDefinition> getOptionalInputs();
     DataDefinitionDeclaration getDataDefinitionByName(String name);
+    Map<StepUsageDeclaration, List<DataDefinitionDeclaration>> getAllOutputs();
 }

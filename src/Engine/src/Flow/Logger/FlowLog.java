@@ -1,6 +1,7 @@
 package Flow.Logger;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FlowLog {
     private LocalDateTime time;
@@ -14,6 +15,12 @@ public class FlowLog {
     public String getContent(){
         return content;
     }
+
+    @Override
+    public String toString() {
+        return time.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + " " + content;
+    }
+
     public LocalDateTime getTime(){
         return time;
     }

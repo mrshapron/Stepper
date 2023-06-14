@@ -136,7 +136,7 @@ public class FlowConverterImpl implements FlowConverter{
             return false;
         }
         flow.addCustomMapping(new MappingDataDefinitionImpl(
-                stepSource.getStepDefinition(), stepTarget.getStepDefinition(), sourceData, targetData));
+                stepSource, stepTarget, sourceData, targetData));
         return true;
     }
 

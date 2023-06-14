@@ -46,11 +46,12 @@ public class FLowExecutor {
             StepUsageDeclaration stepUsageDeclaration = flowExecution.getFlowDefinition().getFlowSteps().get(i);
             StepHistoryData stepHistoryData = new StepHistoryDataImpl(
                     stepUsageDeclaration.getStepDefinition().name(),
-                    stepUsageDeclaration.getFinalStepName());
+                    stepUsageDeclaration.getFinalStepName(), stepUsageDeclaration);
             logger.addLog("Starting to execute step: " + stepUsageDeclaration.getFinalStepName());
             context.setCurrentStep(stepUsageDeclaration, stepHistoryData);
 
             long timeStartStep = System.currentTimeMillis();
+            stepHistoryData.setTimeRunStarted(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             StepResult stepResult = stepUsageDeclaration.getStepDefinition().invoke(context);
             long timeStepElapsedMS =  System.currentTimeMillis() - timeStartStep;
             stepHistoryData.setRuntime(timeStepElapsedMS);
