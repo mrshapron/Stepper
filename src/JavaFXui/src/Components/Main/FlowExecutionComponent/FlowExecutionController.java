@@ -3,21 +3,23 @@ package Components.Main.FlowExecutionComponent;
 import BusinessLogic.StepperBusinessLogic;
 import Components.Main.FlowDefinitionComponent.ModelViews.FreeInputsViewModel;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
-import Components.Main.FlowExecutionComponent.ModelView.CurValInputModelView;
-import Components.Main.FlowExecutionComponent.ModelView.FlowExecutionModelView;
-import Components.Main.FlowExecutionComponent.ModelView.FreeInputsExecViewModel;
-import Components.Main.FlowExecutionComponent.ModelView.OutputExecModelView;
+import Components.Main.FlowExecutionComponent.ModelView.*;
 import Flow.Defenition.FlowDefinition;
 import Flow.Defenition.FreeInputsDefinitionImpl;
 import Flow.Execution.History.FlowHistoryData;
 import Step.DataNecessity;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -26,15 +28,24 @@ import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-
+import javafx.scene.layout.HBox;
+import javafx.concurrent.Task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
-
+import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.util.Duration;
+import javafx.animation.Interpolator;
 public class FlowExecutionController {
 
+
+    @FXML private HBox executionHBOX;
     @FXML private Button btnRunFlow;
     @FXML private Label lblStatusFreeInput;
     @FXML private Label lblSelectedInput;
@@ -82,6 +93,23 @@ public class FlowExecutionController {
     @FXML private TableColumn<?, ?> outputExecTypeCol;
     @FXML private TableColumn<?, ?> outputExecValueCol;
 
+    @FXML private Label lblStepExecutionResult;
+    @FXML private TableColumn<?, ?> stepNameExecResCol;
+    @FXML private TableColumn<?, ?> stepResultExecResultRow;
+    @FXML private TableView<StepExecModelView> moreStepDetailsTable;
+    @FXML private TableColumn<?, ?> stepNameStepDetailsCol;
+    @FXML private TableColumn<?, ?> stepResStepDetailsCol;
+    @FXML private TableColumn<?, ?> timeStartStepDetailsCol;
+    @FXML private TableView<?> listInputStepTable;
+    @FXML private TableColumn<?, ?> inputNameInputStepCol;
+    @FXML private TableColumn<?, ?> valInputStepCol;
+    @FXML private TableView<?> listOutputStepTable;
+    @FXML private TableColumn<?, ?> OutputNameOutputStepCol;
+    @FXML private TableColumn<?, ?> valOutputStepCol;
+    @FXML private ListView<String> stepLogsListView;
+    @FXML private TableColumn<?,?> runtimeMoreStepCol;
+    @FXML private TableView<StepExecModelView> stepExecutionResultTable;
+
 
 
     private FlowDefinition selectedFlow;
@@ -122,10 +150,15 @@ public class FlowExecutionController {
         outputExecTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         outputExecValueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
 
+        stepNameExecResCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        stepResultExecResultRow.setCellValueFactory(new PropertyValueFactory<>("result"));
 
+        stepNameStepDetailsCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        stepResStepDetailsCol.setCellValueFactory(new PropertyValueFactory<>("result"));
+        timeStartStepDetailsCol.setCellValueFactory(new PropertyValueFactory<>("timeStarted"));
+        runtimeMoreStepCol.setCellValueFactory(new PropertyValueFactory<>("runtime"));
 
         tableAllFlowExecutions.setItems(flowExecutionModelViews);
-
         isFlowCanRun = new SimpleBooleanProperty(false);
         isAddValueEnable = new SimpleBooleanProperty(false);
         valueEnteredProperty = new SimpleStringProperty("");
@@ -146,6 +179,7 @@ public class FlowExecutionController {
         btnStartFlow.disableProperty().bind(isFlowCanRun.not());
         StringBinding flowNameBinding = Bindings.createStringBinding(() -> this.flowDefinitionObjectProperty.getName(), flowDefinitionObjectProperty);
         lblFlowName.textProperty().bind(flowNameBinding);
+        executionHBOX.disableProperty().bind(Bindings.isEmpty(flowExecutionModelViews));
     }
 
     public void setFlowDefinition(TableViewFlowModel flowDefinition){
@@ -157,6 +191,8 @@ public class FlowExecutionController {
     }
 
     public void onClickEnterInputValue() {
+        if(valueEnteredProperty.getValue().equals(""))
+            return;
         FreeInputsViewModel selectedInput = tableFreeInputs.getSelectionModel().getSelectedItem();
         CurValInputModelView valInputModelView = new CurValInputModelView(selectedInput.getName(), valueEnteredProperty.getValue());
         Optional<CurValInputModelView> selected = curValInputModelViews.stream().filter(curValInputModelView -> curValInputModelView.getInputName().equals(selectedInput.getName())).findFirst();
@@ -237,11 +273,38 @@ public class FlowExecutionController {
     }
 
     public void onClickStartFlow(ActionEvent actionEvent) {
+        DoubleProperty progressProperty = new SimpleDoubleProperty(0);
         Map<String, String> map = curValInputModelViews.stream()
                 .collect(Collectors.toMap(CurValInputModelView::getInputName, CurValInputModelView::getValueEntered));
         // Access the mappings in the map
-        FlowHistoryData flowHistoryData =  businessLogic.startFlow(flowDefinitionObjectProperty.get(), map);
-        addHistoryFlow(flowHistoryData);
+        Task<FlowHistoryData> task = new Task<FlowHistoryData>() {
+            @Override
+            protected FlowHistoryData call() throws Exception {
+                FlowHistoryData flowHistoryData = businessLogic.startFlow(flowDefinitionObjectProperty.get(), map, progress -> {
+                    updateProgress(progress, 100);
+                    progressProperty.set(progress);
+                });
+                return flowHistoryData;
+            }
+        };
+
+        progressBarFlow.progressProperty().bind(progressProperty);
+        progressBarFlow.progressProperty().bind(task.progressProperty());
+        businessLogic.executeTask(task);
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(progressBarFlow.progressProperty(), progressBarFlow.getProgress())),
+                new KeyFrame(Duration.seconds(1), new KeyValue(progressProperty, 1, Interpolator.EASE_BOTH))
+        );
+        timeline.play();
+
+        task.setOnSucceeded(event -> {
+            Platform.runLater(()->{
+                addHistoryFlow(task.getValue());
+            });
+        });
+
+        //FlowHistoryData flowHistoryData =  businessLogic.startFlow(flowDefinitionObjectProperty.get(), map,));
     }
 
     private void addHistoryFlow(FlowHistoryData flowHistoryData) {
@@ -254,14 +317,22 @@ public class FlowExecutionController {
 
     public void onTableAllFlowExecClick(MouseEvent mouseEvent) {
         FlowExecutionModelView selected = tableAllFlowExecutions.getSelectionModel().getSelectedItem();
+        stepExecutionResultTable.setItems(selected.getStepExecModelViews());
+        moreStepDetailsTable.setItems(selected.getStepExecModelViews());
         tableExecutionsDetails.setItems(flowExecutionModelViews);
         tableFreeInputsExecDetails.setItems(selected.getFreeInputsExecViewModels());
         tableOutputExecution.setItems(selected.getOutputExecModelViews());
+
     }
 
     public void onKeyPressedValueInput(KeyEvent keyEvent) {
         if(keyEvent.getCode() == KeyCode.ENTER){
             onClickEnterInputValue();
         }
+    }
+
+    public void onClickStepExecutionResultTable(MouseEvent mouseEvent) {
+        StepExecModelView selected = stepExecutionResultTable.getSelectionModel().getSelectedItem();
+        stepLogsListView.setItems(selected.getLogsStep());
     }
 }

@@ -9,7 +9,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.BoxBlur?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -77,11 +76,7 @@
             <Button fx:id="btnStartFlow" disable="true" mnemonicParsing="false" onAction="#onClickStartFlow" text="Start Flow" />
             <Label fx:id="lblStatusFreeInput" prefWidth="250.0" textAlignment="CENTER" textFill="#ab8314" />
             <Label fx:id="lblProgressBar" text="Label" />
-            <ProgressBar fx:id="progressBarFlow" prefWidth="200.0" progress="0.0">
-               <effect>
-                  <BoxBlur />
-               </effect>
-            </ProgressBar>
+            <ProgressBar fx:id="progressBarFlow" prefWidth="200.0" progress="0.0" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -89,7 +84,7 @@
       </VBox>
    </left>
    <center>
-      <HBox BorderPane.alignment="CENTER">
+      <HBox fx:id="executionHBOX" BorderPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER" prefWidth="361.0" spacing="10.0">
                <children>
@@ -155,7 +150,7 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="stepExecutionResultTable" prefHeight="200.0">
+                  <TableView fx:id="stepExecutionResultTable" onMouseClicked="#onClickStepExecutionResultTable" prefHeight="200.0">
                     <columns>
                       <TableColumn fx:id="stepNameExecResCol" prefWidth="75.0" text="Step Name" />
                       <TableColumn fx:id="stepResultExecResultRow" prefWidth="75.0" text="Step Result" />
@@ -168,10 +163,10 @@
                   </Label>
                   <TableView fx:id="moreStepDetailsTable" prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="Step Name" />
-                      <TableColumn prefWidth="75.0" text="Step Result" />
-                        <TableColumn prefWidth="75.0" text="Time Started" />
-                        <TableColumn prefWidth="75.0" text="Run Time" />
+                      <TableColumn fx:id="stepNameStepDetailsCol" prefWidth="75.0" text="Step Name" />
+                      <TableColumn fx:id="stepResStepDetailsCol" prefWidth="75.0" text="Step Result" />
+                        <TableColumn fx:id="timeStartStepDetailsCol" prefWidth="75.0" text="Time Started" />
+                        <TableColumn fx:id="runtimeMoreStepCol" prefWidth="75.0" text="Run Time" />
                     </columns>
                   </TableView>
                   <Label text="List Input Step" textFill="#361919">

@@ -46,6 +46,9 @@ public class FlowExecutionModelView {
         }
 
     }
+    public ObservableList<StepExecModelView> getStepExecModelViews() {
+        return stepExecModelViews;
+    }
 
     public void addFreeInputExec(FreeInputsExecViewModel freeInputsExecViewModel){
         freeInputsExecViewModels.add(freeInputsExecViewModel);

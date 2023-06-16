@@ -1,6 +1,7 @@
 package Flow.Execution;
 
 
+import BusinessLogic.ProgressCallback;
 import Flow.Defenition.FreeInputsDefinition;
 import Flow.Defenition.StepUsageDeclaration;
 import Flow.Execution.Context.FlowExecutionResult;
@@ -28,7 +29,7 @@ public class FLowExecutor {
         flowsHistory = new ArrayList<>();
         flowStats = new FlowStatsImpl();
     }
-    public void executeFlow(FlowExecution flowExecution) {
+    public void executeFlow(FlowExecution flowExecution, ProgressCallback progressCallback) {
         logger.addLog("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
         StepExecutionContext context = new StepExecutionContextImpl(flowExecution.getFlowDefinition(),flowExecution.getUserFreeInputs()); // actual object goes here...
         FlowHistoryData flowHistoryData = new FlowHistoryDataImpl(flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId());
@@ -53,6 +54,9 @@ public class FLowExecutor {
             long timeStartStep = System.currentTimeMillis();
             stepHistoryData.setTimeRunStarted(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             StepResult stepResult = stepUsageDeclaration.getStepDefinition().invoke(context);
+
+            progressCallback.updateProgress((double)(i + 1)/ flowExecution.getFlowDefinition().getFlowSteps().size());
+
             long timeStepElapsedMS =  System.currentTimeMillis() - timeStartStep;
             stepHistoryData.setRuntime(timeStepElapsedMS);
             flowStats.addStepStats(flowExecution.getFlowDefinition(), stepUsageDeclaration, timeStepElapsedMS);

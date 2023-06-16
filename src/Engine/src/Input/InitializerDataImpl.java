@@ -6,7 +6,6 @@ import Convert.FlowConverterImpl;
 import Flow.Defenition.FlowDefinition;
 import Input.Read.FlowReaderXML;
 import JAXB.Generated.STFlow;
-import Step.Declaration.DataDefinitionDeclaration;
 
 import java.util.List;
 import java.util.stream.Collectors;
