@@ -91,7 +91,8 @@ public class FLowExecutor {
                     freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType(),
                     freeInputsDefinition.getDataDefinitionDeclaration().necessity(),
                     userInputsForHistory.get(freeInputsDefinition.getDataDefinitionDeclaration().getAliasName()),
-                            freeInputsDefinition.getDataDefinitionDeclaration().getAliasName());
+                            freeInputsDefinition.getDataDefinitionDeclaration().getAliasName(),
+                    freeInputsDefinition.getDataDefinitionDeclaration().userString());
             flowHistoryData.addFreeInputHistory(freeInputHistoryData);
         }
     }

@@ -9,6 +9,9 @@ public class FreeInputsViewModel {
     private String necessity;
     private String stepsName;
 
+
+    private String userString;
+
     private ReadOnlyStringWrapper nameProperty;
     private ReadOnlyStringWrapper typeProperty;
     private ReadOnlyStringWrapper necessityProperty;
@@ -18,6 +21,7 @@ public class FreeInputsViewModel {
         name = freeInputsDefinition.getDataDefinitionDeclaration().getAliasName();
         type = freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType().getSimpleName();
         nameProperty = new ReadOnlyStringWrapper(name);
+        userString = freeInputsDefinition.getDataDefinitionDeclaration().userString();
         stepsName = "";
         stepsNameProperty = new ReadOnlyStringWrapper(stepsName);
         necessity = freeInputsDefinition.getDataDefinitionDeclaration().necessity().toString();
@@ -26,6 +30,8 @@ public class FreeInputsViewModel {
         if (stepsName.length() > 2) stepsName.substring(0, stepsName.length() - 2);
     }
 
+
+    public String getUserString() {return userString;}
     public String getName() {
         return name;
     }

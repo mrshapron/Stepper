@@ -45,6 +45,7 @@ import javafx.animation.Interpolator;
 public class FlowExecutionController {
 
 
+    @FXML private Label lblFreeInputUserString;
     @FXML private HBox executionHBOX;
     @FXML private Button btnRunFlow;
     @FXML private Label lblStatusFreeInput;
@@ -125,6 +126,7 @@ public class FlowExecutionController {
     private StringProperty statusRunFlowFreeInputs;
     private BooleanProperty isFlowCanRun;
     private ObservableList<FlowExecutionModelView> flowExecutionModelViews;
+    private StringProperty userStringFreeInputProperty;
     public FlowExecutionController(){
         flowDefinitionObjectProperty = new SimpleObjectProperty<>(null);
     }
@@ -180,6 +182,9 @@ public class FlowExecutionController {
         StringBinding flowNameBinding = Bindings.createStringBinding(() -> this.flowDefinitionObjectProperty.getName(), flowDefinitionObjectProperty);
         lblFlowName.textProperty().bind(flowNameBinding);
         executionHBOX.disableProperty().bind(Bindings.isEmpty(flowExecutionModelViews));
+        userStringFreeInputProperty = new SimpleStringProperty("");
+        lblFreeInputUserString.textProperty().bind(Bindings.concat(userStringFreeInputProperty, " : "));
+
     }
 
     public void setFlowDefinition(TableViewFlowModel flowDefinition){
@@ -256,6 +261,7 @@ public class FlowExecutionController {
         FreeInputsViewModel selectedInput = tableFreeInputs.getSelectionModel().getSelectedItem();
         currentSelectedFreeInput.set(selectedInput.getName());
         Optional<CurValInputModelView> selected = curValInputModelViews.stream().filter(curValInputModelView -> curValInputModelView.getInputName().equals(selectedInput.getName())).findFirst();
+        userStringFreeInputProperty.set(selectedInput.getUserString());
         if(selected.isPresent()){
             valueEnteredProperty.set(selected.get().getValueEntered());
         }else{
