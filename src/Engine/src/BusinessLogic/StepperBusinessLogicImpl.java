@@ -1,6 +1,7 @@
 package BusinessLogic;
 
 import Flow.Defenition.FlowDefinition;
+import Flow.Defenition.StepperDefinition;
 import Flow.Execution.FLowExecutor;
 import Flow.Execution.FlowExecution;
 import Flow.Execution.History.FlowHistoryData;
@@ -17,20 +18,26 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class StepperBusinessLogicImpl implements StepperBusinessLogic {
+    private static final int DEFAULT_NUMBER_THREADS = 6;
     private InitializerData initializerData;
     private FLowExecutor fLowExecutor;
     private UserDataReaderHandler userDataReaderHandler;
     private ExecutorService executorService;
+    private StepperDefinition stepperDefinition;
     public StepperBusinessLogicImpl(){
         initializerData = new InitializerDataImpl();
         fLowExecutor = new FLowExecutor();
+
         userDataReaderHandler = new UserDataReaderHandlerImpl();
-        executorService = Executors.newFixedThreadPool(5);
     }
     @Override
-    public List<FlowDefinition> initializeFlowsList(String absolutePath) {
-        List<FlowDefinition> flows =  initializerData.InitializeFlows(absolutePath);
-        return flows;
+    public List<FlowDefinition> initializeStepper(String absolutePath) {
+        this.stepperDefinition =  initializerData.InitializeStepper(absolutePath);
+        if (this.stepperDefinition.getNumberOfThreads() != 0)
+            executorService = Executors.newFixedThreadPool(this.stepperDefinition.getNumberOfThreads());
+        else
+            executorService = Executors.newFixedThreadPool(DEFAULT_NUMBER_THREADS);
+        return this.stepperDefinition.getFlows();
     }
 
     public FlowHistoryData startFlow(FlowDefinition flowDefinition, Map<String,String> freeInputsValues, ProgressCallback progressCallback) {

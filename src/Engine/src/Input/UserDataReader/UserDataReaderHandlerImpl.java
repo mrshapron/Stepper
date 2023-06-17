@@ -32,7 +32,7 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
             if (!checkFilePathXML(filePathXML)) {
                 System.out.println("There was a problem in File Path, try again..");
             } else {
-                flowDefinitions = initializerData.InitializeFlows(filePathXML);
+                flowDefinitions = initializerData.InitializeStepper(filePathXML).getFlows();
             }
         }
         System.out.println("The file had been loaded properly.");

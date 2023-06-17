@@ -18,7 +18,7 @@
             <Font name="Arial Bold" size="25.0" />
          </font>
       </Label>
-      <HBox  alignment="CENTER" prefWidth="200.0">
+      <HBox alignment="CENTER" prefWidth="200.0">
          <children>
             <Button fx:id="btnLoadFile" mnemonicParsing="false" onAction="#onClickLoadFile" text="Load FIle">
                <HBox.margin>
@@ -46,6 +46,13 @@
                       </AnchorPane>
                   </content>
                 </Tab>
+                  <Tab text="Executions History">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" >
+                          <fx:include source="ExecutionsHistoryComponent/ExecutionsHistory.fxml" fx:id="executionsHistoryChild"/>
+                      </AnchorPane>
+                    </content>
+                  </Tab>
               </tabs>
             </TabPane>
          </children>

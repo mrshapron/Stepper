@@ -4,8 +4,11 @@ package Input;
 import Convert.FlowConverter;
 import Convert.FlowConverterImpl;
 import Flow.Defenition.FlowDefinition;
+import Flow.Defenition.StepperDefinition;
+import Flow.Defenition.StepperDefinitionImpl;
 import Input.Read.FlowReaderXML;
 import JAXB.Generated.STFlow;
+import JAXB.Generated.STStepper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,14 +22,13 @@ public class InitializerDataImpl implements InitializerData {
         _flowConverter = new FlowConverterImpl();
     }
     @Override
-    public List<FlowDefinition> InitializeFlows(String filePath) {
-        List<STFlow> stFlows = _flowReaderXML.readXMLFile(filePath);
-        if (stFlows == null){
+    public StepperDefinition InitializeStepper(String filePath) {
+        STStepper stStepper = _flowReaderXML.readXMLFile(filePath);
+        if (stStepper.getSTFlows() == null){
             System.out.println("There was a problem in XML File..");
             return null;
         }
-
-        List<FlowDefinition> flowDefinitions = stFlows.stream()
+        List<FlowDefinition> flowDefinitions = stStepper.getSTFlows().getSTFlow().stream()
                 .map(stFlow ->  _flowConverter.Convert(stFlow))
                 .collect(Collectors.toList());
         if(flowDefinitions.isEmpty())
@@ -42,7 +44,7 @@ public class InitializerDataImpl implements InitializerData {
             if (!flowDefinition.validateFlowStructure())
                 return null;
         }
-        return flowDefinitions;
+        return new StepperDefinitionImpl(flowDefinitions, stStepper.getSTThreadPool());
     }
 
 }

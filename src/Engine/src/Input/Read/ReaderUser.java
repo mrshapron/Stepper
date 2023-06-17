@@ -2,9 +2,10 @@ package Input.Read;
 
 
 import JAXB.Generated.STFlow;
+import JAXB.Generated.STStepper;
 
 import java.util.List;
 
 public interface ReaderUser {
-    List<STFlow> readXMLFile(String xmlFilePath);
+    STStepper readXMLFile(String xmlFilePath);
 }

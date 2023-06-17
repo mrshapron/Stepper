@@ -1,9 +1,7 @@
 package Components.Main;
 
 import BusinessLogic.StepperBusinessLogic;
-import BusinessLogic.StepperBusinessLogicImpl;
 import Components.Main.FlowDefinitionComponent.FlowDefinitionsPageController;
-import Components.Main.FlowDefinitionComponent.ModelViews.FreeInputsViewModel;
 import Components.Main.FlowExecutionComponent.FlowExecutionController;
 import Flow.Defenition.FlowDefinition;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
@@ -76,7 +74,7 @@ public class MainController {
         String absolutePath = selectedFile.getAbsolutePath();
         selectedFileProperty.set(absolutePath);
         opacityProperty.set(50);
-        flowDefinitions = businessLogic.initializeFlowsList(absolutePath);
+        flowDefinitions = businessLogic.initializeStepper(absolutePath);
         initializeFlowsList(flowDefinitions);
     }
 

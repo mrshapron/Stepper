@@ -14,15 +14,14 @@ import java.util.List;
 public class FlowReaderXML implements ReaderUser {
     private final String JAXB_PACKAGE_NAME = "JAXB.Generated";
     @Override
-    public List<STFlow> readXMLFile(String xmlFilePath) {
+    public STStepper readXMLFile(String xmlFilePath) {
         try {
             InputStream inputStream = new FileInputStream(xmlFilePath);
             STStepper stepper = deserializeFrom(inputStream, xmlFilePath, JAXB_PACKAGE_NAME);
-            return stepper.getSTFlows().getSTFlow();
+            return stepper;
         } catch (FileNotFoundException e) {
             return null;
         } catch (JAXBException e) {
-
             return null;
         }
     }
