@@ -15,12 +15,6 @@ public class ContinuationMetaDataImpl implements ContinuationMetaData {
         this.flowDefinitionSource = flowDefinitionSource;
     }
 
-    public ContinuationMetaDataImpl() {
-        this.continuationMappings = new ArrayList<>();
-        this.flowDefinitionTarget = null;
-        this.flowDefinitionSource = null;
-    }
-
     @Override
     public void addCustomContinuationMapping(CustomContinuationMapping continuationMapping) {
         continuationMappings.add(continuationMapping);
