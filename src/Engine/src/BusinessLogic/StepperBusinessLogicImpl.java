@@ -1,7 +1,8 @@
 package BusinessLogic;
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.StepperDefinition;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.InitialInputValue;
+import Flow.Definition.StepperDefinition;
 import Flow.Execution.FLowExecutor;
 import Flow.Execution.FlowExecution;
 import Flow.Execution.History.FlowHistoryData;
@@ -42,7 +43,9 @@ public class StepperBusinessLogicImpl implements StepperBusinessLogic {
 
     public FlowHistoryData startFlow(FlowDefinition flowDefinition, Map<String,String> freeInputsValues, ProgressCallback progressCallback) {
         UUID uuid = UUID.randomUUID();
-        Map<String,Object> values =  userDataReaderHandler.ConvertDataInput(flowDefinition.getFlowFreeInputs(), freeInputsValues);
+        List<InitialInputValue> initialInputValues = flowDefinition.getInitialInputValues();
+        initialInputValues.forEach(initialInputValue -> freeInputsValues.put(initialInputValue.inputName(),initialInputValue.initialValue()));
+        Map<String,Object> values =  userDataReaderHandler.ConvertDataInput(flowDefinition.getFlowFreeInputsIncludeInitializedValue(), freeInputsValues);
         FlowExecution execution = new FlowExecution(uuid.toString(), flowDefinition, values);
         fLowExecutor.executeFlow(execution, progressCallback);
         return fLowExecutor.getFlowsHistory().stream()

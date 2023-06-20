@@ -1,8 +1,8 @@
 package Input.UserDataReader;
 
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.FreeInputsDefinition;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.FreeInputsDefinition;
 import Input.InitializerData;
 import Input.InitializerDataImpl;
 import Step.DataNecessity;

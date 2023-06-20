@@ -1,6 +1,6 @@
 package Flow.Execution.History;
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 import Flow.Logger.FlowLog;
 import Step.StepResult;
 

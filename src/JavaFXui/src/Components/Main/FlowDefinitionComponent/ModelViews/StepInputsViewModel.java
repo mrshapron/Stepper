@@ -1,14 +1,13 @@
 package Components.Main.FlowDefinitionComponent.ModelViews;
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.StepUsageDeclaration;
 import Mapping.MappingDataDefinition;
 import Step.Declaration.DataDefinitionDeclaration;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class StepInputsViewModel {
     private String name;

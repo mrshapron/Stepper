@@ -3,7 +3,7 @@ package Components.Main;
 import BusinessLogic.StepperBusinessLogic;
 import Components.Main.FlowDefinitionComponent.FlowDefinitionsPageController;
 import Components.Main.FlowExecutionComponent.FlowExecutionController;
-import Flow.Defenition.FlowDefinition;
+import Flow.Definition.FlowDefinition;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -79,13 +79,13 @@ public class MainController {
     }
 
     private void initializeFlowsList(List<FlowDefinition> flowDefinitions) {
-        tableViewFlowModels.removeAll();
+        tableViewFlowModels.clear();
         flowDefinitions.forEach(flowDefinition -> tableViewFlowModels.add(new TableViewFlowModel(flowDefinition)));
     }
 
     public void switchToFlowExecutionTab(TableViewFlowModel tableViewFlowModel) {
         tabPane.getSelectionModel().select(1); // Switch to the "Flow Executions" tab
-        flowExecutionViewChildController.setFlowDefinition(tableViewFlowModel);
+        flowExecutionViewChildController.setPrimaryFlow(tableViewFlowModel);
         flowExecutionViewChildController.setBusinessLogic(this.businessLogic);
     }
 

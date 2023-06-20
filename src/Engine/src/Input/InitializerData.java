@@ -1,7 +1,7 @@
 package Input;
 
 
-import Flow.Defenition.StepperDefinition;
+import Flow.Definition.StepperDefinition;
 
 public interface InitializerData {
     StepperDefinition InitializeStepper(String filePath);

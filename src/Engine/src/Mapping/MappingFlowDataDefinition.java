@@ -1,6 +1,6 @@
 package Mapping;
 
-import Flow.Defenition.FlowDefinition;
+import Flow.Definition.FlowDefinition;
 
 public interface MappingFlowDataDefinition {
     FlowDefinition flowDefinition();

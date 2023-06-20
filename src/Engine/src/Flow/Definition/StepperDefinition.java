@@ -1,4 +1,4 @@
-package Flow.Defenition;
+package Flow.Definition;
 
 import java.util.List;
 

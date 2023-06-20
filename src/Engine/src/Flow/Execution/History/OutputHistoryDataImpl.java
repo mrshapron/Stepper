@@ -1,6 +1,6 @@
 package Flow.Execution.History;
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 
 public class OutputHistoryDataImpl implements OutputHistoryData {
     private String finalName;

@@ -41,15 +41,15 @@
                 </Tab>
                 <Tab text="Flow Executions">
                   <content>
-                      <AnchorPane fx:id="flowExecutionContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <AnchorPane fx:id="flowExecutionContainer" minHeight="0.0" minWidth="0.0">
                           <fx:include fx:id="flowExecutionViewChild" source="FlowExecutionComponent/FlowExecution.fxml" />
                       </AnchorPane>
                   </content>
                 </Tab>
                   <Tab text="Executions History">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" >
-                          <fx:include source="ExecutionsHistoryComponent/ExecutionsHistory.fxml" fx:id="executionsHistoryChild"/>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <fx:include fx:id="executionsHistoryChild" source="ExecutionsHistoryComponent/ExecutionsHistory.fxml" />
                       </AnchorPane>
                     </content>
                   </Tab>

@@ -1,7 +1,7 @@
 package Statistics;
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.StepUsageDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;

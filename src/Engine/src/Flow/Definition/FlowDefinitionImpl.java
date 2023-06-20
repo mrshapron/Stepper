@@ -1,4 +1,6 @@
-package Flow.Defenition;
+package Flow.Definition;
+
+import ContinuationPac.*;
 
 import Log.Logger;
 import Log.LoggerImpl;
@@ -10,15 +12,19 @@ import Step.Declaration.DataDefinitionDeclaration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FlowDefinitionImpl implements FlowDefinition{
+public class FlowDefinitionImpl implements FlowDefinition {
     private final String name;
     private final String description;
     private final List<String> flowOutputs;
     private final List<StepUsageDeclaration> steps;
     private final List<DataDefinitionDeclaration> freeOutputs;
     private final List<FreeInputsDefinition> freeInputs;
+    private List<FreeInputsDefinition> freeInputsWithInitialized;
     private final List<MappingDataDefinition> mappedDataDefinitions;
     private final List<MappingDataDefinition> customMappingDefs;
+
+    private final List<Continuation> continuationsFlow;
+    private final List<InitialInputValue> initialInputValues;
 
     Map<DataDefinitionDeclaration, Boolean> usedInput;
     private final Logger logger;
@@ -34,7 +40,10 @@ public class FlowDefinitionImpl implements FlowDefinition{
         freeInputs = new ArrayList<>();
         customMappingDefs = new ArrayList<>();
         usedInput=new HashMap<>();
+        continuationsFlow = new ArrayList<>();
+        initialInputValues = new ArrayList<>();
     }
+
     public void addCustomMapping(MappingDataDefinition customMappingDef){
         customMappingDefs.add(customMappingDef);}
     public void addStepUsageDec(StepUsageDeclaration stepUsageDec){
@@ -42,6 +51,76 @@ public class FlowDefinitionImpl implements FlowDefinition{
     }
     public void addFlowOutput(String outputName) {
         flowOutputs.add(outputName);
+    }
+
+    public void addContinuationFlow(ContinuationMetaDataFlowDef continuationMetaData){
+        Continuation continuation =  initializeAutomaticContinuationMapping(continuationMetaData.flowDefinitionTarget());
+        initializeCustomContinuationMapping(continuation, continuationMetaData.customContinuationMapping());
+        continuationsFlow.add(continuation);
+    }
+
+    @Override
+    public void addInitialValue(String inputName, String initialValue) {
+        initialInputValues.add(new InitialInputValueImpl(inputName,initialValue));
+    }
+
+    @Override
+    public List<Continuation> getContinuationFlows() {
+        return continuationsFlow;
+    }
+
+    @Override
+    public List<InitialInputValue> getInitialInputValues() {
+        return this.initialInputValues;
+    }
+
+    private void initializeCustomContinuationMapping(Continuation continuation, List<CustomContinuationMapping> customContinuationMapping) {
+        for (CustomContinuationMapping custom : customContinuationMapping) {
+            for (Map.Entry<StepUsageDeclaration, List<DataDefinitionDeclaration>> entry : this.getAllOutputs().entrySet()) {
+                StepUsageDeclaration stepOutputSource = entry.getKey();
+                List<DataDefinitionDeclaration> outputsSourceData = entry.getValue();
+                for (DataDefinitionDeclaration outputSourceData : outputsSourceData) {
+                    if(outputSourceData.getAliasName().equals(custom.sourceDataName())){
+                        for (FreeInputsDefinition freeInputsTarget : continuation.flowDefinition().getFlowFreeInputs()) {
+                            if(freeInputsTarget.getDataDefinitionDeclaration().getAliasName().equals(custom.targetDataName())){
+                                MappingDataDefinition mappingDataDefinition = new MappingDataDefinitionImpl(stepOutputSource,
+                                        freeInputsTarget.getStepUsageDeclarations().get(0), outputSourceData, freeInputsTarget.getDataDefinitionDeclaration());
+                                ContinuationMapping continuationCustomMapping = new ContinuationMappingImpl(mappingDataDefinition, this, continuation.flowDefinition());
+                                //removing auto continuation mapping that was customized (override)
+                                List<ContinuationMapping> filteredRemove = continuation.continuationMappings().stream()
+                                        .filter(continuationMapping1 ->
+                                                continuationMapping1.mappingFlowDataDefinition().getTargetData()
+                                                        .equals(continuationCustomMapping.mappingFlowDataDefinition().getTargetData())).collect(Collectors.toList());
+                                if(!filteredRemove.isEmpty()){
+                                    continuation.continuationMappings().removeAll(filteredRemove);
+                                }
+                                continuation.addContinuationMapping(continuationCustomMapping);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Continuation initializeAutomaticContinuationMapping(FlowDefinition flowDefinition) {
+        Continuation continuation = new ContinuationImplementation(flowDefinition);
+        for (FreeInputsDefinition freeInputsTarget : flowDefinition.getFlowFreeInputs()) {
+            for (Map.Entry<StepUsageDeclaration, List<DataDefinitionDeclaration>> entry : this.getAllOutputs().entrySet()) {
+                StepUsageDeclaration stepOutputSource = entry.getKey();
+                List<DataDefinitionDeclaration> outputSource = entry.getValue();
+                for (DataDefinitionDeclaration outputSourceData : outputSource) {
+                    if(freeInputsTarget.getDataDefinitionDeclaration().getAliasName().equals(outputSourceData.getAliasName())){
+                        MappingDataDefinition mappingDataDefinition = new MappingDataDefinitionImpl(
+                                stepOutputSource,freeInputsTarget.getStepUsageDeclarations().get(0),outputSourceData,freeInputsTarget.getDataDefinitionDeclaration()
+                        );
+                        ContinuationMapping continuationMapping = new ContinuationMappingImpl(mappingDataDefinition, this , flowDefinition);
+                        continuation.addContinuationMapping(continuationMapping);
+                    }
+                }
+            }
+        }
+        return continuation;
     }
 
     @Override
@@ -82,23 +161,33 @@ public class FlowDefinitionImpl implements FlowDefinition{
         for (StepUsageDeclaration stepUsageDec : steps) {
             for (int indexInput = 0; indexInput < stepUsageDec.getStepDefinition().inputs().size(); indexInput++) {
                 DataDefinitionDeclaration inputDataDefDec = stepUsageDec.getStepDefinition().inputs().get(indexInput);
-                if (!usedInput.containsKey(inputDataDefDec) || !usedInput.get(inputDataDefDec) )
-                    if(freeInputs.stream().anyMatch(freeInputsDefinition ->
-                            freeInputsDefinition.getDataDefinitionDeclaration().getAliasName().equals(inputDataDefDec.getAliasName())&&
-                            freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType().equals(inputDataDefDec.dataDefinition().getType()))){
+                if (!usedInput.containsKey(inputDataDefDec) || !usedInput.get(inputDataDefDec))
+                    if (freeInputs.stream().anyMatch(freeInputsDefinition ->
+                            freeInputsDefinition.getDataDefinitionDeclaration().getAliasName().equals(inputDataDefDec.getAliasName()) &&
+                                    freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType().equals(inputDataDefDec.dataDefinition().getType()))) {
+
                         freeInputs.stream().filter(freeInputsDefinition -> freeInputsDefinition.getDataDefinitionDeclaration()
                                         .getAliasName().equals(inputDataDefDec.getAliasName()) &&
                                         freeInputsDefinition.getDataDefinitionDeclaration().dataDefinition().getType()
-                                        .equals(inputDataDefDec.dataDefinition().getType())).collect(Collectors.toList())
+                                                .equals(inputDataDefDec.dataDefinition().getType())).collect(Collectors.toList())
                                 .get(0).addStepUsageDeclaration(stepUsageDec);
-                    }else {
+
+                    } else {
                         FreeInputsDefinition freeInputsDefinition = new FreeInputsDefinitionImpl(inputDataDefDec);
                         freeInputsDefinition.addStepUsageDeclaration(stepUsageDec);
                         freeInputs.add(freeInputsDefinition);
                     }
             }
         }
+        freeInputsWithInitialized = new ArrayList<>(freeInputs);
+        //removing initial values from free inputs list
+        for (InitialInputValue initialInputValue : initialInputValues) {
+            freeInputs.removeIf(freeInputsDefinition ->
+                    freeInputsDefinition.getDataDefinitionDeclaration().getAliasName()
+                            .equals(initialInputValue.inputName()));
+        }
     }
+
     @Override
     public void customMapping() {
         if(steps == null)
@@ -166,6 +255,11 @@ public class FlowDefinitionImpl implements FlowDefinition{
     @Override
     public List<FreeInputsDefinition> getFlowFreeInputs() {
         return new ArrayList<>(freeInputs);
+    }
+
+    @Override
+    public List<FreeInputsDefinition> getFlowFreeInputsIncludeInitializedValue() {
+        return freeInputsWithInitialized;
     }
 
     @Override

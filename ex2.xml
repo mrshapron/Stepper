@@ -40,7 +40,7 @@
 			</ST-Continuations>
 			<ST-InitialInputValues>
 				<ST-InitialInputValue input-name="OPERATION" initial-value="ZIP"/>
-			</ST-InitialInputValues>			
+			</ST-InitialInputValues>
 		</ST-Flow>
 		<ST-Flow name="Delete Matched Files">
 			<ST-FlowDescription>Given a folder, deletes files matching a certain pattern</ST-FlowDescription>		

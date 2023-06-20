@@ -1,7 +1,7 @@
 package Flow.Execution.Context;
 
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 import Flow.Execution.History.FlowHistoryData;
 import Flow.Execution.History.StepHistoryData;
 

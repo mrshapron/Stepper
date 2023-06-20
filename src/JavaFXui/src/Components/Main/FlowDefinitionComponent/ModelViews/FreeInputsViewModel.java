@@ -1,6 +1,6 @@
 package Components.Main.FlowDefinitionComponent.ModelViews;
 
-import Flow.Defenition.FreeInputsDefinition;
+import Flow.Definition.FreeInputsDefinition;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
 public class FreeInputsViewModel {

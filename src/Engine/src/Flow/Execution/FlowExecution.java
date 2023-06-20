@@ -1,7 +1,7 @@
 package Flow.Execution;
 
 
-import Flow.Defenition.FlowDefinition;
+import Flow.Definition.FlowDefinition;
 import Flow.Execution.Context.FlowExecutionResult;
 
 import java.time.Duration;

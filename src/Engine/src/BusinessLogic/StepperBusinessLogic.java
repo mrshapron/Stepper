@@ -1,6 +1,6 @@
 package BusinessLogic;
 
-import Flow.Defenition.FlowDefinition;
+import Flow.Definition.FlowDefinition;
 import Flow.Execution.History.FlowHistoryData;
 
 import java.util.List;

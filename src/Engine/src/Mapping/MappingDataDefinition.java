@@ -1,8 +1,7 @@
 package Mapping;
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 import Step.Declaration.DataDefinitionDeclaration;
-import Step.StepDefinition;
 
 public interface MappingDataDefinition {
     StepUsageDeclaration getSourceStep();
