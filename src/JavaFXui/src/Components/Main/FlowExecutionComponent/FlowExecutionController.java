@@ -1,6 +1,7 @@
 package Components.Main.FlowExecutionComponent;
 
 import BusinessLogic.StepperBusinessLogic;
+import Components.Main.ExecutionsHistoryComponent.ExecutionsHistoryController;
 import Components.Main.FlowDefinitionComponent.ModelViews.FreeInputsViewModel;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
 import Components.Main.FlowExecutionComponent.ModelView.*;
@@ -131,6 +132,7 @@ public class FlowExecutionController {
     private StringProperty lblRunFlowContinueProperty;
     private Queue<Map<String,String>> freeInputsValuesContinuationQueue;
     private Queue<FlowDefinition> flowOrderContinuationQueue;
+    private ExecutionsHistoryController executionsHistoryController;
     public FlowExecutionController(){
         flowDefinitionObjectProperty = new SimpleObjectProperty<>(null);
         freeInputsValuesContinuationQueue = new ArrayDeque<>();
@@ -200,6 +202,10 @@ public class FlowExecutionController {
     public void setPrimaryFlow(TableViewFlowModel flowDefinition){
         this.primaryTableViewModel = flowDefinition;
         setFlowDefinitionView(flowDefinition);
+    }
+
+    public void setExecutionsHistoryController(ExecutionsHistoryController executionsHistoryController){
+        this.executionsHistoryController = executionsHistoryController;
     }
 
     public void setFlowDefinitionView(TableViewFlowModel flowDefinition){
@@ -336,6 +342,7 @@ public class FlowExecutionController {
             });
         }
         setFlowDefinitionView(this.primaryTableViewModel);
+        isContinuationOn.set(false);
         //FlowHistoryData flowHistoryData =  businessLogic.startFlow(flowDefinitionObjectProperty.get(), map,));
     }
 
@@ -370,7 +377,7 @@ public class FlowExecutionController {
                             String value = entry.getValue();
                             if (value.equals("#By Continuation#")) {
                                 FlowHistoryData lastFlowHistoryData = flowHistoryDataList.get(flowHistoryDataList.size() - 1);
-                                Optional<Continuation> lastFlowContinuationOptional = lastFlowHistoryData.flowDefinition().getContinuationFlows().stream()
+                                Optional<Continuation> lastFlowContinuationOptional = lastFlowHistoryData.getFlowDefinition().getContinuationFlows().stream()
                                         .filter(continuation -> continuation.flowDefinition()
                                                 .equals(flowDefinitionObjectProperty.get())).findFirst();
                                 if (lastFlowContinuationOptional.isPresent()) {
@@ -421,7 +428,8 @@ public class FlowExecutionController {
     }
 
     private void addHistoryFlow(FlowHistoryData flowHistoryData) {
-        flowExecutionModelViews.add(new FlowExecutionModelView(flowHistoryData));
+        flowExecutionModelViews.add(new FlowExecutionModelView(flowHistoryData, flowHistoryData.getFlowDefinition()));
+        executionsHistoryController.setFlowExecutionModelViews(flowExecutionModelViews);
     }
 
     public void setBusinessLogic(StepperBusinessLogic businessLogic) {
@@ -481,5 +489,11 @@ public class FlowExecutionController {
                 enterValueToSelectedInput(freeInputsViewModelOptional.get(), "#By Continuation#");
             }
         }
+    }
+
+    public void setValuesFreeInputs(ObservableList<FreeInputsExecViewModel> freeInputsExecViewModels) {
+        freeInputsExecViewModels.forEach(freeInputsExecViewModel -> {
+            curValInputModelViews.add(new CurValInputModelView(freeInputsExecViewModel.getInputFinalName(),freeInputsExecViewModel.getValue()));
+        });
     }
 }

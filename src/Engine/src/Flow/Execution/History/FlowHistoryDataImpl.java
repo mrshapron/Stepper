@@ -38,7 +38,7 @@ public class FlowHistoryDataImpl implements FlowHistoryData {
     }
 
     @Override
-    public FlowDefinition flowDefinition() {
+    public FlowDefinition getFlowDefinition() {
         return this.flowDefinition;
     }
 

@@ -1,8 +1,10 @@
 package Components.Main;
 
 import BusinessLogic.StepperBusinessLogic;
+import Components.Main.ExecutionsHistoryComponent.ExecutionsHistoryController;
 import Components.Main.FlowDefinitionComponent.FlowDefinitionsPageController;
 import Components.Main.FlowExecutionComponent.FlowExecutionController;
+import Components.Main.FlowExecutionComponent.ModelView.FlowExecutionModelView;
 import Flow.Definition.FlowDefinition;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
 import javafx.beans.property.*;
@@ -34,6 +36,7 @@ public class MainController {
     @FXML private Button btnLoadFile;
     @FXML private TextField txtFiledFileChosen;
     @FXML private AnchorPane flowDefinitionContainer;
+    @FXML private ExecutionsHistoryController executionsHistoryChildController;
     @FXML private FlowDefinitionsPageController flowDefinitionsViewChildController;
     @FXML private FlowExecutionController flowExecutionViewChildController;
     @FXML private TableView<FlowDefinition> tableViewFlows;
@@ -55,6 +58,7 @@ public class MainController {
         tableViewFlowModels = FXCollections.observableArrayList();
         flowDefinitionsViewChildController.bindFlowList(tableViewFlowModels);
         flowDefinitionsViewChildController.setMainController(this);
+        executionsHistoryChildController.setMainController(this);
         hBoxMain.disableProperty().bind(txtFiledFileChosen.textProperty().isEmpty());
     }
 
@@ -83,9 +87,15 @@ public class MainController {
         flowDefinitions.forEach(flowDefinition -> tableViewFlowModels.add(new TableViewFlowModel(flowDefinition)));
     }
 
+    public void switchToFlowExecutionTab(FlowExecutionModelView flowExecutionModelView){
+        switchToFlowExecutionTab(new TableViewFlowModel(flowExecutionModelView.getFlowDefinition()));
+        flowExecutionViewChildController.setValuesFreeInputs(flowExecutionModelView.getFreeInputsExecViewModels());
+    }
+
     public void switchToFlowExecutionTab(TableViewFlowModel tableViewFlowModel) {
         tabPane.getSelectionModel().select(1); // Switch to the "Flow Executions" tab
         flowExecutionViewChildController.setPrimaryFlow(tableViewFlowModel);
+        flowExecutionViewChildController.setExecutionsHistoryController(executionsHistoryChildController);
         flowExecutionViewChildController.setBusinessLogic(this.businessLogic);
     }
 

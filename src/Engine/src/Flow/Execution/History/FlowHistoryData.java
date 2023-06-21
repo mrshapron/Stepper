@@ -6,7 +6,7 @@ import Flow.Execution.Context.FlowExecutionResult;
 import java.util.List;
 
 public interface FlowHistoryData {
-    FlowDefinition flowDefinition();
+    FlowDefinition getFlowDefinition();
     String getFlowName();
     String getFlowID();
     String timeStarted();
