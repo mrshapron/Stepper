@@ -11,6 +11,9 @@ import Input.InitializerDataImpl;
 import Input.UserDataReader.UserDataReaderHandler;
 import Input.UserDataReader.UserDataReaderHandlerImpl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,5 +58,15 @@ public class StepperBusinessLogicImpl implements StepperBusinessLogic {
 
     public void executeTask(Runnable task){
         executorService.execute(task);
+    }
+
+    @Override
+    public List<FlowDefinition> initializeStepperViaFile(InputStream fileContent) {
+        this.stepperDefinition =  initializerData.InitializeStepperViaFile(fileContent);
+        if (this.stepperDefinition.getNumberOfThreads() != 0)
+            executorService = Executors.newFixedThreadPool(this.stepperDefinition.getNumberOfThreads());
+        else
+            executorService = Executors.newFixedThreadPool(DEFAULT_NUMBER_THREADS);
+        return this.stepperDefinition.getFlows();
     }
 }
