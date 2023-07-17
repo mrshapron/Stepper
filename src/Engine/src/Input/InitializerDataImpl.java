@@ -10,6 +10,9 @@ import Flow.Definition.StepperDefinitionImpl;
 import Input.Read.FlowReaderXML;
 import JAXB.Generated.STStepper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +31,33 @@ public class InitializerDataImpl implements InitializerData {
     @Override
     public StepperDefinition InitializeStepper(String filePath) {
         STStepper stStepper = _flowReaderXML.readXMLFile(filePath);
+        if (stStepper.getSTFlows() == null) {
+            System.out.println("There was a problem in XML File..");
+            return null;
+        }
+        List<FlowDefinition> flowDefinitions = stStepper.getSTFlows().getSTFlow().stream()
+                .map(stFlow -> _flowConverter.Convert(stFlow))
+                .collect(Collectors.toList());
+        if (flowDefinitions.isEmpty())
+            return null;
+        for (int i = 0; i < flowDefinitions.size(); i++) {
+            if (flowDefinitions.get(i) == null)
+                return null;
+        }
+        for (FlowDefinition flowDefinition : flowDefinitions) {
+            flowDefinition.automaticMapping();
+            flowDefinition.customMapping();
+            if (!flowDefinition.validateFlowStructure())
+                return null;
+        }
+
+        initializeContinuations(stStepper, flowDefinitions);
+        return new StepperDefinitionImpl(flowDefinitions, stStepper.getSTThreadPool());
+    }
+
+    @Override
+    public StepperDefinition InitializeStepperViaFile(InputStream fileContent) {
+        STStepper stStepper = _flowReaderXML.readXMLFileViaFile(fileContent);
         if (stStepper.getSTFlows() == null) {
             System.out.println("There was a problem in XML File..");
             return null;

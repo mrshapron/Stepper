@@ -8,7 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Engine" />
-    <orderEntry type="module" module-name="UI" />
     <orderEntry type="library" name="okHttp" level="project" />
+    <orderEntry type="module" module-name="DTO" />
+    <orderEntry type="library" name="Gson" level="project" />
   </component>
 </module>
