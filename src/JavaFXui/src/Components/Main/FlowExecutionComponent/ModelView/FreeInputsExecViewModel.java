@@ -6,13 +6,17 @@ public class FreeInputsExecViewModel {
     private String inputFinalName;
     private String type;
     private String value;
+    private String userString;
     private String necessity;
+
+
 
     public FreeInputsExecViewModel(FreeInputHistoryData freeInputHistoryData){
         this.inputFinalName = freeInputHistoryData.getFinalName();
         this.type = freeInputHistoryData.getType().getSimpleName();
         this.value = freeInputHistoryData.getData().toString();
         this.necessity = freeInputHistoryData.getNecessity().name();
+        this.userString = freeInputHistoryData.userString();
     }
 
     public String getInputFinalName() {
@@ -30,4 +34,5 @@ public class FreeInputsExecViewModel {
     public String getNecessity() {
         return necessity;
     }
+    public String getUserString() {return userString;}
 }

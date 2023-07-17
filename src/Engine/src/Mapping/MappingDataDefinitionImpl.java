@@ -1,9 +1,8 @@
 package Mapping;
 
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 import Step.Declaration.DataDefinitionDeclaration;
-import Step.StepDefinition;
 
 public class MappingDataDefinitionImpl implements MappingDataDefinition {
     private StepUsageDeclaration sourceStep;
@@ -12,11 +11,11 @@ public class MappingDataDefinitionImpl implements MappingDataDefinition {
     private DataDefinitionDeclaration targetData;
     public MappingDataDefinitionImpl(
             StepUsageDeclaration sourceStep, StepUsageDeclaration targetStep,
-            DataDefinitionDeclaration sourceDataName, DataDefinitionDeclaration targetDataName) {
+            DataDefinitionDeclaration sourceData, DataDefinitionDeclaration targetData) {
         this.sourceStep = sourceStep;
         this.targetStep = targetStep;
-        this.sourceData = sourceDataName;
-        this.targetData = targetDataName;
+        this.sourceData = sourceData;
+        this.targetData = targetData;
     }
     @Override
     public StepUsageDeclaration getSourceStep() {

@@ -1,8 +1,8 @@
 package Menu;
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.FreeInputsDefinition;
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.FreeInputsDefinition;
+import Flow.Definition.StepUsageDeclaration;
 import Flow.Execution.History.FlowHistoryData;
 import Flow.Execution.History.FreeInputHistoryData;
 import Flow.Execution.History.OutputHistoryData;

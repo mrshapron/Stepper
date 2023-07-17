@@ -1,10 +1,8 @@
 package Input;
 
 
-import Flow.Defenition.FlowDefinition;
-
-import java.util.List;
+import Flow.Definition.StepperDefinition;
 
 public interface InitializerData {
-    List<FlowDefinition> InitializeFlows(String filePath);
+    StepperDefinition InitializeStepper(String filePath);
 }

@@ -1,10 +1,12 @@
 package Flow.Execution.History;
 
+import Flow.Definition.FlowDefinition;
 import Flow.Execution.Context.FlowExecutionResult;
 
 import java.util.List;
 
 public interface FlowHistoryData {
+    FlowDefinition getFlowDefinition();
     String getFlowName();
     String getFlowID();
     String timeStarted();

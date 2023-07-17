@@ -1,7 +1,7 @@
 package Flow.Execution.History;
 
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 
 public interface OutputHistoryData {
     StepUsageDeclaration fromStep();

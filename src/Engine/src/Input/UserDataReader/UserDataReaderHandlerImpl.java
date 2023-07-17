@@ -1,8 +1,8 @@
 package Input.UserDataReader;
 
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.FreeInputsDefinition;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.FreeInputsDefinition;
 import Input.InitializerData;
 import Input.InitializerDataImpl;
 import Step.DataNecessity;
@@ -32,7 +32,7 @@ public class UserDataReaderHandlerImpl implements UserDataReaderHandler {
             if (!checkFilePathXML(filePathXML)) {
                 System.out.println("There was a problem in File Path, try again..");
             } else {
-                flowDefinitions = initializerData.InitializeFlows(filePathXML);
+                flowDefinitions = initializerData.InitializeStepper(filePathXML).getFlows();
             }
         }
         System.out.println("The file had been loaded properly.");

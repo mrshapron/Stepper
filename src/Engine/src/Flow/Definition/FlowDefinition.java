@@ -1,7 +1,9 @@
-package Flow.Defenition;
+package Flow.Definition;
 
 
 
+import ContinuationPac.Continuation;
+import ContinuationPac.ContinuationMetaDataFlowDef;
 import Mapping.MappingDataDefinition;
 import Step.Declaration.DataDefinitionDeclaration;
 
@@ -23,8 +25,15 @@ public interface FlowDefinition {
     void customMapping();
     boolean validateFlowStructure();
     List<FreeInputsDefinition> getFlowFreeInputs();
+    List<FreeInputsDefinition> getFlowFreeInputsIncludeInitializedValue();
     List<FreeInputsDefinition> getMandatoryInputs();
     List<FreeInputsDefinition> getOptionalInputs();
     DataDefinitionDeclaration getDataDefinitionByName(String name);
     Map<StepUsageDeclaration, List<DataDefinitionDeclaration>> getAllOutputs();
+    void addContinuationFlow(ContinuationMetaDataFlowDef customsContinuation);
+    void addInitialValue(String inputName, String initialValue);
+
+    List<Continuation> getContinuationFlows();
+
+    List<InitialInputValue> getInitialInputValues();
 }

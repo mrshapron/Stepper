@@ -1,5 +1,7 @@
 package Components.Main.FlowExecutionComponent.ModelView;
 
+import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
+import Flow.Definition.FlowDefinition;
 import Flow.Execution.History.FlowHistoryData;
 import Flow.Execution.History.FreeInputHistoryData;
 import Flow.Execution.History.OutputHistoryData;
@@ -21,7 +23,11 @@ public class FlowExecutionModelView {
     ObservableList<OutputExecModelView> outputExecModelViews;
     ObservableList<StepExecModelView> stepExecModelViews;
 
-    public FlowExecutionModelView(FlowHistoryData flowHistoryData){
+
+    FlowDefinition flowDefinition;
+
+    public FlowExecutionModelView(FlowHistoryData flowHistoryData, FlowDefinition flowDefinition){
+        this.flowDefinition = flowDefinition;
         this.flowName = flowHistoryData.getFlowName();
         this.idExec = flowHistoryData.getFlowID();
         this.timeRun = flowHistoryData.timeStarted();
@@ -44,7 +50,13 @@ public class FlowExecutionModelView {
                     .collect(Collectors.toList());
             stepExecModelViews.add(new StepExecModelView(stepHistoryData,outputSelected));
         }
+    }
 
+    public FlowDefinition getFlowDefinition() {
+        return flowDefinition;
+    }
+    public ObservableList<StepExecModelView> getStepExecModelViews() {
+        return stepExecModelViews;
     }
 
     public void addFreeInputExec(FreeInputsExecViewModel freeInputsExecViewModel){

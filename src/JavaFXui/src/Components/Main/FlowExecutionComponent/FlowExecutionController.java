@@ -1,40 +1,49 @@
 package Components.Main.FlowExecutionComponent;
 
 import BusinessLogic.StepperBusinessLogic;
+import Components.Main.ExecutionsHistoryComponent.ExecutionsHistoryController;
 import Components.Main.FlowDefinitionComponent.ModelViews.FreeInputsViewModel;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
-import Components.Main.FlowExecutionComponent.ModelView.CurValInputModelView;
-import Components.Main.FlowExecutionComponent.ModelView.FlowExecutionModelView;
-import Components.Main.FlowExecutionComponent.ModelView.FreeInputsExecViewModel;
-import Components.Main.FlowExecutionComponent.ModelView.OutputExecModelView;
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.FreeInputsDefinitionImpl;
+import Components.Main.FlowExecutionComponent.ModelView.*;
+import ContinuationPac.Continuation;
+import ContinuationPac.ContinuationMapping;
+import Flow.Definition.FlowDefinition;
 import Flow.Execution.History.FlowHistoryData;
+import Flow.Execution.History.OutputHistoryData;
 import Step.DataNecessity;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.util.Duration;
+import javafx.animation.Interpolator;
 public class FlowExecutionController {
-
+    @FXML private Label lblRunFlowContinue;
+    @FXML private Button btnAddContinuation;
+    @FXML private ListView<String> listViewContinuations;
+    @FXML private Label lblFreeInputUserString;
+    @FXML private HBox executionHBOX;
     @FXML private Button btnRunFlow;
     @FXML private Label lblStatusFreeInput;
     @FXML private Label lblSelectedInput;
@@ -82,10 +91,28 @@ public class FlowExecutionController {
     @FXML private TableColumn<?, ?> outputExecTypeCol;
     @FXML private TableColumn<?, ?> outputExecValueCol;
 
+    @FXML private Label lblStepExecutionResult;
+    @FXML private TableColumn<?, ?> stepNameExecResCol;
+    @FXML private TableColumn<?, ?> stepResultExecResultRow;
+    @FXML private TableView<StepExecModelView> moreStepDetailsTable;
+    @FXML private TableColumn<?, ?> stepNameStepDetailsCol;
+    @FXML private TableColumn<?, ?> stepResStepDetailsCol;
+    @FXML private TableColumn<?, ?> timeStartStepDetailsCol;
+    @FXML private TableView<?> listInputStepTable;
+    @FXML private TableColumn<?, ?> inputNameInputStepCol;
+    @FXML private TableColumn<?, ?> valInputStepCol;
+    @FXML private TableView<?> listOutputStepTable;
+    @FXML private TableColumn<?, ?> OutputNameOutputStepCol;
+    @FXML private TableColumn<?, ?> valOutputStepCol;
+    @FXML private ListView<String> stepLogsListView;
+    @FXML private TableColumn<?,?> runtimeMoreStepCol;
+    @FXML private TableView<StepExecModelView> stepExecutionResultTable;
+
 
 
     private FlowDefinition selectedFlow;
     private TableViewFlowModel currentTableViewModel;
+    private TableViewFlowModel primaryTableViewModel;
     private StepperBusinessLogic businessLogic;
     private BooleanProperty isAddValueEnable;
 
@@ -97,8 +124,19 @@ public class FlowExecutionController {
     private StringProperty statusRunFlowFreeInputs;
     private BooleanProperty isFlowCanRun;
     private ObservableList<FlowExecutionModelView> flowExecutionModelViews;
+    private StringProperty userStringFreeInputProperty;
+    private StringProperty flowNameOrContinuationProperty;
+    private StringProperty flowNameProperty;
+    private StringBinding flowNameBinding;
+    private BooleanProperty isContinuationOn;
+    private StringProperty lblRunFlowContinueProperty;
+    private Queue<Map<String,String>> freeInputsValuesContinuationQueue;
+    private Queue<FlowDefinition> flowOrderContinuationQueue;
+    private ExecutionsHistoryController executionsHistoryController;
     public FlowExecutionController(){
         flowDefinitionObjectProperty = new SimpleObjectProperty<>(null);
+        freeInputsValuesContinuationQueue = new ArrayDeque<>();
+        flowOrderContinuationQueue = new ArrayDeque<>();
     }
 
     public void initialize(){
@@ -122,10 +160,15 @@ public class FlowExecutionController {
         outputExecTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         outputExecValueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
 
+        stepNameExecResCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        stepResultExecResultRow.setCellValueFactory(new PropertyValueFactory<>("result"));
 
-
+        stepNameStepDetailsCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        stepResStepDetailsCol.setCellValueFactory(new PropertyValueFactory<>("result"));
+        timeStartStepDetailsCol.setCellValueFactory(new PropertyValueFactory<>("timeStarted"));
+        runtimeMoreStepCol.setCellValueFactory(new PropertyValueFactory<>("runtime"));
+        lblRunFlowContinueProperty = new SimpleStringProperty("Run Flow");
         tableAllFlowExecutions.setItems(flowExecutionModelViews);
-
         isFlowCanRun = new SimpleBooleanProperty(false);
         isAddValueEnable = new SimpleBooleanProperty(false);
         valueEnteredProperty = new SimpleStringProperty("");
@@ -143,22 +186,47 @@ public class FlowExecutionController {
         valueEnteredCurrentValCol.setCellValueFactory(new PropertyValueFactory<>("valueEntered"));
         txtValueInput.textProperty().bindBidirectional(valueEnteredProperty);
         tableCurrentValues.setItems(curValInputModelViews);
+        flowNameProperty = new SimpleStringProperty("Choose Flow to Start");
         btnStartFlow.disableProperty().bind(isFlowCanRun.not());
-        StringBinding flowNameBinding = Bindings.createStringBinding(() -> this.flowDefinitionObjectProperty.getName(), flowDefinitionObjectProperty);
-        lblFlowName.textProperty().bind(flowNameBinding);
+        btnAddContinuation.disableProperty().bind(isFlowCanRun.not());
+        flowNameBinding = Bindings.createStringBinding(() -> this.flowDefinitionObjectProperty.getName(), flowDefinitionObjectProperty);
+        lblFlowName.textProperty().bind(flowNameProperty);
+        executionHBOX.disableProperty().bind(Bindings.isEmpty(flowExecutionModelViews));
+        userStringFreeInputProperty = new SimpleStringProperty("");
+        lblFreeInputUserString.textProperty().bind(Bindings.concat(userStringFreeInputProperty, " : "));
+        lblRunFlowContinue.textProperty().bind(lblRunFlowContinueProperty);
+        isContinuationOn = new SimpleBooleanProperty(false);
+        lblRunFlowContinueProperty.bind(Bindings.when(isContinuationOn.not())
+                .then("Run Flow:").otherwise("Continue with Flow:"));
+    }
+    public void setPrimaryFlow(TableViewFlowModel flowDefinition){
+        this.primaryTableViewModel = flowDefinition;
+        setFlowDefinitionView(flowDefinition);
     }
 
-    public void setFlowDefinition(TableViewFlowModel flowDefinition){
+    public void setExecutionsHistoryController(ExecutionsHistoryController executionsHistoryController){
+        this.executionsHistoryController = executionsHistoryController;
+    }
+
+    public void setFlowDefinitionView(TableViewFlowModel flowDefinition){
         curValInputModelViews.clear();
         valueEnteredProperty.set("");
+        flowNameProperty.set(flowDefinition.getFlowName());
         flowDefinitionObjectProperty.setValue(flowDefinition.getFlowDefinition());
         tableFreeInputs.setItems(flowDefinition.getFreeInputsViewModels());
+        listViewContinuations.setItems(flowDefinition.getContinuationFlows());
         this.currentTableViewModel = flowDefinition;
     }
 
     public void onClickEnterInputValue() {
+        if(valueEnteredProperty.getValue().equals(""))
+            return;
         FreeInputsViewModel selectedInput = tableFreeInputs.getSelectionModel().getSelectedItem();
-        CurValInputModelView valInputModelView = new CurValInputModelView(selectedInput.getName(), valueEnteredProperty.getValue());
+        enterValueToSelectedInput(selectedInput,valueEnteredProperty.getValue());
+    }
+
+    private void enterValueToSelectedInput(FreeInputsViewModel selectedInput, String valueEntered) {
+        CurValInputModelView valInputModelView = new CurValInputModelView(selectedInput.getName(), valueEntered);
         Optional<CurValInputModelView> selected = curValInputModelViews.stream().filter(curValInputModelView -> curValInputModelView.getInputName().equals(selectedInput.getName())).findFirst();
         if(selected.isPresent()){
             selected.get().setValueEntered(valueEnteredProperty.getValue());
@@ -220,6 +288,7 @@ public class FlowExecutionController {
         FreeInputsViewModel selectedInput = tableFreeInputs.getSelectionModel().getSelectedItem();
         currentSelectedFreeInput.set(selectedInput.getName());
         Optional<CurValInputModelView> selected = curValInputModelViews.stream().filter(curValInputModelView -> curValInputModelView.getInputName().equals(selectedInput.getName())).findFirst();
+        userStringFreeInputProperty.set(selectedInput.getUserString());
         if(selected.isPresent()){
             valueEnteredProperty.set(selected.get().getValueEntered());
         }else{
@@ -237,15 +306,130 @@ public class FlowExecutionController {
     }
 
     public void onClickStartFlow(ActionEvent actionEvent) {
+        if(isContinuationOn.get()){
+            StartFlowContinuations();
+        }
+        else {
+            DoubleProperty progressProperty = new SimpleDoubleProperty(0);
+            Map<String, String> map = curValInputModelViews.stream()
+                    .collect(Collectors.toMap(CurValInputModelView::getInputName, CurValInputModelView::getValueEntered));
+            // Access the mappings in the map
+            Task<FlowHistoryData> task = new Task<FlowHistoryData>() {
+                @Override
+                protected FlowHistoryData call() throws Exception {
+                    FlowHistoryData flowHistoryData = businessLogic.startFlow(flowDefinitionObjectProperty.get(), map, progress -> {
+                        updateProgress(progress, 100);
+                        progressProperty.set(progress);
+                    });
+                    return flowHistoryData;
+                }
+            };
+
+            progressBarFlow.progressProperty().bind(progressProperty);
+            progressBarFlow.progressProperty().bind(task.progressProperty());
+            businessLogic.executeTask(task);
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.ZERO, new KeyValue(progressBarFlow.progressProperty(), progressBarFlow.getProgress())),
+                    new KeyFrame(Duration.seconds(1), new KeyValue(progressProperty, 1, Interpolator.EASE_BOTH))
+            );
+            timeline.play();
+
+            task.setOnSucceeded(event -> {
+                Platform.runLater(() -> {
+                    addHistoryFlow(task.getValue());
+                });
+            });
+        }
+        setFlowDefinitionView(this.primaryTableViewModel);
+        isContinuationOn.set(false);
+        //FlowHistoryData flowHistoryData =  businessLogic.startFlow(flowDefinitionObjectProperty.get(), map,));
+    }
+
+    private void StartFlowContinuations() {
+
+        DoubleProperty progressProperty = new SimpleDoubleProperty(0);
+
         Map<String, String> map = curValInputModelViews.stream()
                 .collect(Collectors.toMap(CurValInputModelView::getInputName, CurValInputModelView::getValueEntered));
+        freeInputsValuesContinuationQueue.add(map);
+        flowOrderContinuationQueue.add(currentTableViewModel.getFlowDefinition());
         // Access the mappings in the map
-        FlowHistoryData flowHistoryData =  businessLogic.startFlow(flowDefinitionObjectProperty.get(), map);
-        addHistoryFlow(flowHistoryData);
+        Task<List<FlowHistoryData>> task = new Task<List<FlowHistoryData>>() {
+            @Override
+            protected List<FlowHistoryData> call() {
+                List<FlowHistoryData> flowHistoryDataList = new ArrayList<>();
+                boolean firstFlow = true;
+                while (!flowOrderContinuationQueue.isEmpty() && !freeInputsValuesContinuationQueue.isEmpty()) {
+                    FlowHistoryData flowHistoryData;
+                    flowDefinitionObjectProperty.setValue(flowOrderContinuationQueue.remove());
+                    Map<String, String> mapContinuationValues = freeInputsValuesContinuationQueue.remove();
+                    if (firstFlow) {
+                        flowHistoryData = businessLogic.startFlow(flowDefinitionObjectProperty.get(), mapContinuationValues, progress -> {
+                            updateProgress(progress, 100);
+                            progressProperty.set(progress);
+                        });
+                        flowHistoryDataList.add(flowHistoryData);
+                        firstFlow = false;
+                    } else {
+                        for (Map.Entry<String, String> entry : mapContinuationValues.entrySet()) {
+                            String inputName = entry.getKey();
+                            String value = entry.getValue();
+                            if (value.equals("#By Continuation#")) {
+                                FlowHistoryData lastFlowHistoryData = flowHistoryDataList.get(flowHistoryDataList.size() - 1);
+                                Optional<Continuation> lastFlowContinuationOptional = lastFlowHistoryData.getFlowDefinition().getContinuationFlows().stream()
+                                        .filter(continuation -> continuation.flowDefinition()
+                                                .equals(flowDefinitionObjectProperty.get())).findFirst();
+                                if (lastFlowContinuationOptional.isPresent()) {
+                                    Continuation conLastFlow = lastFlowContinuationOptional.get();
+                                    Optional<ContinuationMapping> continuationMappingOptional = conLastFlow.continuationMappings()
+                                            .stream().filter(continuationMapping -> continuationMapping.mappingFlowDataDefinition()
+                                                    .getTargetData().getAliasName().equals(inputName)).findFirst();
+                                    if (continuationMappingOptional.isPresent()) {
+                                        ContinuationMapping continuationMapping = continuationMappingOptional.get();
+                                        Optional<OutputHistoryData> outputHistoryDataContinuation = lastFlowHistoryData.getOutputsHistoryData().stream()
+                                                .filter(outputHistoryData -> outputHistoryData.getFinalName().equals(continuationMapping.mappingFlowDataDefinition().getSourceData().getAliasName())).findFirst();
+                                        if (outputHistoryDataContinuation.isPresent()) {
+                                            entry.setValue(outputHistoryDataContinuation.get().getData().toString());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        flowHistoryData = businessLogic.startFlow(flowDefinitionObjectProperty.get(), mapContinuationValues, progress -> {
+                            updateProgress(progress, 100);
+                            progressProperty.set(progress);
+                        });
+                        flowHistoryDataList.add(flowHistoryData);
+                    }
+
+                }
+                return flowHistoryDataList;
+            }
+        };
+
+
+        progressBarFlow.progressProperty().bind(progressProperty);
+        progressBarFlow.progressProperty().bind(task.progressProperty());
+        businessLogic.executeTask(task);
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(progressBarFlow.progressProperty(), progressBarFlow.getProgress())),
+                new KeyFrame(Duration.seconds(1), new KeyValue(progressProperty, 1, Interpolator.EASE_BOTH))
+        );
+        timeline.play();
+
+        task.setOnSucceeded(event -> {
+            Platform.runLater(()->{
+                task.getValue().forEach(flowHistoryData -> addHistoryFlow(flowHistoryData));
+            });
+        });
+
     }
 
     private void addHistoryFlow(FlowHistoryData flowHistoryData) {
-        flowExecutionModelViews.add(new FlowExecutionModelView(flowHistoryData));
+        flowExecutionModelViews.add(new FlowExecutionModelView(flowHistoryData, flowHistoryData.getFlowDefinition()));
+        executionsHistoryController.setFlowExecutionModelViews(flowExecutionModelViews);
     }
 
     public void setBusinessLogic(StepperBusinessLogic businessLogic) {
@@ -254,14 +438,62 @@ public class FlowExecutionController {
 
     public void onTableAllFlowExecClick(MouseEvent mouseEvent) {
         FlowExecutionModelView selected = tableAllFlowExecutions.getSelectionModel().getSelectedItem();
+        stepExecutionResultTable.setItems(selected.getStepExecModelViews());
+        moreStepDetailsTable.setItems(selected.getStepExecModelViews());
         tableExecutionsDetails.setItems(flowExecutionModelViews);
         tableFreeInputsExecDetails.setItems(selected.getFreeInputsExecViewModels());
         tableOutputExecution.setItems(selected.getOutputExecModelViews());
+
     }
 
     public void onKeyPressedValueInput(KeyEvent keyEvent) {
         if(keyEvent.getCode() == KeyCode.ENTER){
             onClickEnterInputValue();
         }
+    }
+
+    public void onClickStepExecutionResultTable(MouseEvent mouseEvent) {
+        StepExecModelView selected = stepExecutionResultTable.getSelectionModel().getSelectedItem();
+        stepLogsListView.setItems(selected.getLogsStep());
+    }
+
+    public void onClickAddContinuation(ActionEvent actionEvent) {
+        if(listViewContinuations.getSelectionModel().getSelectedItem() == null)
+            return;
+        FlowDefinition flowDefinition = currentTableViewModel.getFlowDefinition();
+        String flowContinueStr= listViewContinuations.getSelectionModel().getSelectedItem();
+        Optional<Continuation> continuationOptional =
+                flowDefinition.getContinuationFlows().stream()
+                        .filter(continuation -> continuation.flowDefinition().getName().equals(flowContinueStr))
+                        .collect(Collectors.toList()).stream().findFirst();
+        if(!continuationOptional.isPresent())
+            return;
+        Continuation continuation = continuationOptional.get();
+        FlowDefinition flowDefinitionContinuation = continuation.flowDefinition();
+        isContinuationOn.set(true);
+        Map<String, String> map = curValInputModelViews.stream()
+                .collect(Collectors.toMap(CurValInputModelView::getInputName, CurValInputModelView::getValueEntered));
+        freeInputsValuesContinuationQueue.add(map);
+        flowOrderContinuationQueue.add(flowDefinition);
+        setFlowDefinitionView(new TableViewFlowModel(flowDefinitionContinuation));
+        setContinuationToCurrentFlow(continuation);
+    }
+
+    private void setContinuationToCurrentFlow(Continuation continuation) {
+        for (ContinuationMapping continuationMapping : continuation.continuationMappings()) {
+            Optional<FreeInputsViewModel> freeInputsViewModelOptional = currentTableViewModel.getFreeInputsViewModels().stream()
+                    .filter(freeInputsViewModel -> freeInputsViewModel.getNameProperty()
+                            .equals(continuationMapping.mappingFlowDataDefinition().getTargetData().getAliasName()))
+                    .findFirst();
+            if(freeInputsViewModelOptional.isPresent()){
+                enterValueToSelectedInput(freeInputsViewModelOptional.get(), "#By Continuation#");
+            }
+        }
+    }
+
+    public void setValuesFreeInputs(ObservableList<FreeInputsExecViewModel> freeInputsExecViewModels) {
+        freeInputsExecViewModels.forEach(freeInputsExecViewModel -> {
+            curValInputModelViews.add(new CurValInputModelView(freeInputsExecViewModel.getInputFinalName(),freeInputsExecViewModel.getValue()));
+        });
     }
 }

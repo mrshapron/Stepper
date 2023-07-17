@@ -8,12 +8,19 @@ public class FreeInputHistoryDataImpl implements FreeInputHistoryData {
     private DataNecessity necessity;
     private Object data;
     private String finalName;
+    private String userString;
 
-    public FreeInputHistoryDataImpl(Class<?> type, DataNecessity necessity, Object data, String finalName) {
+    public FreeInputHistoryDataImpl(Class<?> type, DataNecessity necessity, Object data, String finalName, String userString) {
         this.type = type;
         this.necessity = necessity;
         this.data = data;
         this.finalName = finalName;
+        this.userString = userString;
+    }
+
+    @Override
+    public String userString() {
+        return userString;
     }
 
     @Override

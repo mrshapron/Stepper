@@ -1,6 +1,7 @@
 package Flow.Execution.History;
 
 
+import Flow.Definition.FlowDefinition;
 import Flow.Execution.Context.FlowExecutionResult;
 import Step.DataNecessity;
 
@@ -15,13 +16,15 @@ public class FlowHistoryDataImpl implements FlowHistoryData {
     private List<FreeInputHistoryData> freeInputsHistoryData;
     private List<OutputHistoryData> outputsHistoryData;
     private List<StepHistoryData> stepsHistoryData;
+    private FlowDefinition flowDefinition;
 
-    public FlowHistoryDataImpl(String flowName, String flowId) {
+    public FlowHistoryDataImpl(String flowName, String flowId, FlowDefinition flowDefinition) {
         this.flowName = flowName;
         this.flowId = flowId;
         freeInputsHistoryData = new ArrayList<>();
         outputsHistoryData = new ArrayList<>();
         stepsHistoryData = new ArrayList<>();
+        this.flowDefinition = flowDefinition;
     }
 
     public void addStepHistoryData(StepHistoryData stepHistoryData){
@@ -33,6 +36,12 @@ public class FlowHistoryDataImpl implements FlowHistoryData {
     public void addOutputHistory(OutputHistoryData outputHistoryData){
         outputsHistoryData.add(outputHistoryData);
     }
+
+    @Override
+    public FlowDefinition getFlowDefinition() {
+        return this.flowDefinition;
+    }
+
     @Override
     public String getFlowName() {
         return flowName;

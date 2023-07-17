@@ -1,7 +1,7 @@
 package Components.Main.FlowDefinitionComponent.ModelViews;
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.StepUsageDeclaration;
 import Mapping.MappingDataDefinition;
 import Step.Declaration.DataDefinitionDeclaration;
 

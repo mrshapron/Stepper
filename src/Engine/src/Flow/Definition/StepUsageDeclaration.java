@@ -1,4 +1,4 @@
-package Flow.Defenition;
+package Flow.Definition;
 
 
 import Step.StepDefinition;

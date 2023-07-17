@@ -1,14 +1,9 @@
 package Convert;
 
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.FlowDefinitionImpl;
-import Flow.Defenition.StepUsageDeclaration;
-import Flow.Defenition.StepUsageDeclarationImpl;
-import JAXB.Generated.STCustomMapping;
-import JAXB.Generated.STFlow;
-import JAXB.Generated.STFlowLevelAlias;
-import JAXB.Generated.STStepInFlow;
+import ContinuationPac.*;
+import Flow.Definition.*;
+import JAXB.Generated.*;
 import Log.Logger;
 import Log.LoggerImpl;
 import Mapping.MappingDataDefinitionImpl;
@@ -17,8 +12,7 @@ import Step.StepDefinition;
 import Step.StepFactory;
 import Step.StepFactoryImpl;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -61,7 +55,32 @@ public class FlowConverterImpl implements FlowConverter{
                     return null;
             }
         }
+        if(stFlow.getSTInitialInputValues() != null){
+            for (STInitialInputValue stInitialInputValue : stFlow.getSTInitialInputValues().getSTInitialInputValue()) {
+                flow.addInitialValue(stInitialInputValue.getInputName(),
+                        stInitialInputValue.getInitialValue());
+            }
+        }
         return flow;
+    }
+
+    public List<ContinuationMetaData> ConvertContinuations(STStepper stStepper) {
+        List<ContinuationMetaData> continuationsMetaData = new ArrayList<>();
+        for (STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
+            if (stFlow.getSTContinuations() != null) {
+                for (STContinuation stContinuation : stFlow.getSTContinuations().getSTContinuation()) {
+                    ContinuationMetaData continuationMetaData = new ContinuationMetaDataImpl(stFlow.getName(), stContinuation.getTargetFlow());
+                    for (STContinuationMapping stContinuationMapping : stContinuation.getSTContinuationMapping()) {
+                        CustomContinuationMapping continuationMapping =
+                                new CustomContinuationMappingImpl(stContinuationMapping.getSourceData(),
+                                        stContinuationMapping.getTargetData());
+                        continuationMetaData.addCustomContinuationMapping(continuationMapping);
+                        continuationsMetaData.add(continuationMetaData);
+                    }
+                }
+            }
+        }
+        return continuationsMetaData;
     }
 
     private boolean InitializeFlowLevelAlias(STFlowLevelAlias stFlowLevelAliasing, FlowDefinition flow) {

@@ -23,6 +23,10 @@ public class StepFactoryImpl implements StepFactory {
                 return new SpendSomeTimeStep();//StepDefinitionRegistry.SPEND_SOME_TIME.getStepDefinition();
             case "Files Deleter":
                 return new FilesDeleterStep();
+            case "Zipper":
+                return new ZipperStep();
+            case "Command Line":
+                return new CommandLineStep();
         }
         return null;
     }

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="borderPaneHistory" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Components.Main.ExecutionsHistoryComponent.ExecutionsHistoryController">
+   <top>
+      <Label text="Executions History" textFill="#9e1b1b" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+   </top>
+   <left>
+      <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="All Flow Executions :">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Label text="Filter By Result :" />
+            <ComboBox fx:id="ddlChooseResult" onMouseClicked="#onClickChooseResultDDL" prefWidth="150.0" promptText="CHOOSE RESULT" />
+            <TableView fx:id="tableViewFlowHistory" prefHeight="200.0" prefWidth="300.0">
+              <columns>
+                <TableColumn fx:id="historyFlowNameCol" prefWidth="75.0" text="Flow Name" />
+                <TableColumn fx:id="historyStartedTimeCol" prefWidth="75.0" text="Started Time" />
+                  <TableColumn fx:id="historyFlowResultCol" prefWidth="75.0" text="Flow Result" />
+              </columns>
+            </TableView>
+            <Button fx:id="btnRunAgain" mnemonicParsing="false" onAction="#onClickRunFlowAgain" text="Run Flow Again" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+
+   </left>
+   <center>
+      <VBox alignment="CENTER" prefWidth="361.0" spacing="10.0">
+         <children>
+            <Label text="All Flow Executions" textFill="#4019cd">
+               <font>
+                  <Font name="Arial" size="22.0" />
+               </font>
+            </Label>
+            <TableView fx:id="tableAllFlowExecutions" onMouseClicked="#onTableAllFlowExecClick">
+               <columns>
+                  <TableColumn fx:id="allFlowExecFlowNameCol" prefWidth="75.0" text="Flow Name" />
+                  <TableColumn fx:id="allFlowExecIDExecCol" prefWidth="75.0" text="ID Exec" />
+                  <TableColumn fx:id="allFlowExecTimeRunCol" prefWidth="75.0" text="Time Run" />
+               </columns>
+            </TableView>
+            <Label text="Executions Details" textAlignment="CENTER" textFill="#35d755">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+            <TableView fx:id="tableExecutionsDetails">
+               <columns>
+                  <TableColumn fx:id="execDetailsFlowNameCol" prefWidth="75.0" text="Flow Name" />
+                  <TableColumn fx:id="execDetailsIDExecCol" prefWidth="75.0" text="ID Exec" />
+                  <TableColumn fx:id="execDetailsResultCol" prefWidth="75.0" text="Result" />
+                  <TableColumn fx:id="execDetailsTimeRunningCol" prefWidth="75.0" text="Time Runnig" />
+               </columns>
+            </TableView>
+            <Label text="Free Input Executions Details" textAlignment="CENTER" textFill="#297b80">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TableView fx:id="tableFreeInputsExecDetails">
+               <columns>
+                  <TableColumn fx:id="freeInputsExecInputNameCol" prefWidth="75.0" text="Input Final Name" />
+                  <TableColumn fx:id="freeInputsExecTypeCol" prefWidth="75.0" text="Type" />
+                  <TableColumn fx:id="freeInputsExecValueCol" prefWidth="75.0" text="Value" />
+                  <TableColumn fx:id="freeInputsExecNeccCol" prefWidth="75.0" text="Necessity" />
+               </columns>
+            </TableView>
+            <Label text="Output Execution" textFill="#47b0dd">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TableView fx:id="tableOutputExecution">
+               <columns>
+                  <TableColumn fx:id="outputExecFinalNameCol" prefWidth="75.0" text="Final Name" />
+                  <TableColumn fx:id="outputExecTypeCol" prefWidth="75.0" text="Type" />
+                  <TableColumn fx:id="outputExecValueCol" prefWidth="75.0" text="Value" />
+               </columns>
+            </TableView>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </center>
+   <right>
+      <VBox alignment="CENTER" prefHeight="200.0" spacing="10.0">
+         <children>
+            <Label fx:id="lblStepExecutionResult" text="Step Execution Result" textFill="#bf4949">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <TableView fx:id="stepExecutionResultTable" onMouseClicked="#onClickStepExecutionResultTable" prefHeight="200.0">
+               <columns>
+                  <TableColumn fx:id="stepNameExecResCol" prefWidth="75.0" text="Step Name" />
+                  <TableColumn fx:id="stepResultExecResultRow" prefWidth="75.0" text="Step Result" />
+               </columns>
+            </TableView>
+            <Label text="More Step Details" textFill="#6abaa4">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <TableView fx:id="moreStepDetailsTable" prefHeight="200.0" prefWidth="200.0">
+               <columns>
+                  <TableColumn fx:id="stepNameStepDetailsCol" prefWidth="75.0" text="Step Name" />
+                  <TableColumn fx:id="stepResStepDetailsCol" prefWidth="75.0" text="Step Result" />
+                  <TableColumn fx:id="timeStartStepDetailsCol" prefWidth="75.0" text="Time Started" />
+                  <TableColumn fx:id="runtimeMoreStepCol" prefWidth="75.0" text="Run Time" />
+               </columns>
+            </TableView>
+            <Label text="List Input Step" textFill="#361919">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TableView fx:id="listInputStepTable" prefHeight="200.0" prefWidth="200.0">
+               <columns>
+                  <TableColumn prefWidth="75.0" text="Input Name" />
+                  <TableColumn prefWidth="75.0" text="Value" />
+               </columns>
+            </TableView>
+            <Label text="List Output Step">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TableView fx:id="listOutputStepTable" prefHeight="200.0" prefWidth="200.0">
+               <columns>
+                  <TableColumn prefWidth="75.0" text="Input Name" />
+                  <TableColumn prefWidth="75.0" text="Value" />
+               </columns>
+            </TableView>
+            <Label text="Step Logs" textFill="#306540">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <ListView fx:id="stepLogsListView" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+
+   </right>
+</BorderPane>

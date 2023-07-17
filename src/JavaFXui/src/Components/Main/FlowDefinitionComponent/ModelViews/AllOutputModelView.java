@@ -1,6 +1,6 @@
 package Components.Main.FlowDefinitionComponent.ModelViews;
 
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.StepUsageDeclaration;
 import Step.Declaration.DataDefinitionDeclaration;
 import javafx.beans.property.ReadOnlyStringWrapper;
 

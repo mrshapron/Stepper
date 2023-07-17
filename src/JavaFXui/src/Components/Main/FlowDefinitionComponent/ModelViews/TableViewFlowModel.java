@@ -1,7 +1,7 @@
 package Components.Main.FlowDefinitionComponent.ModelViews;
 
-import Flow.Defenition.FlowDefinition;
-import Flow.Defenition.StepUsageDeclaration;
+import Flow.Definition.FlowDefinition;
+import Flow.Definition.StepUsageDeclaration;
 import Step.Declaration.DataDefinitionDeclaration;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -20,6 +20,10 @@ public class TableViewFlowModel {
     private ObservableList<String> formalOutputs;
     private ObservableList<StepsTableViewModel> stepsTableViewModels;
     private ObservableList<FreeInputsViewModel> freeInputsViewModels;
+
+
+
+    private ObservableList<String> continuationFlows;
     private ObservableList<String> stepsNameBind;
     private ReadOnlyStringWrapper flowNameProperty;
     private ReadOnlyStringWrapper descriptionProperty;
@@ -39,17 +43,21 @@ public class TableViewFlowModel {
         stepsTableViewModels = FXCollections.observableArrayList();
         freeInputsViewModels = FXCollections.observableArrayList();
         stepsNameBind = FXCollections.observableArrayList();
+        continuationFlows = FXCollections.observableArrayList();
         allOutputModelViews = FXCollections.observableArrayList();
 
         flowDefinition.getFlowSteps().forEach(stepUsageDeclaration -> stepsTableViewModels.add(new StepsTableViewModel(stepUsageDeclaration)));
         flowDefinition.getFlowFormalOutputs().forEach(formalOutput-> formalOutputs.add(formalOutput));
         flowDefinition.getFlowFreeInputs().forEach(freeInputsDefinition -> freeInputsViewModels.add(new FreeInputsViewModel(freeInputsDefinition)));
         flowDefinition.getFlowSteps().forEach(stepUsageDeclaration -> stepsNameBind.add(stepUsageDeclaration.getFinalStepName()));
+        flowDefinition.getContinuationFlows().forEach(continuation -> continuationFlows.add(continuation.flowDefinition().getName()));
         Map<StepUsageDeclaration, List<DataDefinitionDeclaration>> mapOutputs = flowDefinition.getAllOutputs();
         mapOutputs.forEach((step,list) -> list.forEach(output-> allOutputModelViews.add(new AllOutputModelView(step, output))));
         flowNameProperty = new ReadOnlyStringWrapper(flowName);
         descriptionProperty = new ReadOnlyStringWrapper(description);
     }
+
+    public ObservableList<String> getContinuationFlows() {return continuationFlows;}
 
     public ObservableList<AllOutputModelView> getAllOutputModelViews() { return allOutputModelViews; }
 
