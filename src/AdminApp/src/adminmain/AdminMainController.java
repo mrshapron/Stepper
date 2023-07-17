@@ -4,18 +4,19 @@ import BusinessLogic.StepperBusinessLogic;
 import Flow.Definition.FlowDefinition;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
+import rolesManagementTab.RolesManagementTabController;
+
 import static configuration.Configuration.HTTP_CLIENT;
 import static configuration.Configuration.BASE_URL;
 import java.io.File;
@@ -44,9 +45,6 @@ public class AdminMainController {
     private TabPane tabPane;
 
     @FXML
-    private AnchorPane UsersManagementContainer;
-
-    @FXML
     private AnchorPane RolesManagementContainer;
 
     @FXML
@@ -54,6 +52,11 @@ public class AdminMainController {
 
     @FXML
     private AnchorPane StatisticsContainer;
+
+    @FXML
+    private BorderPane RolesManagementTab;
+    @FXML
+    private RolesManagementTabController RolesManagementTabController;
 
 
 
@@ -81,7 +84,7 @@ public class AdminMainController {
 
     //Events
     @FXML
-    void LoadFileButtonPressed(ActionEvent event) throws IOException {
+    void LoadFileButtonPressed(Event event) throws IOException {
         String RESOURCE = "/upload-file";
 
         FileChooser fileChooser = new FileChooser();
@@ -95,36 +98,6 @@ public class AdminMainController {
         selectedFileProperty.set(absolutePath);
         opacityProperty.set(50);
 
-//
-        //doGet
-//        OkHttpClient client = new OkHttpClient();
-//
-//        String BASE_URL = "http://localhost:8080/Server_war_exploded";
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "/upload-file")
-//                .build();
-//
-//        Call call = client.newCall(request);
-//
-//        try {
-//            // blocking
-//            final Response response = call.execute();
-//
-//            System.out.println("Code: " + response.code());
-//
-//            Headers headers = response.headers();
-//            System.out.println("Total Headers: " + headers.size());
-//            System.out.println("Headers Names: " + headers.names());
-//            headers.names().forEach(headerName ->
-//                    System.out.println("Header [" + headerName + "] = [" + headers.get(headerName) + "]"));
-//
-//            System.out.println("Body: " + response.body().string());
-//        } catch (IOException e) {
-//            System.out.println("Ooops... error occured: " + e.getMessage());
-//        }
-
-
-//doPost
         RequestBody body =
                 new MultipartBody.Builder()
                         .addFormDataPart("file", selectedFile.getName(), RequestBody.create(selectedFile, MediaType.parse("text/plain")))
@@ -141,6 +114,8 @@ public class AdminMainController {
         Response response = call.execute();
 
         System.out.println(response.body().string());
+
+        RolesManagementTabController.initiateRoles();
     }
 
 

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/src/AdminApp/AdminApp.iml" filepath="$PROJECT_DIR$/src/AdminApp/AdminApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/DTO/DTO.iml" filepath="$PROJECT_DIR$/src/DTO/DTO.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Engine/Engine.iml" filepath="$PROJECT_DIR$/src/Engine/Engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/JavaFXui/JavaFXui.iml" filepath="$PROJECT_DIR$/src/JavaFXui/JavaFXui.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Server/Server.iml" filepath="$PROJECT_DIR$/src/Server/Server.iml" />

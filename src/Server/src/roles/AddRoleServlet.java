@@ -1,10 +1,15 @@
-package fileupload;
+package roles;
 
 import BusinessLogic.StepperBusinessLogic;
 import BusinessLogic.StepperBusinessLogicImpl;
 import Flow.Definition.FlowDefinition;
 import Flow.Definition.StepperDefinition;
 import Flow.Definition.StepperDefinitionImpl;
+import Users.Role.Role;
+import Users.Role.RoleImpl;
+import Users.User;
+import Users.UserImpl;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -14,18 +19,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
-@WebServlet("/upload-file")
+@WebServlet("/add-role")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
-public class FileUploadServlet extends HttpServlet {
+public class AddRoleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,26 +36,23 @@ public class FileUploadServlet extends HttpServlet {
     }
 
     @Override //Synchronize?
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
-        Part filePart = request.getPart("file");
+        Gson gson = new Gson();
+        BufferedReader reader = request.getReader();
+        RoleImpl role = gson.fromJson(reader, RoleImpl.class);
+        out.println(reader);
+        reader.close();
 
-        StepperBusinessLogic stepperBusinessLogic = new StepperBusinessLogicImpl();
-        List<FlowDefinition> my_list = stepperBusinessLogic.initializeStepperViaFile(filePart.getInputStream());
-
-        //Adding the flows to servletContext
         ServletContext servletContext = getServletContext();
-        List<FlowDefinition> flowDefinitions = (List<FlowDefinition>) servletContext.getAttribute("flowDefinitions");
-
-        // If the list doesn't exist, create a new one
-        if (flowDefinitions == null) {
-            servletContext.setAttribute("flowDefinitions", my_list);
-            //Also need to return roles
+        List<Role> rolesList = (List<Role>) servletContext.getAttribute("rolesList");
+        if (rolesList == null){
+            rolesList = new ArrayList<Role>();
+            servletContext.setAttribute("rolesList", rolesList);
         }
-        else
-            flowDefinitions.addAll(my_list);
+        rolesList.add(role);
+        out.println(role.name());
+        out.println(role.description());
     }
-
 }
