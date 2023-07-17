@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="adminmain.AdminMainController">
+    <children>
+        <Label alignment="CENTER" text="Admin App">
+            <font>
+                <Font name="Arial Bold" size="25.0" />
+            </font>
+        </Label>
+        <HBox alignment="CENTER" prefWidth="200.0">
+            <children>
+                <Button fx:id="btnLoadFile" mnemonicParsing="false" onAction="#LoadFileButtonPressed" text="Load FIle">
+                    <HBox.margin>
+                        <Insets right="20.0" />
+                    </HBox.margin>
+                </Button>
+                <TextField fx:id="txtFiledFileChosen" editable="false" opacity="0.5" prefHeight="27.0" prefWidth="454.0" HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
+        <HBox fx:id="hBoxMain" alignment="CENTER" VBox.vgrow="ALWAYS">
+            <children>
+                <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
+                    <tabs>
+                        <Tab text="Users Management">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0">
+                                    <fx:include fx:id="usersManagementTab" source="../rolesManagementTab/RolesManagementTab.fxml" />
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Roles Management">
+                            <content>
+                                <AnchorPane fx:id="RolesManagementContainer" minHeight="0.0" minWidth="0.0">
+                                    <fx:include fx:id="RolesManagementTab" source="../rolesManagementTab/RolesManagementTab.fxml" />
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Executions History">
+                            <content>
+                                <AnchorPane fx:id="executionHistoryContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                  <Tab text="Statistics">
+                     <content>
+                        <AnchorPane fx:id="StatisticsContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+</VBox>
