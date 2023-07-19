@@ -2,6 +2,7 @@ package adminmain;
 
 import BusinessLogic.StepperBusinessLogic;
 import Flow.Definition.FlowDefinition;
+import Users.UserImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
@@ -16,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
 import rolesManagementTab.RolesManagementTabController;
+import usersManagementTab.UsersManagementTabController;
 
 import static configuration.Configuration.HTTP_CLIENT;
 import static configuration.Configuration.BASE_URL;
@@ -57,6 +59,10 @@ public class AdminMainController {
     private BorderPane RolesManagementTab;
     @FXML
     private RolesManagementTabController RolesManagementTabController;
+    @FXML
+    private BorderPane UsersManagementTab;
+    @FXML
+    private UsersManagementTabController UsersManagementTabController;
 
 
 
@@ -113,9 +119,13 @@ public class AdminMainController {
 
         Response response = call.execute();
 
-        System.out.println(response.body().string());
+//        System.out.println(response.body().string());
 
         RolesManagementTabController.initiateRoles();
+    }
+
+    public void updateUsers(List<UserImpl> updatedUsers){
+        UsersManagementTabController.updateUsers(updatedUsers);
     }
 
 

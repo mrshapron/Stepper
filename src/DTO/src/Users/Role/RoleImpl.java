@@ -14,6 +14,11 @@ public class RoleImpl implements Role {
         this.description = description;
         availableFlows = new ArrayList<>();
     }
+    public RoleImpl(String name, String description, List<FlowDefinition> availableFlows) {
+        this.name = name;
+        this.description = description;
+        this.availableFlows = availableFlows;
+    }
     @Override
     public String name() {
         return name;

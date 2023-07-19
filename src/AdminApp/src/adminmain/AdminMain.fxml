@@ -35,7 +35,7 @@
                         <Tab text="Users Management">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0">
-                                    <fx:include fx:id="usersManagementTab" source="../rolesManagementTab/RolesManagementTab.fxml" />
+                                    <fx:include fx:id="UsersManagementTab" source="../usersManagementTab/UsersManagementTab.fxml"  />
                                 </AnchorPane>
                             </content>
                         </Tab>
