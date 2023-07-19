@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Components.Main.ClientMainController">
+   <children>
+      <Label alignment="CENTER" text="Client Stepper App" textFill="#944040">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER">
+         <children>
+            <Label fx:id="lblClientName" text="Label">
+               <graphic>
+                  <Label text="Name: " />
+               </graphic>
+            </Label>
+            <Label fx:id="lblIsManager" text="Label">
+               <graphic>
+                  <Label text="Is Manager :" />
+               </graphic>
+            </Label>
+         </children>
+      </HBox>
+      <Label text="Assigned Roles :" textFill="#377957" />
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Flows Definition">
+            <content>
+              <AnchorPane fx:id="flowsDefinitionContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <fx:include source="FlowDefinitionComponent/FlowDefinitionsTab.fxml" fx:id="flowDefinitionTab"/>
+                <AnchorPane/>
+            </content>
+          </Tab>
+          <Tab text="Flows Execution">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+            <Tab text="Executions History">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>
