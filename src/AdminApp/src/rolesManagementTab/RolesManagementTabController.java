@@ -61,21 +61,21 @@ public class RolesManagementTabController {
     }
 
     private void addRole(RoleImpl role) throws IOException{
-        Gson gson = new Gson();
-        String roleAsJson = gson.toJson(role);
-
-        //Start http request
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), roleAsJson);
-
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/add-role")
-                .post(body)
-                .build();
-
-        Call call = HTTP_CLIENT.newCall(request);
-
-        Response response = call.execute();
-
-        System.out.println(response.body().string());
+//        Gson gson = new Gson();
+//        String roleAsJson = gson.toJson(role);
+//
+//        //Start http request
+//        RequestBody body = RequestBody.create(MediaType.parse("application/json"), roleAsJson);
+//
+//        Request request = new Request.Builder()
+//                .url(BASE_URL + "/add-role")
+//                .post(body)
+//                .build();
+//
+//        Call call = HTTP_CLIENT.newCall(request);
+//
+//        Response response = call.execute();
+//
+//        System.out.println(response.body().string());
     }
 }

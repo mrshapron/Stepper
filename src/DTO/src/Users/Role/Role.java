@@ -6,7 +6,7 @@ import java.util.List;
 public interface Role {
     String name();
     String description();
-    List<FlowDefinition> availableFlows();
-    void addFlow(FlowDefinition flow);
-    void removeFlow(FlowDefinition flow);
+    List<String> availableFlows();
+    void addFlow(String flow);
+    void removeFlow(String flow);
 }

@@ -18,26 +18,30 @@
       </Label>
       <HBox alignment="CENTER">
          <children>
-            <Label fx:id="lblClientName" text="Label">
+            <Label fx:id="ClientNameLabel">
                <graphic>
                   <Label text="Name: " />
                </graphic>
             </Label>
-            <Label fx:id="lblIsManager" text="Label">
+            <Label fx:id="IsManagerLabel" text="Label">
                <graphic>
                   <Label text="Is Manager :" />
                </graphic>
             </Label>
          </children>
       </HBox>
-      <Label text="Assigned Roles :" textFill="#377957" />
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+      <HBox fx:id="AssignedRolesHBox">
+         <children>
+            <Label text="Assigned Roles :" textFill="#377957" />
+         </children>
+      </HBox>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
           <Tab text="Flows Definition">
             <content>
-              <AnchorPane fx:id="flowsDefinitionContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                    <fx:include source="FlowDefinitionComponent/FlowDefinitionsTab.fxml" fx:id="flowDefinitionTab"/>
-                <AnchorPane/>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                    <fx:include fx:id="FlowDefinitionsTab" source="FlowDefinitionComponent/FlowDefinitionsTab.fxml"  />
+                </AnchorPane>
             </content>
           </Tab>
           <Tab text="Flows Execution">

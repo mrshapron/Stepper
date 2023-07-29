@@ -17,11 +17,14 @@ public class FreeInputsViewModel {
     public FreeInputsViewModel(String name, String type, String necessity, String stepsName, String userString) {
         this.name = name;
         this.type = type;
-        this.necessity = necessity;
-        this.stepsName = stepsName;
+        this.nameProperty = new ReadOnlyStringWrapper(name);
         this.userString = userString;
+        this.stepsName = stepsName;
+        this.stepsNameProperty = new ReadOnlyStringWrapper(stepsName);
+        this.necessity = necessity;
+        this.typeProperty = new ReadOnlyStringWrapper(type);
+        this.necessityProperty = new ReadOnlyStringWrapper(necessity);
     }
-
 
     public String getUserString() {return userString;}
     public String getName() {

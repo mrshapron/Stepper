@@ -3,6 +3,7 @@ package fileupload;
 import BusinessLogic.StepperBusinessLogic;
 import BusinessLogic.StepperBusinessLogicImpl;
 import Flow.Definition.FlowDefinition;
+import Flow.Definition.FlowDefinitionImpl;
 import Flow.Definition.StepperDefinition;
 import Flow.Definition.StepperDefinitionImpl;
 import jakarta.servlet.ServletContext;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
+import javax.swing.text.TableView;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,16 +46,17 @@ public class FileUploadServlet extends HttpServlet {
         List<FlowDefinition> my_list = stepperBusinessLogic.initializeStepperViaFile(filePart.getInputStream());
 
         //Adding the flows to servletContext
-        ServletContext servletContext = getServletContext();
-        List<FlowDefinition> flowDefinitions = (List<FlowDefinition>) servletContext.getAttribute("flowDefinitions");
+        synchronized(getServletContext()) {
+            ServletContext servletContext = getServletContext();
+            List<FlowDefinition> flowDefinitions = (List<FlowDefinition>) servletContext.getAttribute("flowDefinitions");
 
-        // If the list doesn't exist, create a new one
-        if (flowDefinitions == null) {
-            servletContext.setAttribute("flowDefinitions", my_list);
-            //Also need to return roles
+            // If the list doesn't exist, create a new one
+            if (flowDefinitions == null) {
+                servletContext.setAttribute("flowDefinitions", my_list);
+                //Also need to return roles
+            } else
+                flowDefinitions.addAll(my_list);
         }
-        else
-            flowDefinitions.addAll(my_list);
     }
 
 }

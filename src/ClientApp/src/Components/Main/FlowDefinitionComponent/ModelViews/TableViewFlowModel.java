@@ -1,9 +1,15 @@
+
 package Components.Main.FlowDefinitionComponent.ModelViews;
 
+
+import StepDTO.StepInput;
+import StepDTO.StepOutput;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,8 +23,6 @@ public class TableViewFlowModel {
     private ObservableList<StepsTableViewModel> stepsTableViewModels;
     private ObservableList<FreeInputsViewModel> freeInputsViewModels;
 
-
-
     private ObservableList<String> continuationFlows;
     private ObservableList<String> stepsNameBind;
     private ReadOnlyStringWrapper flowNameProperty;
@@ -27,30 +31,37 @@ public class TableViewFlowModel {
     private ObservableList<AllOutputModelView> allOutputModelViews;
     private ObservableList<StepOutputViewModel> stepOutputViewModels;
 
-    public TableViewFlowModel(){
-        this.flowName = flowDefinition.getName();
-        this.freeInputs = flowDefinition.getFlowFreeInputs().size();
-        this.steps = flowDefinition.getFlowSteps().size();
-        this.description = flowDefinition.getDescription();
+
+    private ObservableMap<String, List<StepInputsViewModel>> inputsMap; //Map between stepName and its inputs
+    private ObservableMap<String, List<StepOutputViewModel>> outputsMap;//Map between stepName and its outputs
+
+    //Make instance of this in Client's app and sent via http request to get it updated..
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || o.getClass()!= TableViewFlowModel.class)
+            return false;
+        TableViewFlowModel object = (TableViewFlowModel) o;
+        return this.flowName.equals(object.flowName);
+    }
+
+    public TableViewFlowModel() {
+        inputsMap = FXCollections.observableHashMap();
+        outputsMap = FXCollections.observableHashMap();
         stepInputsViewModels = FXCollections.observableArrayList();
         stepOutputViewModels = FXCollections.observableArrayList();
         formalOutputs = FXCollections.observableArrayList();
         stepsTableViewModels = FXCollections.observableArrayList();
         freeInputsViewModels = FXCollections.observableArrayList();
-        stepsNameBind = FXCollections.observableArrayList();
         continuationFlows = FXCollections.observableArrayList();
+        stepsNameBind = FXCollections.observableArrayList();
         allOutputModelViews = FXCollections.observableArrayList();
+        this.flowNameProperty = new ReadOnlyStringWrapper("");
+        this.descriptionProperty = new ReadOnlyStringWrapper("");
 
-        flowDefinition.getFlowSteps().forEach(stepUsageDeclaration -> stepsTableViewModels.add(new StepsTableViewModel(stepUsageDeclaration)));
-        flowDefinition.getFlowFormalOutputs().forEach(formalOutput-> formalOutputs.add(formalOutput));
-        flowDefinition.getFlowFreeInputs().forEach(freeInputsDefinition -> freeInputsViewModels.add(new FreeInputsViewModel(freeInputsDefinition)));
-        flowDefinition.getFlowSteps().forEach(stepUsageDeclaration -> stepsNameBind.add(stepUsageDeclaration.getFinalStepName()));
-        flowDefinition.getContinuationFlows().forEach(continuation -> continuationFlows.add(continuation.flowDefinition().getName()));
-        Map<StepUsageDeclaration, List<DataDefinitionDeclaration>> mapOutputs = flowDefinition.getAllOutputs();
-        mapOutputs.forEach((step,list) -> list.forEach(output-> allOutputModelViews.add(new AllOutputModelView(step, output))));
-        flowNameProperty = new ReadOnlyStringWrapper(flowName);
-        descriptionProperty = new ReadOnlyStringWrapper(description);
     }
+
+
 
     public ObservableList<String> getContinuationFlows() {return continuationFlows;}
 
@@ -61,23 +72,30 @@ public class TableViewFlowModel {
     }
 
     public void setStepInputs(String stepName){
-        if(stepName == null)
+        if (stepName == null || inputsMap == null || !inputsMap.containsKey(stepName)) {
             return;
-        stepInputsViewModels.clear();
-        StepUsageDeclaration stepUsageDeclaration = flowDefinition.getFlowSteps().stream()
-                .filter(stepUsageDeclaration1 -> stepUsageDeclaration1.getFinalStepName().equals(stepName))
-                .collect(Collectors.toList()).get(0);
-        stepUsageDeclaration.getStepDefinition().inputs().forEach(inputDefDec -> stepInputsViewModels.add(new StepInputsViewModel(flowDefinition, stepUsageDeclaration, inputDefDec)));
+        }
+
+        if (stepInputsViewModels != null) {
+            stepInputsViewModels.clear();
+        }
+
+        List<StepInputsViewModel> stepInputs = inputsMap.get(stepName);
+        System.out.println(stepInputs.get(0));
+
+        stepInputsViewModels.addAll(stepInputs);
     }
 
     public void setStepOutputs(String stepName){
-        if(stepName == null)
+        if (stepName == null || outputsMap == null || !outputsMap.containsKey(stepName)) {
             return;
-        stepOutputViewModels.clear();
-        StepUsageDeclaration stepUsageDeclaration = flowDefinition.getFlowSteps().stream()
-                .filter(stepUsageDeclaration1 -> stepUsageDeclaration1.getFinalStepName().equals(stepName))
-                .collect(Collectors.toList()).get(0);
-        stepUsageDeclaration.getStepDefinition().outputs().forEach(outputDefDec -> stepOutputViewModels.add(new StepOutputViewModel(flowDefinition, stepUsageDeclaration, outputDefDec)));
+        }
+        if (stepOutputViewModels!= null) {
+            stepOutputViewModels.clear();
+        }
+
+        List<StepOutputViewModel> stepOutputs = outputsMap.get(stepName);
+        stepOutputViewModels.addAll(stepOutputs);
     }
 
     public ObservableList<String> getStepsNameBind(){
@@ -99,6 +117,24 @@ public class TableViewFlowModel {
 
     public void setSteps(int steps) {
         this.steps = steps;
+    }
+
+    public ObservableMap<String, List<StepInputsViewModel>> getInputsMap() {
+        return inputsMap;
+    }
+
+    public ObservableMap<String, List<StepOutputViewModel>> getOutputsMap() {
+        return outputsMap;
+    }
+
+    public void addOutputsMap(String a, List<StepOutputViewModel> b){
+        outputsMap.put(a, b);
+        System.out.println("Just added " +a +"and outputs: " +b);
+    }
+
+    public void addInputsMap(String a, List<StepInputsViewModel> b){
+        inputsMap.put(a, b);
+        System.out.println("Just added " +a +"and inputs: " +b);
     }
 
     public int getFreeInputs() {
@@ -143,5 +179,52 @@ public class TableViewFlowModel {
 
     public ObservableList<StepOutputViewModel> getStepOutputs() {
         return stepOutputViewModels;
+    }
+    // Setters
+
+
+    public void setStepsTableViewModels(ObservableList<StepsTableViewModel> stepsTableViewModels) {
+        this.stepsTableViewModels = stepsTableViewModels;
+    }
+
+    public void setFreeInputsViewModels(ObservableList<FreeInputsViewModel> freeInputsViewModels) {
+        this.freeInputsViewModels = freeInputsViewModels;
+    }
+
+    public void setContinuationFlows(ObservableList<String> continuationFlows) {
+        this.continuationFlows = continuationFlows;
+    }
+
+    public void setStepsNameBind(ObservableList<String> stepsNameBind) {
+        this.stepsNameBind = stepsNameBind;
+    }
+
+    public void setFlowNameProperty(ReadOnlyStringWrapper flowNameProperty) {
+        this.flowNameProperty = flowNameProperty;
+    }
+
+    public void setDescriptionProperty(ReadOnlyStringWrapper descriptionProperty) {
+        this.descriptionProperty = descriptionProperty;
+    }
+
+    public void setStepInputsViewModels(ObservableList<StepInputsViewModel> stepInputsViewModels) {
+        this.stepInputsViewModels = stepInputsViewModels;
+    }
+
+    public void setAllOutputModelViews(ObservableList<AllOutputModelView> allOutputModelViews) {
+        this.allOutputModelViews = allOutputModelViews;
+    }
+
+    public void setStepOutputViewModels(ObservableList<StepOutputViewModel> stepOutputViewModels) {
+        this.stepOutputViewModels = stepOutputViewModels;
+    }
+
+
+    public void setOutputsMap(ObservableMap<String, List<StepOutputViewModel>> outputsMap) {
+        this.outputsMap = outputsMap;
+    }
+
+    public void setInputsMap(ObservableMap<String, List<StepInputsViewModel>> intputsMap) {
+        this.inputsMap = intputsMap;
     }
 }

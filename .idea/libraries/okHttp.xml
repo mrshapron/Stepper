@@ -1,12 +1,10 @@
 <component name="libraryTable">
   <library name="okHttp">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/okHttp/okhttp-4.9.1.jar!/" />
-      <root url="jar://$USER_HOME$/Downloads/okHttp/annotations-13.0.jar!/" />
-      <root url="jar://$USER_HOME$/Downloads/okHttp/kotlin-stdlib-1.4.10.jar!/" />
-      <root url="jar://$USER_HOME$/Downloads/okHttp/okio-2.8.0.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../StepperProject/wetransfer_stepperproject-copy_2023-06-27_0857/okhttp/okHttp/okHttp" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../StepperProject/wetransfer_stepperproject-copy_2023-06-27_0857/okhttp/okHttp/okHttp" recursive="false" />
   </library>
 </component>

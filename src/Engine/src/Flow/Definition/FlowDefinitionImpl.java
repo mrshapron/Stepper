@@ -338,4 +338,6 @@ public class FlowDefinitionImpl implements FlowDefinition {
     public List<MappingDataDefinition> getCustomMappingData() {
         return mappedDataDefinitions;
     }
+
+    public List<DataDefinitionDeclaration> getFreeOutputs() {return freeOutputs;}
 }

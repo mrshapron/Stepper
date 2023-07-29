@@ -1,7 +1,5 @@
 package adminmain;
 
-import BusinessLogic.StepperBusinessLogic;
-import Flow.Definition.FlowDefinition;
 import Users.UserImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,10 +25,8 @@ import java.util.List;
 
 public class AdminMainController {
 
-    private StepperBusinessLogic businessLogic;
     private Stage primaryStage;
 
-    private List<FlowDefinition> flowDefinitions;
     private SimpleIntegerProperty opacityProperty;
     private SimpleStringProperty selectedFileProperty;
 
@@ -81,9 +77,6 @@ public class AdminMainController {
         this.primaryStage = primaryStage;
     }
 
-    public void setBusinessLogic(StepperBusinessLogic businessLogic) {
-        this.businessLogic = businessLogic;
-    }
 
 
 
@@ -119,7 +112,7 @@ public class AdminMainController {
 
         Response response = call.execute();
 
-//        System.out.println(response.body().string());
+        //System.out.println(response.body().string());
 
         RolesManagementTabController.initiateRoles();
     }

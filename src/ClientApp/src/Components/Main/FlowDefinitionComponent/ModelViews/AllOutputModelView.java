@@ -17,7 +17,7 @@ public class AllOutputModelView {
 
         nameProperty = new ReadOnlyStringWrapper(name);
         typeProperty = new ReadOnlyStringWrapper(type);
-        stepProperty = new ReadOnlyStringWrapper(this.step);
+        stepProperty = new ReadOnlyStringWrapper(step);
     }
 
     public String getName() {

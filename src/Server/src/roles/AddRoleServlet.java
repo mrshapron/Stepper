@@ -44,15 +44,16 @@ public class AddRoleServlet extends HttpServlet {
         RoleImpl role = gson.fromJson(reader, RoleImpl.class);
         out.println(reader);
         reader.close();
-
-        ServletContext servletContext = getServletContext();
-        List<Role> rolesList = (List<Role>) servletContext.getAttribute("rolesList");
-        if (rolesList == null){
-            rolesList = new ArrayList<Role>();
-            servletContext.setAttribute("rolesList", rolesList);
+        synchronized(getServletContext()) {
+            ServletContext servletContext = getServletContext();
+            List<Role> rolesList = (List<Role>) servletContext.getAttribute("rolesList");
+            if (rolesList == null) {
+                rolesList = new ArrayList<Role>();
+                servletContext.setAttribute("rolesList", rolesList);
+            }
+            rolesList.add(role);
+            out.println(role.name());
+            out.println(role.description());
         }
-        rolesList.add(role);
-        out.println(role.name());
-        out.println(role.description());
     }
 }

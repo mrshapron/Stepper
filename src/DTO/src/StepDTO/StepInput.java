@@ -1,24 +1,17 @@
-package Components.Main.FlowDefinitionComponent.ModelViews;
+package StepDTO;
 
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.StringProperty;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class StepInputsViewModel {
+public class StepInput {
     private String name;
     private String necessity;
     private String connected;
     private String fromOutput;
 
-    public StepInputsViewModel(String name, String necessity, String connected, String fromOutput){
+    public StepInput(String name, String necessity, String connected, String fromOutput){
         this.name = name;
         this.necessity = necessity;
         this.connected = connected;
         this.fromOutput = fromOutput;
     }
-
 
 
     public String getName() {
@@ -52,4 +45,6 @@ public class StepInputsViewModel {
     public void setFromOutput(String fromOutput) {
         this.fromOutput = fromOutput;
     }
+
+
 }

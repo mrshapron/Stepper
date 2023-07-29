@@ -7,9 +7,12 @@
           <element id="module-output" name="Server" />
           <element id="module-output" name="Engine" />
           <element id="module-output" name="DTO" />
+          <element id="module-output" name="ClientApp" />
+          <element id="module-output" name="AdminApp" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Gson" />
+          <element id="library" level="project" name="okHttp" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="Server/web/Web" />
