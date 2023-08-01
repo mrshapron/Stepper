@@ -1,9 +1,9 @@
 package Users.Role;
 
 import Flow.Definition.FlowDefinition;
+import Users.UserImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RoleImpl implements Role {
     private String name;
@@ -47,4 +47,20 @@ public class RoleImpl implements Role {
     public void removeFlow(String flow) {
         availableFlows.removeIf(flowDefinition -> flowDefinition.equals(flow));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        RoleImpl otherRole = (RoleImpl) obj;
+        return this.name().equals(otherRole.name()) &&
+                this.description().equals(otherRole.description()) &&
+                new HashSet<>(availableFlows).containsAll(otherRole.availableFlows()) &&
+                new HashSet<>(otherRole.availableFlows()).containsAll(availableFlows);
+    }
+
+
+
+
 }

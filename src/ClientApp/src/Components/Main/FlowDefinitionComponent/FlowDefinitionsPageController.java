@@ -3,7 +3,6 @@ package Components.Main.FlowDefinitionComponent;
 
 import Components.Main.ClientMainController;
 import Components.Main.FlowDefinitionComponent.ModelViews.*;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,12 +10,9 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import Components.Main.FlowDefinitionComponent.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 import java.util.ArrayList;
@@ -178,7 +174,8 @@ public class FlowDefinitionsPageController {
     @FXML
     void onClickRunFlowAction(ActionEvent event) {
         TableViewFlowModel selectedFlowModel = tableViewFlows.getSelectionModel().getSelectedItem();
-//        mainController.switchToFlowExecutionTab(selectedFlowModel);
+        String flowName = selectedFlowModel.getFlowName();
+        ClientMainController.switchToFlowExecutionTab(flowName);
     }
 
     public void bindFlowList(ObservableList<TableViewFlowModel> flowDefinitions){

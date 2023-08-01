@@ -29,6 +29,12 @@ public class ClientMainController {
     @FXML
     private FlowDefinitionsPageController FlowDefinitionsTabController;
 
+    @FXML
+
+    public static void switchToFlowExecutionTab(String flowName) {
+
+    }
+
 //    public void initialize() {
 //        try {
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("Components/Main/FlowDefinitionComponent/FlowDefinitionsTab.fxml"));

@@ -1,4 +1,5 @@
 import Users.Role.Role;
+import Users.Role.RoleImpl;
 import Users.UserImpl;
 import adminmain.AdminMainController;
 import com.google.gson.Gson;
@@ -7,9 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import deserializer.RoleDeserializer;
 import deserializer.UserDeserializer;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.function.Consumer;
 
 import static configuration.Configuration.BASE_URL;
 import static configuration.Configuration.HTTP_CLIENT;
@@ -70,18 +68,18 @@ public class MainApplication extends Application {
         @Override
         public void run() {
 //            System.out.println("Executing DeltaFetchingTask...");
-            Request request = new Request.Builder()
+            Request userRequest = new Request.Builder()
                     .url(BASE_URL + "/fetch-users")
                     .get()
                     .build();
 
-            try (Response response = HTTP_CLIENT.newCall(request).execute()) {
+            try (Response response = HTTP_CLIENT.newCall(userRequest).execute()) {
 //                System.out.println("Received server response: " + response.code() + " " + response.message());
                 if (response.isSuccessful()) {
                     String responseData = response.body().string();
 //                    System.out.println("Response data: " + responseData);
                     // Process the fetched data
-                    List<UserImpl> updatedUsers = processFetchedData(responseData);
+                    List<UserImpl> updatedUsers = processFetchedUserData(responseData);
 
                     // Pass the fetched users to your controller via a method
                     mainController.updateUsers(updatedUsers);
@@ -91,9 +89,28 @@ public class MainApplication extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            // Execute the second HTTP call to fetch roles
+            Request roleRequest = new Request.Builder()
+                    .url(BASE_URL + "/fetch-roles")
+                    .get()
+                    .build();
+
+            try (Response roleResponse = HTTP_CLIENT.newCall(roleRequest).execute()) {
+                if (roleResponse.isSuccessful()) {
+                    String roleResponseData = roleResponse.body().string();
+                    List<RoleImpl> updatedRoles = processFetchedRoleData(roleResponseData);
+                    // Pass the fetched roles to your controller via a method
+                    mainController.updateRoles(updatedRoles);
+                } else {
+                    // Handle the error response for fetching roles
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        private List<UserImpl> processFetchedData(String responseData) {
+        private List<UserImpl> processFetchedUserData(String responseData) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(User.class, new UserDeserializer());
             gsonBuilder.registerTypeAdapter(Role.class, new RoleDeserializer());
@@ -102,6 +119,15 @@ public class MainApplication extends Application {
             Type userListType = new TypeToken<List<UserImpl>>() {}.getType();
             return gson.fromJson(responseData, userListType);
         }
+    }
+
+    private List<RoleImpl> processFetchedRoleData(String responseData) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(RoleImpl.class, new RoleDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        Type roleListType = new TypeToken<List<RoleImpl>>() {}.getType();
+        return gson.fromJson(responseData, roleListType);
     }
 
 

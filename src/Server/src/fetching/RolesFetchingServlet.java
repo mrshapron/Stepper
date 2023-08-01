@@ -1,5 +1,6 @@
 package fetching;
 
+import Flow.Definition.FlowDefinition;
 import Users.Role.RoleImpl;
 import Users.UserImpl;
 import com.google.gson.Gson;
@@ -25,6 +26,15 @@ public class RolesFetchingServlet extends HttpServlet {
         RoleImpl role2 = new RoleImpl("All Flows", "Have access to all of the flows");
         synchronized(getServletContext()) {
             ServletContext servletContext = getServletContext();
+
+            //Adding flows to roles
+            List<FlowDefinition> flowsList = (List<FlowDefinition>) servletContext.getAttribute("flowDefinitions");
+            for (FlowDefinition flow : flowsList){
+                if (flow.getIsReadOnly()){
+                    role1.addFlow(flow.getName());
+                }
+                role2.addFlow(flow.getName());
+            }
             List<RoleImpl> rolesList = (List<RoleImpl>) servletContext.getAttribute("rolesList");
             if (rolesList == null) {
                 rolesList = new ArrayList<>();

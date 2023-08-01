@@ -1,7 +1,5 @@
 package deserializer;
 
-
-//import Flow.Definition.FlowDefinition;
 import Users.Role.Role;
 import Users.Role.RoleImpl;
 import Users.User;
@@ -18,9 +16,12 @@ public class UserDeserializer implements JsonDeserializer<User> {
         JsonObject jsonObject = json.getAsJsonObject();
         String name = jsonObject.get("username").getAsString();
         List<RoleImpl> roles = context.deserialize(jsonObject.get("roles"), new TypeToken<List<RoleImpl>>() {}.getType());
+        boolean isManager = jsonObject.get("manager").getAsBoolean(); // Read the manager field
 
         // Assuming you have a concrete implementation of the Role interface
         // Replace RoleImpl with the actual implementation class of the Role interface
-        return new UserImpl(name, roles);
+        UserImpl user = new UserImpl(name, roles);
+        user.setManager(isManager); // Set the manager field
+        return user;
     }
 }

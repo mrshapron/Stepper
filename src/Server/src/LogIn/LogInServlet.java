@@ -35,10 +35,14 @@ public class LogInServlet extends HttpServlet {
                 usersList = new ArrayList<>();
                 servletContext.setAttribute("usersList", usersList);
             }
-            if (user.getUsername().equals("Sharon")){
-                user.getRoles().get(0).addFlow("Step number 3");
-                user.getRoles().get(0).addFlow("Rename Files");
-            }
+
+
+            //Just for checking
+//            if (user.getUsername().equals("Gur")){
+//                user.getRoles().get(0).addFlow("Step number 3");
+//                user.getRoles().get(0).addFlow("Rename Files");
+//            }
+
             usersList.add(user);
         }
         // Redirect the user to the main application page
@@ -51,7 +55,6 @@ public class LogInServlet extends HttpServlet {
                 return role;
         }
         //!!!!NEED TO CHANGE!!!!
-        return new RoleImpl("Role3", "Description3");
-//        return null;
+        return new RoleImpl("Problem Role", "Problem!");
     }
 }

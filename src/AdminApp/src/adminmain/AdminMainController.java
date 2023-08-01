@@ -1,5 +1,6 @@
 package adminmain;
 
+import Users.Role.RoleImpl;
 import Users.UserImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -71,6 +72,8 @@ public class AdminMainController {
         txtFiledFileChosen.textProperty().bind(selectedFileProperty);
         txtFiledFileChosen.opacityProperty().bind(opacityProperty);
         hBoxMain.disableProperty().bind(txtFiledFileChosen.textProperty().isEmpty());
+        UsersManagementTabController.setMainController(this);
+        RolesManagementTabController.setMainController(this);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -113,8 +116,6 @@ public class AdminMainController {
         Response response = call.execute();
 
         //System.out.println(response.body().string());
-
-        RolesManagementTabController.initiateRoles();
     }
 
     public void updateUsers(List<UserImpl> updatedUsers){
@@ -122,5 +123,9 @@ public class AdminMainController {
     }
 
 
+    public void updateRoles(List<RoleImpl> updatedRoles) { RolesManagementTabController.updateRoles(updatedRoles);}
 
+    public void setHisRoles(List<RoleImpl> updatedRoles) {
+        UsersManagementTabController.UpdateMyRoles(updatedRoles);
+    }
 }

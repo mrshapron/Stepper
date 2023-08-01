@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Scanner;
 
 @WebServlet("/add-role")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class AddRoleServlet extends HttpServlet {
 
     @Override
@@ -46,9 +45,9 @@ public class AddRoleServlet extends HttpServlet {
         reader.close();
         synchronized(getServletContext()) {
             ServletContext servletContext = getServletContext();
-            List<Role> rolesList = (List<Role>) servletContext.getAttribute("rolesList");
+            List<RoleImpl> rolesList = (List<RoleImpl>) servletContext.getAttribute("rolesList");
             if (rolesList == null) {
-                rolesList = new ArrayList<Role>();
+                rolesList = new ArrayList<>();
                 servletContext.setAttribute("rolesList", rolesList);
             }
             rolesList.add(role);
