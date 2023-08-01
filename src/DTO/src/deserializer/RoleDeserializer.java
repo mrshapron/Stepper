@@ -1,6 +1,5 @@
 package deserializer;
 
-import Flow.Definition.FlowDefinition;
 import Users.Role.Role;
 import Users.Role.RoleImpl;
 import com.google.gson.*;
@@ -15,7 +14,7 @@ public class RoleDeserializer implements JsonDeserializer<Role> {
         JsonObject jsonObject = json.getAsJsonObject();
         String name = jsonObject.get("name").getAsString();
         String description = jsonObject.get("description").getAsString();
-        List<FlowDefinition> availableFlows = context.deserialize(jsonObject.get("availableFlows"), new TypeToken<List<FlowDefinition>>() {}.getType());
+        List<String> availableFlows = context.deserialize(jsonObject.get("availableFlows"), new TypeToken<List<String>>() {}.getType());
 
         // Assuming you have a concrete implementation of the Role interface
         // Replace RoleImpl with the actual implementation class of the Role interface

@@ -12,9 +12,6 @@ public class StepInputsViewModel {
     private String connected;
     private String fromOutput;
 
-
-    private static final String  freeInputLabel = "Free Input";
-
     public StepInputsViewModel(String name, String necessity, String connected, String fromOutput){
         this.name = name;
         this.necessity = necessity;

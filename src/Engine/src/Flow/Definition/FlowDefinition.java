@@ -36,4 +36,6 @@ public interface FlowDefinition {
     List<Continuation> getContinuationFlows();
 
     List<InitialInputValue> getInitialInputValues();
+
+    List<DataDefinitionDeclaration> getFreeOutputs();
 }

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Scanner;
 
 @WebServlet("/add-role")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class AddRoleServlet extends HttpServlet {
 
     @Override
@@ -44,15 +43,16 @@ public class AddRoleServlet extends HttpServlet {
         RoleImpl role = gson.fromJson(reader, RoleImpl.class);
         out.println(reader);
         reader.close();
-
-        ServletContext servletContext = getServletContext();
-        List<Role> rolesList = (List<Role>) servletContext.getAttribute("rolesList");
-        if (rolesList == null){
-            rolesList = new ArrayList<Role>();
-            servletContext.setAttribute("rolesList", rolesList);
+        synchronized(getServletContext()) {
+            ServletContext servletContext = getServletContext();
+            List<RoleImpl> rolesList = (List<RoleImpl>) servletContext.getAttribute("rolesList");
+            if (rolesList == null) {
+                rolesList = new ArrayList<>();
+                servletContext.setAttribute("rolesList", rolesList);
+            }
+            rolesList.add(role);
+            out.println(role.name());
+            out.println(role.description());
         }
-        rolesList.add(role);
-        out.println(role.name());
-        out.println(role.description());
     }
 }

@@ -1,7 +1,8 @@
+
 package Components.Main.FlowDefinitionComponent;
 
-import Components.Main.MainController;
-import javafx.beans.binding.Bindings;
+import Components.Main.ClientMainController;
+import Components.Main.FlowDefinitionComponent.ModelViews.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,12 +13,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlowDefinitionsPageController {
+    private List<TableViewFlowModel> currFlows;
 
     private StringProperty flowNameProperty;
     private StringProperty descriptionProperty;
     private BooleanProperty isReadOnlyProperty;
+    @FXML
+    private BorderPane root;
+
 
     @FXML
     private TableColumn<AllOutputModelView, String> allOutputsTableName;
@@ -112,25 +121,25 @@ public class FlowDefinitionsPageController {
     @FXML
     private TableColumn<StepOutputViewModel, String> outputToInputColumn;
 
-    private MainController mainController;
 
     private BooleanProperty isRunFlowDisable;
+    private StringProperty isReadOnlyStatusProperty;
 
-    public void setMainController(MainController mainController){
-        this.mainController = mainController;
-    }
+
 
     public FlowDefinitionsPageController(){
         isRunFlowDisable = new SimpleBooleanProperty(true);
         flowNameProperty = new SimpleStringProperty("Flow Name");
         descriptionProperty = new SimpleStringProperty("Flow Description");
         isReadOnlyProperty = new SimpleBooleanProperty(false);
+        isReadOnlyStatusProperty = new SimpleStringProperty("Is Read Only");
     }
 
 
     public void initialize(){
+        currFlows = new ArrayList<>();
         btnRunFlow.disableProperty().bind(isRunFlowDisable);
-        comboBoxStepsInfo.setOnAction(actionEvent-> onClickStepInfoComboBox(actionEvent));
+        comboBoxStepsInfo.setOnAction(this::onClickStepInfoComboBox);
         flowsFlowNameCloumn.setCellValueFactory(new PropertyValueFactory<>("flowName"));
         flowsFreeInputsColumn.setCellValueFactory(new PropertyValueFactory<>("freeInputs"));
         flowsStepsColumn.setCellValueFactory(new PropertyValueFactory<>("steps"));
@@ -159,13 +168,14 @@ public class FlowDefinitionsPageController {
 
         lblFlowName.textProperty().bind(flowNameProperty);
         lblDescription.textProperty().bind(descriptionProperty);
-        lblIsReadOnly.textProperty().bind(Bindings.format(isReadOnlyProperty.get() + ""));
+        lblIsReadOnly.textProperty().bind(isReadOnlyStatusProperty);
     }
 
     @FXML
     void onClickRunFlowAction(ActionEvent event) {
         TableViewFlowModel selectedFlowModel = tableViewFlows.getSelectionModel().getSelectedItem();
-        mainController.switchToFlowExecutionTab(selectedFlowModel);
+        String flowName = selectedFlowModel.getFlowName();
+        ClientMainController.switchToFlowExecutionTab(flowName);
     }
 
     public void bindFlowList(ObservableList<TableViewFlowModel> flowDefinitions){
@@ -173,22 +183,51 @@ public class FlowDefinitionsPageController {
     }
 
     public void onClickFlowTable(MouseEvent mouseEvent) {
-        comboBoxStepsInfo.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getStepsNameBind());
-        listViewFormalOutputs.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getFormalOutputs());
-        tableViewSteps.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getStepsTableViewModels());
-        tableViewFreeInputs.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getFreeInputsViewModels());
-        tableViewInputsStep.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getStepInputs());
-        flowNameProperty.bind(tableViewFlows.selectionModelProperty().get().getSelectedItem().getFlowNameProperty());/**/
-        descriptionProperty.bind(tableViewFlows.selectionModelProperty().get().getSelectedItem().getDescriptionProperty());/**/
-        tableViewAllOutputs.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getAllOutputModelViews());
-        tableViewOutputs.setItems(tableViewFlows.getSelectionModel().getSelectedItem().getStepOutputs());
-        isRunFlowDisable.set(false);
+        TableViewFlowModel selectedFlowModel = tableViewFlows.getSelectionModel().getSelectedItem();
+        if (selectedFlowModel != null) {
+            comboBoxStepsInfo.setItems(selectedFlowModel.getStepsNameBind());
+            listViewFormalOutputs.setItems(selectedFlowModel.getFormalOutputs());
+            tableViewSteps.setItems(selectedFlowModel.getStepsTableViewModels());
+            tableViewFreeInputs.setItems(selectedFlowModel.getFreeInputsViewModels());
+            tableViewInputsStep.setItems(selectedFlowModel.getStepInputs());
+            tableViewAllOutputs.setItems(selectedFlowModel.getAllOutputModelViews());
+            tableViewOutputs.setItems(selectedFlowModel.getStepOutputs());
+            // Update the label text
+            flowNameProperty.set(selectedFlowModel.getFlowName());
+            descriptionProperty.set(selectedFlowModel.getDescription());
+            isReadOnlyStatusProperty.set("true");
+            isRunFlowDisable.set(false);
+
+        } else {
+            // Reset the label text when no flow is selected
+            flowNameProperty.set("Flow Name");
+            descriptionProperty.set("Flow Description");
+            isReadOnlyStatusProperty.set("Is Read Only");
+        }
     }
 
 
     public void onClickStepInfoComboBox(ActionEvent mouseEvent) {
-        String nameStep = comboBoxStepsInfo.getSelectionModel().getSelectedItem();
+
+        String nameStep;
+        nameStep = comboBoxStepsInfo.getSelectionModel().getSelectedItem();
+        System.out.println(nameStep);
+        if (comboBoxStepsInfo.getSelectionModel() == null)
+            nameStep = comboBoxStepsInfo.getItems().get(0);
         tableViewFlows.getSelectionModel().getSelectedItem().setStepInputs(nameStep);
         tableViewFlows.getSelectionModel().getSelectedItem().setStepOutputs(nameStep);
     }
-}
+
+    public void updateFlows(List<TableViewFlowModel> updatedFlows) {
+        if (!updatedFlows.equals(currFlows)) {
+            //Need to CHANGE!
+            tableViewFlows.getItems().clear();
+            for (TableViewFlowModel model : updatedFlows) {
+                tableViewFlows.getItems().add(model);
+            }
+            currFlows = updatedFlows;
+        }
+    }
+
+
+    }

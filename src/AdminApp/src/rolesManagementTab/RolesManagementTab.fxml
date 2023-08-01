@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -13,11 +15,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rolesManagementTab.RolesManagementTabController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rolesManagementTab.RolesManagementTabController">
     <left>
-      <VBox BorderPane.alignment="CENTER_RIGHT">
+      <VBox BorderPane.alignment="CENTER">
          <children>
-              <TableView fx:id="RolesTableView" prefHeight="599.0" prefWidth="227.0">
+              <TableView fx:id="RolesTableView" prefHeight="599.0" prefWidth="227.0" VBox.vgrow="ALWAYS">
                   <columns>
                       <TableColumn fx:id="RoleNameColumn" prefWidth="100.0" text="Name" />
                   <TableColumn fx:id="NumberOfFlowsColumn" prefWidth="100.0" text="# of flows" />
@@ -28,65 +30,95 @@
       </VBox>
     </left>
     <center>
-            <VBox alignment="CENTER" spacing="5.0">
-                <children>
-                    <Label fx:id="RoleNameLabel" alignment="CENTER" text="Role Name">
-                        <font>
-                            <Font name="System Bold" size="20.0" />
-                        </font>
-                    </Label>
-                <GridPane prefHeight="447.0" prefWidth="773.0" VBox.vgrow="ALWAYS">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="635.0" minHeight="10.0" prefHeight="617.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="232.0">
-                            <children>
-                                <Label text="Role details" />
-                                <ListView fx:id="RoleDetailsListView" prefHeight="200.0" prefWidth="232.0" VBox.vgrow="ALWAYS">
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                    </VBox.margin>
-                                </ListView>
-                            </children>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+                  <VBox fx:id="switchVbox" alignment="TOP_CENTER" fillWidth="false" spacing="5.0">
+                      <children>
+                          <Label fx:id="RoleNameLabel" alignment="CENTER" text="Role Name">
+                              <font>
+                                  <Font name="System Bold" size="20.0" />
+                              </font>
+                          </Label>
+                      <GridPane fx:id="RolesGridPane" prefHeight="447.0" prefWidth="773.0" VBox.vgrow="SOMETIMES">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="635.0" minHeight="10.0" prefHeight="617.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                          <children>
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="232.0">
+                                  <children>
+                                      <Label text="Role details" />
+                                      <ListView fx:id="RoleDetailsListView" prefHeight="200.0" prefWidth="232.0" VBox.vgrow="ALWAYS">
+                                          <VBox.margin>
+                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                          </VBox.margin>
+                                      </ListView>
+                                  </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                  <children>
+                                      <Label text="Assigned flows" />
+                                      <TableView fx:id="AssignedFlowsTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                          <columns>
+                                              <TableColumn fx:id="stepNameColumn" prefWidth="75.0" text="Name" />
+                                          </columns>
+                                          <VBox.margin>
+                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                          </VBox.margin>
+                                      </TableView>
+                                  </children>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+                                  <children>
+                                      <Label text="Assigned users" />
+                                      <TableView fx:id="AssignedUsersTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                          <columns>
+                                              <TableColumn fx:id="inputNameColumn" prefWidth="75.0" text="Name" />
+                                          </columns>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </VBox.margin>
+                                      </TableView>
+                                  </children>
+                              </VBox>
+                          </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                      </GridPane>
+                  <GridPane fx:id="AddingFlowGridPane" prefHeight="350.0" prefWidth="773.0" visible="false" VBox.vgrow="ALWAYS">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="157.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="192.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="287.0" minWidth="0.0" prefWidth="287.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="658.0" minHeight="10.0" prefHeight="651.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                           <Button fx:id="roleButton" mnemonicParsing="false" onAction="#dispatchRole" text="Submit role" GridPane.columnIndex="3" />
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                                 <Label prefHeight="60" prefWidth="60" text="Name" />
+                               <TextField fx:id="nameTextField" prefHeight="40.0" prefWidth="200.0" promptText="Please enter role name" />
+                           </children>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
-                            <children>
-                                <Label text="Assigned flows" />
-                                <TableView fx:id="AssignedFlowsTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn fx:id="stepNameColumn" prefWidth="75.0" text="Name" />
-                                    </columns>
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                    </VBox.margin>
-                                </TableView>
-                            </children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                           <children>
+                                 <Label prefHeight="60" prefWidth="60" text="Description" />
+                               <TextField fx:id="DescriptionTextField" prefHeight="100.0" prefWidth="400.0" promptText="Please enter role description" />                           </children>
                         </VBox>
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
-                            <children>
-                                <Label text="Assigned users" />
-                                <TableView fx:id="AssignedUsersTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn fx:id="inputNameColumn" prefWidth="75.0" text="Name" />
-                                    </columns>
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </VBox.margin>
-                                </TableView>
-                            </children>
-                        </VBox>
-                    </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-                </GridPane>
-                </children>
-            </VBox>
+                        <VBox fx:id="flowsListVBox" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" />
+                     </children>
+                  </GridPane>
+                      </children>
+                  </VBox>
+         </children>
+      </AnchorPane>
     </center>
 </BorderPane>

@@ -1,7 +1,6 @@
 package adminmain;
 
-import BusinessLogic.StepperBusinessLogic;
-import Flow.Definition.FlowDefinition;
+import Users.Role.RoleImpl;
 import Users.UserImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,10 +26,8 @@ import java.util.List;
 
 public class AdminMainController {
 
-    private StepperBusinessLogic businessLogic;
     private Stage primaryStage;
 
-    private List<FlowDefinition> flowDefinitions;
     private SimpleIntegerProperty opacityProperty;
     private SimpleStringProperty selectedFileProperty;
 
@@ -75,15 +72,14 @@ public class AdminMainController {
         txtFiledFileChosen.textProperty().bind(selectedFileProperty);
         txtFiledFileChosen.opacityProperty().bind(opacityProperty);
         hBoxMain.disableProperty().bind(txtFiledFileChosen.textProperty().isEmpty());
+        UsersManagementTabController.setMainController(this);
+        RolesManagementTabController.setMainController(this);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    public void setBusinessLogic(StepperBusinessLogic businessLogic) {
-        this.businessLogic = businessLogic;
-    }
 
 
 
@@ -119,9 +115,7 @@ public class AdminMainController {
 
         Response response = call.execute();
 
-//        System.out.println(response.body().string());
-
-        RolesManagementTabController.initiateRoles();
+        //System.out.println(response.body().string());
     }
 
     public void updateUsers(List<UserImpl> updatedUsers){
@@ -129,5 +123,9 @@ public class AdminMainController {
     }
 
 
+    public void updateRoles(List<RoleImpl> updatedRoles) { RolesManagementTabController.updateRoles(updatedRoles);}
 
+    public void setHisRoles(List<RoleImpl> updatedRoles) {
+        UsersManagementTabController.UpdateMyRoles(updatedRoles);
+    }
 }
