@@ -15,18 +15,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FlowDefinitionsPageController {
     private List<TableViewFlowModel> currFlows;
-
     private StringProperty flowNameProperty;
     private StringProperty descriptionProperty;
     private BooleanProperty isReadOnlyProperty;
+    private ClientMainController clientMainController;
+    private String username;
+
     @FXML
     private BorderPane root;
-
 
     @FXML
     private TableColumn<AllOutputModelView, String> allOutputsTableName;
@@ -171,11 +173,16 @@ public class FlowDefinitionsPageController {
         lblIsReadOnly.textProperty().bind(isReadOnlyStatusProperty);
     }
 
+    public void setClientMainController(ClientMainController clientMainController) {
+        this.clientMainController = clientMainController;
+    }
+
+
     @FXML
-    void onClickRunFlowAction(ActionEvent event) {
+    void onClickRunFlowAction(ActionEvent event) throws IOException {
         TableViewFlowModel selectedFlowModel = tableViewFlows.getSelectionModel().getSelectedItem();
         String flowName = selectedFlowModel.getFlowName();
-        ClientMainController.switchToFlowExecutionTab(flowName);
+        clientMainController.switchToFlowExecutionTab(flowName);
     }
 
     public void bindFlowList(ObservableList<TableViewFlowModel> flowDefinitions){
@@ -208,7 +215,6 @@ public class FlowDefinitionsPageController {
 
 
     public void onClickStepInfoComboBox(ActionEvent mouseEvent) {
-
         String nameStep;
         nameStep = comboBoxStepsInfo.getSelectionModel().getSelectedItem();
         System.out.println(nameStep);
@@ -230,4 +236,7 @@ public class FlowDefinitionsPageController {
     }
 
 
+    public void setUsername(String username) {
+        this.username = username;
     }
+}

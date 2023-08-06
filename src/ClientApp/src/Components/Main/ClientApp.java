@@ -1,11 +1,15 @@
 package Components.Main;
-
+import Components.Main.FlowExecutionComponent.ModelViews.*;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import Components.Main.FlowDefinitionComponent.ModelViews.*;
 import Components.Main.deserializer.*;
 import LogIn.LogInController;
 import StepDTO.StepInput;
 import StepDTO.StepOutput;
 import Users.Role.Role;
+import Users.Role.RoleImpl;
 import Users.User;
 import Users.UserImpl;
 import com.google.gson.Gson;
@@ -35,6 +39,7 @@ public class ClientApp extends Application {
     private ClientMainController clientMainController;
     private LogInController loginController;
     private String username;
+    private boolean ok = true;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -86,6 +91,8 @@ public class ClientApp extends Application {
             e.printStackTrace();
             // Handle the exception if FXML file loading fails
         }
+
+
     }
 
 
@@ -117,13 +124,66 @@ public class ClientApp extends Application {
 
                         // Pass the fetched users to your controller via a method
                         clientMainController.updateFlows(updatedFlows);
+                        if (ok) {
+                            Platform.runLater(() -> {
+                                clientMainController.setUsername(username);
+                            });
+                            ok = false;
+                        }
                     } else {
-                        // Handle the error response
+                        System.out.println("There's a problem with fetch-flows");
                     }
                 } catch (Exception e) {
                     logError("Error occurred during fetching data: " + e.getMessage());
                     e.printStackTrace();
                 }
+
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("username", username) // Add your parameter here
+                        .build();
+
+                Request request2 = new Request.Builder()
+                        .url(BASE_URL + "/fetch-history")
+                        .post(requestBody) // Use .put(requestBody) for PUT requests or .patch(requestBody) for PATCH requests
+                        .build();
+
+                try (Response historyResponse = HTTP_CLIENT.newCall(request2).execute()) {
+                    if (historyResponse.isSuccessful()) {
+                        String historyResponseData = historyResponse.body().string();
+//                        System.out.println(historyResponseData);
+                        // Pass the fetched roles to your controller via a method
+//                        System.out.println(historyResponseData);
+                        if (!historyResponseData.equals("[]")) {
+                            Gson gson = new GsonBuilder()
+                                    .registerTypeAdapter(FlowExecutionModelView.class, new FlowExecutionModelViewDeserializer())
+                                    .registerTypeAdapter(FreeInputsExecViewModel.class, new FreeInputsExecViewModelDeserializer())
+                                    .registerTypeAdapter(OutputExecModelView.class, new OutputExecModelViewDeserializer())
+                                    .registerTypeAdapter(StepExecModelView.class, new StepExecModelViewDeserializer())
+                                    .registerTypeAdapter(InputStepModelView.class, new InputStepModelViewDeserializer())
+                                    .registerTypeAdapter(OutputStepModelView.class, new OutputStepModelViewDeserializer())
+                                    // ... register other deserializers ...
+                                    .create();
+                            Type listType = new TypeToken<List<FlowExecutionModelView>>() {
+                            }.getType();
+                            List<FlowExecutionModelView> modelViews = gson.fromJson(historyResponseData, listType);
+//                        FlowExecutionModelView modelView1 = gson.fromJson(historyResponseData, FlowExecutionModelView.class);
+//                            System.out.println("Flow Name: " + modelView1.getFlowName());
+//                            System.out.println("Free Inputs: " + modelView1.getFreeInputsExecViewModels()); // Print freeInputsExecViewModels here
+//                        ObservableList<FlowExecutionModelView> observableList = FXCollections.observableList(modelViews);
+                            clientMainController.updateHistory(modelViews);
+                        }
+                        else {
+                            clientMainController.updateHistory(null);
+                        }
+                    } else{
+                        System.out.println("Problem in request");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
             }
 
             private List<TableViewFlowModel> processFetchedData(String responseData) {
@@ -154,7 +214,7 @@ public class ClientApp extends Application {
         }
 
         public void setUsername(String text){
-        username = text;
+            username = text;
         }
 
     public static void main(String[] args) {

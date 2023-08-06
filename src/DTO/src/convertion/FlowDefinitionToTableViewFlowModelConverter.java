@@ -1,13 +1,10 @@
-package FlowDefinitionConverter;
+package convertion;
 
 import Components.Main.FlowDefinitionComponent.ModelViews.*;
 import Flow.Definition.FlowDefinition;
-import Flow.Definition.FlowDefinitionImpl;
 import Flow.Definition.StepUsageDeclaration;
 import Mapping.MappingDataDefinition;
 import Step.Declaration.DataDefinitionDeclaration;
-import StepDTO.StepInput;
-import StepDTO.StepOutput;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -15,7 +12,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,7 +52,6 @@ public class FlowDefinitionToTableViewFlowModelConverter {
 
             // Use the new constructor to create FreeInputsViewModel object
             FreeInputsViewModel freeInputsViewModel = new FreeInputsViewModel(name, type, necessity, stepsName, userString);
-
             freeInputsViewModels.add(freeInputsViewModel);
         });
 

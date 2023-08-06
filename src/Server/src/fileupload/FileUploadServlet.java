@@ -6,6 +6,7 @@ import Flow.Definition.FlowDefinition;
 import Flow.Definition.FlowDefinitionImpl;
 import Flow.Definition.StepperDefinition;
 import Flow.Definition.StepperDefinitionImpl;
+import Users.Role.RoleImpl;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -42,21 +43,27 @@ public class FileUploadServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         Part filePart = request.getPart("file");
 
-        StepperBusinessLogic stepperBusinessLogic = new StepperBusinessLogicImpl();
-        List<FlowDefinition> my_list = stepperBusinessLogic.initializeStepperViaFile(filePart.getInputStream());
+
+        //Get stepper business from servlet context:
+        StepperBusinessLogic stepperBusinessLogic;
+        List<FlowDefinition> my_list;
+        synchronized(getServletContext()){
+            stepperBusinessLogic = (StepperBusinessLogic) getServletContext().getAttribute("businessLogic");
+            if (stepperBusinessLogic == null){
+                stepperBusinessLogic = new StepperBusinessLogicImpl();
+            }
+            getServletContext().setAttribute("businessLogic", stepperBusinessLogic);
+            my_list = stepperBusinessLogic.initializeStepperViaFile(filePart.getInputStream());
+            List<FlowDefinition> flowDefinitions = (List<FlowDefinition>) getServletContext().getAttribute("flowDefinitions");
+            if (flowDefinitions == null){
+                flowDefinitions = new ArrayList<>();
+            }
+            getServletContext().setAttribute("flowDefinitions", flowDefinitions);
+            flowDefinitions.addAll(my_list);
+        }
 
         //Adding the flows to servletContext
-        synchronized(getServletContext()) {
-            ServletContext servletContext = getServletContext();
-            List<FlowDefinition> flowDefinitions = (List<FlowDefinition>) servletContext.getAttribute("flowDefinitions");
 
-            // If the list doesn't exist, create a new one
-            if (flowDefinitions == null) {
-                servletContext.setAttribute("flowDefinitions", my_list);
-                //Also need to return roles
-            } else
-                flowDefinitions.addAll(my_list);
-        }
     }
 
 }

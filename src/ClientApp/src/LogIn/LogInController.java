@@ -5,6 +5,7 @@ import Components.Main.ClientMainController;
 import com.google.gson.Gson;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -56,16 +57,24 @@ public class LogInController {
 
 
         // Simulating a redirection response
-        String redirectionURL = "/Components/Main/ClientMain.fxml";
-        String redirectionTitle = "Main Application";
+            String redirectionURL = "/Components/Main/ClientMain.fxml";
+            String redirectionTitle = "Main Application";
 
-        // Call the openNewStage() method to load the new scene in a new stage
-        ClientApp mainApp = new ClientApp();
-        mainApp.setUsername(username);
-        mainApp.openNewStage(redirectionURL, redirectionTitle);
+            // Call the openNewStage() method to load the new scene in a new stage
+            ClientApp mainApp = new ClientApp();
+            mainApp.setUsername(username);
+            mainApp.openNewStage(redirectionURL, redirectionTitle);
+            primaryStage.close();
+            // Close the current stage (login stage)
+        /* IF name already exists!
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Validation Error");
+            alert.setContentText("Username already exists!");
 
-        // Close the current stage (login stage)
-        primaryStage.close();
+            alert.showAndWait();
+*/
+
 
 
 

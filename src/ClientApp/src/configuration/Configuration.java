@@ -13,13 +13,13 @@ public class Configuration {
     public static Callback SIMPLE_CALLBACK = new Callback() {
         @Override
         public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            System.out.println("Ooops... something went wrong... error: " + e.getMessage());
+//            System.out.println("Ooops... something went wrong... error: " + e.getMessage());
         }
 
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            System.out.println("Response:");
-            System.out.println(response.body().string());
+//            System.out.println("Response:");
+//            System.out.println(response.body().string());
         }
     };
 }

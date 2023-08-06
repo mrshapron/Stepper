@@ -51,8 +51,6 @@ public class AddRoleServlet extends HttpServlet {
                 servletContext.setAttribute("rolesList", rolesList);
             }
             rolesList.add(role);
-            out.println(role.name());
-            out.println(role.description());
         }
     }
 }

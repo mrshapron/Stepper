@@ -8,8 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Engine" />
-    <orderEntry type="module" module-name="ClientApp" />
-    <orderEntry type="module" module-name="AdminApp" />
     <orderEntry type="library" name="Gson" level="project" />
+    <orderEntry type="module" module-name="ClientApp" />
   </component>
 </module>

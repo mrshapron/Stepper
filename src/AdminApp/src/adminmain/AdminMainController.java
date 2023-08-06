@@ -62,7 +62,6 @@ public class AdminMainController {
     private UsersManagementTabController UsersManagementTabController;
 
 
-
     public AdminMainController() {
         selectedFileProperty = new SimpleStringProperty();
         opacityProperty = new SimpleIntegerProperty(100);
@@ -127,5 +126,9 @@ public class AdminMainController {
 
     public void setHisRoles(List<RoleImpl> updatedRoles) {
         UsersManagementTabController.UpdateMyRoles(updatedRoles);
+    }
+
+    public void updateUsers1(List<UserImpl> mylist) {
+        RolesManagementTabController.updateUsers(mylist);
     }
 }
