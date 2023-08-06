@@ -1,6 +1,7 @@
 package rolesManagementTab;
 
 import Users.Role.RoleImpl;
+import Users.UserImpl;
 import adminmain.AdminMainController;
 import com.google.gson.Gson;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -27,6 +29,7 @@ import static configuration.Configuration.HTTP_CLIENT;
 public class RolesManagementTabController {
 
     private List<String> flowsList;
+    private List<UserImpl> usersList;
     private Boolean first;
     private AdminMainController mainController;
     private Map<String, CheckBox> flowsCheckBoxMap;
@@ -50,19 +53,13 @@ public class RolesManagementTabController {
     private Label RoleNameLabel;
 
     @FXML
-    private ListView<?> RoleDetailsListView;
+    private TextArea RoleDetailsTextArea;
 
     @FXML
-    private TableView<?> AssignedFlowsTableView;
+    private ListView<String> AssignedFlowsListView;
 
     @FXML
-    private TableColumn<?, ?> stepNameColumn;
-
-    @FXML
-    private TableView<?> AssignedUsersTableView;
-
-    @FXML
-    private TableColumn<?, ?> inputNameColumn;
+    private ListView<String> AssignedUsersListView;
 
     @FXML
     private GridPane AddingFlowGridPane;
@@ -83,12 +80,14 @@ public class RolesManagementTabController {
 
 
     public void initialize() {
+        usersList = new ArrayList<>();
         first = true;
         flowsList = new ArrayList<>();
         flowsCheckBoxMap = new HashMap<>();
         // Define cell value factories for the table columns
         RoleNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().name()));
         NumberOfFlowsColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().availableFlows().size()).asObject());
+
     }
 
     public void setMainController(AdminMainController adminMainController) {
@@ -111,6 +110,11 @@ public class RolesManagementTabController {
                 addFlowToBox(flow);
             }
         }
+    }
+
+    public void updateUsers(List<UserImpl> users){
+        usersList.clear();
+        usersList.addAll(users);
     }
 
     private void addFlowToBox(String flow) {
@@ -144,7 +148,7 @@ public class RolesManagementTabController {
 
     public void updateRoles(List<RoleImpl> updatedRoles) {
         // Check if the new data is different from the current data in the table
-        if (!isDataChanged(updatedRoles) && !first) {
+        if (!isDataChanged(updatedRoles)) {
             first = false;
             return; // If there are no changes, do nothing and return
         }
@@ -157,7 +161,6 @@ public class RolesManagementTabController {
                 }
             }
         }
-
 
         mainController.setHisRoles(updatedRoles);
         //Through main controller update the roles in users managament tab;
@@ -188,7 +191,6 @@ public class RolesManagementTabController {
                 return true;
             }
         }
-
         return false; // If no differences are found, return false
     }
 
@@ -230,4 +232,21 @@ public class RolesManagementTabController {
         RolesGridPane.setVisible(true);
     }
 
+    @FXML
+    public void onMouseClickedRolesTableView(MouseEvent mouseEvent) {
+        RoleImpl role =  RolesTableView.getSelectionModel().getSelectedItem();
+        RoleDetailsTextArea.setText("The name of the role is: " +role.name() +"\nThe description of the role is: "+
+                role.description() +"\nThe role has " +role.availableFlows().size() +" flows");
+
+        AssignedFlowsListView.getItems().clear();
+        AssignedFlowsListView.getItems().addAll(role.availableFlows());
+
+        List<String> nameList = new ArrayList<>();
+        for (UserImpl user1 : usersList){
+            if (user1.getRoles().contains(role))
+                nameList.add(user1.getUsername());
+        }
+        AssignedUsersListView.getItems().clear();
+        AssignedUsersListView.getItems().addAll(nameList);
+    }
 }

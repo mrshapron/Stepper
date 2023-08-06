@@ -10,10 +10,12 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import okhttp3.*;
+import rolesManagementTab.RolesManagementTabController;
 import usersManagementTab.ViewModel.UserModelView;
 
 import java.io.IOException;
@@ -50,16 +52,16 @@ public class UsersManagementTabController {
     private Label UserNameLabel;
 
     @FXML
-    private ListView<?> UserDetailsListView;
+    private ListView<String> UserDetailsListView;
 
     @FXML
-    private TableView<?> AssignedFlowsTableView;
+    private TableView<RoleImpl> AssignedRolesTableView;
 
     @FXML
-    private TableColumn<?, ?> AssignedRoleNameColumn;
+    private TableColumn<RoleImpl, String> AssignedRoleNameColumn;
 
     @FXML
-    private TableColumn<?, ?> AssignedRolesDescriptionColumn;
+    private TableColumn<RoleImpl, String> AssignedRolesDescriptionColumn;
 
     @FXML
     private Label AddRolesLabel;
@@ -96,13 +98,17 @@ public class UsersManagementTabController {
         NumberOfRolesColumn.setCellValueFactory(cellData -> cellData.getValue().numberOfRolesProperty());
         ManagerColumn.setCellValueFactory(cellData -> cellData.getValue().managerProperty());
         UsersTableView.setOnMouseClicked(this::handleUserRowClicked);
+
+        AssignedRoleNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        AssignedRolesDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+
     }
 
     public void setMainController(AdminMainController mainController){ this.mainController = mainController;}
         private void handleUserRowClicked(MouseEvent event) {
             // Check if a row was actually clicked and not an empty area
             if (UsersTableView.getSelectionModel().getSelectedItem() != null) {
-
+                updateUserComponents();
                 // Get the selected user from the TableView
                 UserModelView selectedUser = UsersTableView.getSelectionModel().getSelectedItem();
                 UserImpl user = null;
@@ -213,14 +219,11 @@ public class UsersManagementTabController {
     public void updateUsers(List<UserImpl> updatedUsers) {
         // Convert the UserImpl objects to UserModel and update the table
         List<UserModelView> usersList = convertToUserModelList(updatedUsers);
-        if (updatedUsers.size() == 1) {Check = true;}
-        if (Check){
-            System.out.println("Break");
-        }
         synchronized (currUsers) {
             if (!areUsersListsIdentical(updatedUsers, currUsers)) {
                 UsersTableView.getItems().setAll(usersList);
                 currUsers = updatedUsers;
+                mainController.updateUsers1(updatedUsers);
             }
         }
     }
@@ -247,7 +250,23 @@ public class UsersManagementTabController {
     }
 
 
+    private void updateUserComponents() {
+        UserModelView user = UsersTableView.getSelectionModel().getSelectedItem();
+        UserImpl myUser = null;
+        synchronized (currUsers){
+            for (UserImpl user1 : currUsers){
+                if (user1.getUsername().equals(user.getUsername()))
+                    myUser = user1;
+            }
+        }
 
+        AssignedRolesTableView.getItems().clear();
+        AssignedRolesTableView.getItems().addAll(myUser.getRoles());
 
+        UserDetailsListView.getItems().clear();
+        UserDetailsListView.getItems().add("The user's name is: " +myUser.getUsername() +".\n" +
+                "It has " +myUser.getRoles().size() +" number of roles." +"\n and manager: " +myUser.isManager().toString());
+
+    }
 }
 

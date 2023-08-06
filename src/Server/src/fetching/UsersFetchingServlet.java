@@ -18,11 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UsersFetchingServlet extends HttpServlet {
 
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-
-    }
+//    @Override
+//    public void init() throws ServletException {
+////        super.init();
+//
+//    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Gson gson = new GsonBuilder().create();

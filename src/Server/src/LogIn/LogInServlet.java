@@ -21,6 +21,7 @@ public class LogInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the "username" parameter from the HTTP request
         String username = request.getParameter("username");
+        boolean ok = true;
         if (username == null)
             username = "There's a problem";
         synchronized(getServletContext()) {
@@ -35,18 +36,21 @@ public class LogInServlet extends HttpServlet {
                 usersList = new ArrayList<>();
                 servletContext.setAttribute("usersList", usersList);
             }
-
-
-            //Just for checking
-//            if (user.getUsername().equals("Gur")){
-//                user.getRoles().get(0).addFlow("Step number 3");
-//                user.getRoles().get(0).addFlow("Rename Files");
-//            }
-
-            usersList.add(user);
+            else {
+                for (UserImpl user1 : usersList){
+                    if (user1.getUsername().equals(username))
+                        ok = false;
+                }
+            }
+            if (ok)
+                usersList.add(user);
         }
         // Redirect the user to the main application page
-        response.sendRedirect("Components.Main.ClientMain.fxml");
+        if (ok) {
+            response.getWriter().print("Components/Main/ClientMain.fxml");
+        }
+        else
+            response.getWriter().print("a");
     }
 
     private static RoleImpl getDefaultRole(List<RoleImpl> rolesList) {

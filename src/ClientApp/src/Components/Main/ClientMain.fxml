@@ -18,16 +18,8 @@
       </Label>
       <HBox alignment="CENTER">
          <children>
-            <Label fx:id="ClientNameLabel">
-               <graphic>
-                  <Label text="Name: " />
-               </graphic>
-            </Label>
-            <Label fx:id="IsManagerLabel" text="Label">
-               <graphic>
-                  <Label text="Is Manager :" />
-               </graphic>
-            </Label>
+            <Label fx:id="ClientNameLabel" text="Name:" />
+            <Label fx:id="IsManagerLabel" text="isManager" />
          </children>
       </HBox>
       <HBox fx:id="AssignedRolesHBox">
@@ -35,25 +27,26 @@
             <Label text="Assigned Roles :" textFill="#377957" />
          </children>
       </HBox>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
           <Tab text="Flows Definition">
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
-                    <fx:include fx:id="FlowDefinitionsTab" source="FlowDefinitionComponent/FlowDefinitionsTab.fxml"  />
+                    <fx:include fx:id="FlowDefinitionsTab" source="FlowDefinitionComponent/FlowDefinitionsTab.fxml" />
                 </AnchorPane>
             </content>
           </Tab>
           <Tab text="Flows Execution">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0">
-                <fx:include fx:id="FlowExecutionTab" source="./FlowExecutionComponent/FlowExecutionsTab.fxml"/>
+                    <fx:include fx:id="FlowExecutionsTab" source="FlowExecutionComponent/FlowExecutionsTab.fxml" />
                 </AnchorPane>
             </content>
           </Tab>
             <Tab text="Executions History">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
+                    <fx:include fx:id="FlowHistoryTab" source="FlowHistoryComponent/FlowHistoryTab.fxml" />
                 </AnchorPane>
               </content>
             </Tab>

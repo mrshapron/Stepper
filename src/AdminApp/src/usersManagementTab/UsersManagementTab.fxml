@@ -59,7 +59,7 @@
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                             <children>
                                 <Label text="Assigned roles" />
-                                <TableView fx:id="AssignedFlowsTableView" prefHeight="502.0" prefWidth="408.0" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="AssignedRolesTableView" prefHeight="502.0" prefWidth="408.0" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="AssignedRoleNameColumn" prefWidth="75.0" text="Name" />
                               <TableColumn fx:id="AssignedRolesDescriptionColumn" prefWidth="158.0" text="Description" />

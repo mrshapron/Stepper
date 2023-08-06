@@ -29,6 +29,8 @@ public class RoleImpl implements Role {
     public String name() {
         return name;
     }
+    public String getName() {return name;}
+    public String getDescription(){return description;}
     @Override
     public String description() {
         return description;
@@ -48,17 +50,34 @@ public class RoleImpl implements Role {
         availableFlows.removeIf(flowDefinition -> flowDefinition.equals(flow));
     }
 
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) return true;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//
+//        RoleImpl otherRole = (RoleImpl) obj;
+//        return this.name().equals(otherRole.name()) &&
+//                this.description().equals(otherRole.description()) &&
+//                new HashSet<>(availableFlows).containsAll(otherRole.availableFlows()) &&
+//                new HashSet<>(otherRole.availableFlows()).containsAll(availableFlows);
+//    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
         RoleImpl otherRole = (RoleImpl) obj;
+        List<String> sortedFlows = new ArrayList<>(availableFlows);
+        List<String> otherSortedFlows = new ArrayList<>(otherRole.availableFlows());
+        Collections.sort(sortedFlows);
+        Collections.sort(otherSortedFlows);
+
         return this.name().equals(otherRole.name()) &&
                 this.description().equals(otherRole.description()) &&
-                new HashSet<>(availableFlows).containsAll(otherRole.availableFlows()) &&
-                new HashSet<>(otherRole.availableFlows()).containsAll(availableFlows);
+                sortedFlows.equals(otherSortedFlows);
     }
+
 
 
 

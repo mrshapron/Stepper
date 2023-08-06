@@ -21,19 +21,26 @@ public class RolesFetchingServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        // Initialize your userList with some sample data
+
         RoleImpl role1 = new RoleImpl("Read Only Flows", "Have access to all Read-only flows");
         RoleImpl role2 = new RoleImpl("All Flows", "Have access to all of the flows");
+//        RoleImpl role3 = new RoleImpl("Problem with roles", "T");
+        boolean ok;
         synchronized(getServletContext()) {
             ServletContext servletContext = getServletContext();
-
             //Adding flows to roles
             List<FlowDefinition> flowsList = (List<FlowDefinition>) servletContext.getAttribute("flowDefinitions");
-            for (FlowDefinition flow : flowsList){
-                if (flow.getIsReadOnly()){
-                    role1.addFlow(flow.getName());
+            if (flowsList != null) {
+                ok = true;
+                for (FlowDefinition flow : flowsList) {
+                    if (flow.getIsReadOnly()) {
+                        role1.addFlow(flow.getName());
+                    }
+                    role2.addFlow(flow.getName());
                 }
-                role2.addFlow(flow.getName());
+            }
+            else{
+                 ok = false;
             }
             List<RoleImpl> rolesList = (List<RoleImpl>) servletContext.getAttribute("rolesList");
             if (rolesList == null) {
@@ -43,6 +50,8 @@ public class RolesFetchingServlet extends HttpServlet {
             }
             rolesList.add(role1);
             rolesList.add(role2);
+//            if (!ok)
+//                rolesList.add(role3);
         }
     }
 
@@ -50,6 +59,7 @@ public class RolesFetchingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Gson gson = new GsonBuilder().create();
+
 
         // Fetch the updated users from your data source based on the last fetched ID
         List<RoleImpl> updatedRoles = fetchUpdatedRoles();
@@ -71,6 +81,20 @@ public class RolesFetchingServlet extends HttpServlet {
         // Fetch the entire list of users from your data source
         synchronized(getServletContext()) {
             List<RoleImpl> rolesList = (List<RoleImpl>) getServletContext().getAttribute("rolesList");
+            List<FlowDefinition> flowDefinitions = (List<FlowDefinition>) getServletContext().getAttribute("flowDefinitions");
+            if (flowDefinitions != null) {
+                getServletContext().setAttribute("rolesList", rolesList); //Just added
+                for (FlowDefinition flow : flowDefinitions){
+                    for (RoleImpl role : rolesList){
+                        if (role.name().equals("Read Only Flows") && flow.getIsReadOnly() && !role.availableFlows().contains(flow.getName())){
+                            role.addFlow(flow.getName());
+                        }
+                        if (role.name().equals("All Flows") && !role.availableFlows().contains(flow.getName())){
+                            role.addFlow(flow.getName());
+                        }
+                    }
+                }
+            }
             if (rolesList == null) {
                 return new ArrayList<>(); // Return an empty list if the user list is not available
             }

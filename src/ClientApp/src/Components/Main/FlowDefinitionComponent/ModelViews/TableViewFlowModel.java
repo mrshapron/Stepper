@@ -81,7 +81,7 @@ public class TableViewFlowModel {
         }
 
         List<StepInputsViewModel> stepInputs = inputsMap.get(stepName);
-        System.out.println(stepInputs.get(0));
+//        System.out.println(stepInputs.get(0));
 
         stepInputsViewModels.addAll(stepInputs);
     }
@@ -129,12 +129,12 @@ public class TableViewFlowModel {
 
     public void addOutputsMap(String a, List<StepOutputViewModel> b){
         outputsMap.put(a, b);
-        System.out.println("Just added " +a +"and outputs: " +b);
+//        System.out.println("Just added " +a +"and outputs: " +b);
     }
 
     public void addInputsMap(String a, List<StepInputsViewModel> b){
         inputsMap.put(a, b);
-        System.out.println("Just added " +a +"and inputs: " +b);
+//        System.out.println("Just added " +a +"and inputs: " +b);
     }
 
     public int getFreeInputs() {

@@ -120,8 +120,8 @@ public class FlowExecutionController {
 
     private StringProperty valueEnteredProperty;
     private ObservableList<CurValInputModelView> curValInputModelViews;
-    private StringProperty currentSelectedFreeInput;
     private StringProperty statusRunFlowFreeInputs;
+    private StringProperty currentSelectedFreeInput;
     private BooleanProperty isFlowCanRun;
     private ObservableList<FlowExecutionModelView> flowExecutionModelViews;
     private StringProperty userStringFreeInputProperty;

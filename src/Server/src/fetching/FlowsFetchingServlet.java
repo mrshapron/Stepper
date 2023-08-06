@@ -1,12 +1,12 @@
 package fetching;
 
 import Flow.Definition.FlowDefinition;
-import FlowDefinitionConverter.FlowDefinitionToTableViewFlowModelConverter;
 import Users.Role.Role;
 import Users.Role.RoleImpl;
 import Users.UserImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import convertion.FlowDefinitionToTableViewFlowModelConverter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -14,12 +14,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.swing.text.TableView;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static convertion.FlowDefinitionToTableViewFlowModelConverter.*;
 
 @WebServlet("/fetch-flows")
 public class FlowsFetchingServlet extends HttpServlet {
@@ -42,8 +42,10 @@ public class FlowsFetchingServlet extends HttpServlet {
         username = request.getParameter("username"); //Check, might leave it like that
         List<FlowDefinition> updatedFlows;
         UserImpl user = getUserViaUsername(username);
-        if (user != null)
+        if (user != null) {
+            user = updateUsers(user);
             updatedFlows = fetchUpdatedFlows(user);
+        }
         else{
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain");
@@ -58,11 +60,10 @@ public class FlowsFetchingServlet extends HttpServlet {
 
         // Convert the updated users to JSON
         for (FlowDefinition flow : updatedFlows) {
-            responseData.add(FlowDefinitionToTableViewFlowModelConverter.convert(flow));
+            responseData.add(convert(flow));
         }
 
-        String jsonResponse = "[" + String.join(",", responseData) + "]";//?
-        System.out.println(jsonResponse);
+        String jsonResponse = "[" + String.join(",", responseData) + "]";//?=
 
         // Set the response data
         response.setContentType("application/json");
@@ -74,6 +75,33 @@ public class FlowsFetchingServlet extends HttpServlet {
 //        response.setHeader("Latest-Fetched-ID", latestFetchedId);
 }
 
+    private UserImpl updateUsers(UserImpl user) {
+        UserImpl userToReturn = null;
+        synchronized (getServletContext()){
+            List<UserImpl> usersList = (List<UserImpl>) getServletContext().getAttribute("usersList");
+            List<RoleImpl> rolesList = (List<RoleImpl>) getServletContext().getAttribute("rolesList");
+            getServletContext().setAttribute("usersList", usersList);
+            //not good for changing role
+            for (UserImpl userFromList : usersList){
+                for(RoleImpl role : rolesList){
+                    for (RoleImpl userRole : userFromList.getRoles()) {
+                        if (role.name().equals(userRole.name())){
+                            for(String flow : role.availableFlows()){
+                                if (!userRole.availableFlows().contains(flow))
+                                    userRole.addFlow(flow);
+                                //Need to remove flow from role aswell..
+                            }
+                        }
+                    }
+                }
+                if (user.getUsername().equals(userFromList.getUsername()))
+                    userToReturn = userFromList;
+            }
+        }
+        return userToReturn;
+    }
+
+
     private List<FlowDefinition> fetchUpdatedFlows(UserImpl user) {
         // Fetch the entire list of users from your data source
         synchronized (getServletContext()) {
@@ -82,13 +110,20 @@ public class FlowsFetchingServlet extends HttpServlet {
             if (flowDefinitions == null) {
                 return usersFlowDefinitions;
             }
-            for (Role userRole : user.getRoles()) {
-                for (String userFlow : userRole.availableFlows()) {
-                    for (FlowDefinition flow : flowDefinitions) {
-                        if (userFlow.equals(flow.getName()) && !usersFlowDefinitions.contains(flow)) {
-                            usersFlowDefinitions.add(flow);
+            if (!user.isManager()) {
+                for (Role userRole : user.getRoles()) {
+                    for (String userFlow : userRole.availableFlows()) {
+                        for (FlowDefinition flow : flowDefinitions) {
+                            if ((userFlow.equals(flow.getName()) && !usersFlowDefinitions.contains(flow)) || (user.isManager() && !usersFlowDefinitions.contains(flow))) {
+                                usersFlowDefinitions.add(flow); //Here is the problem
+                            }
                         }
                     }
+                }
+            }
+            else {
+                for (FlowDefinition flow : flowDefinitions) {
+                    usersFlowDefinitions.add(flow);
                 }
             }
             return usersFlowDefinitions; // Return a new copy of the user list

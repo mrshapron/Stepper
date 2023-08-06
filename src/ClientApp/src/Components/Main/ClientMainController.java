@@ -2,9 +2,14 @@ package Components.Main;
 
 import Components.Main.FlowDefinitionComponent.FlowDefinitionsPageController;
 import Components.Main.FlowDefinitionComponent.ModelViews.TableViewFlowModel;
+import Components.Main.FlowExecutionComponent.FlowExecutionsPageController;
+import Components.Main.FlowExecutionComponent.ModelViews.FlowExecutionModelView;
+import Components.Main.FlowHistoryComponent.FlowHistoryPageController;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -23,28 +28,43 @@ public class ClientMainController {
 
     @FXML
     private HBox AssignedRolesHBox;
+    @FXML
+    private TabPane tabPane;
 
     @FXML
     private BorderPane FlowDefinitionsTab;
     @FXML
     private FlowDefinitionsPageController FlowDefinitionsTabController;
+    @FXML
+    private BorderPane FlowExecutionsTab;
+    @FXML
+    private FlowExecutionsPageController FlowExecutionsTabController;
 
     @FXML
+    private BorderPane FlowHistoryTab;
+    @FXML
+    private FlowHistoryPageController FlowHistoryTabController;
 
-    public static void switchToFlowExecutionTab(String flowName) {
-
+    @FXML
+    public void switchToFlowExecutionTab(String flowName) throws IOException {
+        tabPane.getSelectionModel().select(1); // Switch to the "Flow Executions" tab
+        FlowExecutionsTabController.getFlowName(flowName);
+        setControllerUsername(username);
     }
 
-//    public void initialize() {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("Components/Main/FlowDefinitionComponent/FlowDefinitionsTab.fxml"));
-//            FlowDefinitionsTabController = loader.load();
-//            FlowDefinitionsTab.getChildren().add(FlowDefinitionsTabController.getRoot());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            // Handle the exception if FXML file loading fails
-//        }
-//    }
+    public void updateUser(boolean isManager){
+        if (isManager)
+            IsManagerLabel.setText(" is a manager");
+        else
+            IsManagerLabel.setText(" is NOT a manager");
+    }
+
+    public void initialize() {
+        FlowDefinitionsTabController.setClientMainController(this);
+        FlowExecutionsTabController.setClientMainController(this);
+        FlowHistoryTabController.setClientMainController(this);
+
+    }
 
     public FlowDefinitionsPageController getFlowDefinitionsTabController() {
         return FlowDefinitionsTabController;
@@ -55,4 +75,18 @@ public class ClientMainController {
         FlowDefinitionsTabController.updateFlows(updatedFlows);
     }
 
+    public void updateHistory(List<FlowExecutionModelView> modelViews) {
+        FlowHistoryTabController.updateHistory(modelViews);
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        ClientNameLabel.setText("Name: " +username);
+        IsManagerLabel.setText(" is NOT a manager");
+    }
+
+    public void setControllerUsername(String text){
+        FlowExecutionsTabController.setUsername(username);
+        FlowDefinitionsTabController.setUsername(username);
+    }
 }
