@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Engine" />
     <orderEntry type="module" module-name="UI" />
+    <orderEntry type="library" name="okHttp" level="project" />
   </component>
 </module>

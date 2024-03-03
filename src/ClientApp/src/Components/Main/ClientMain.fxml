@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Components.Main.ClientMainController">
+   <children>
+      <Label alignment="CENTER" text="Client Stepper App" textFill="#944040">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER">
+         <children>
+            <Label fx:id="ClientNameLabel" text="Name:" />
+            <Label fx:id="IsManagerLabel" text="isManager" />
+         </children>
+      </HBox>
+      <HBox fx:id="AssignedRolesHBox">
+         <children>
+            <Label text="Assigned Roles :" textFill="#377957" />
+         </children>
+      </HBox>
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="Flows Definition">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                    <fx:include fx:id="FlowDefinitionsTab" source="FlowDefinitionComponent/FlowDefinitionsTab.fxml" />
+                </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Flows Execution">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0">
+                    <fx:include fx:id="FlowExecutionsTab" source="FlowExecutionComponent/FlowExecutionsTab.fxml" />
+                </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Executions History">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                    <fx:include fx:id="FlowHistoryTab" source="FlowHistoryComponent/FlowHistoryTab.fxml" />
+                </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

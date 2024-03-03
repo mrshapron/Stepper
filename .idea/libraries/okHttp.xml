@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="okHttp">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../StepperProject/wetransfer_stepperproject-copy_2023-06-27_0857/okhttp/okHttp/okHttp" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../StepperProject/wetransfer_stepperproject-copy_2023-06-27_0857/okhttp/okHttp/okHttp" recursive="false" />
+  </library>
+</component>
